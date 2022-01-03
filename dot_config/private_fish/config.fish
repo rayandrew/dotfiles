@@ -7,6 +7,10 @@ if status is-interactive
         fish -c fisher install jorgebucaran/fisher
     end
 
+    if type -q starship
+      starship init fish | source 
+    end
+
     # aliases
     source "$XDG_CONFIG_HOME/fish/aliases.fish"
 

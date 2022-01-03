@@ -1,6 +1,11 @@
-#!/usr/bin/env sh
+#!/usr/bin/env sh 
 
-export HOME="/home/rayandrew"
+if [[ `uname` == "Darwin" ]]; then
+  export HOME="/Users/rayandrew"
+else
+  export HOME="/home/rayandrew"
+fi
+
 export XRDM_DIR="$HOME/.Xresource.d"
 export XRDM_FONT_DIR="$HOME/fonts"
 export XRDM_COLOR_DIR="$HOME/colors"
@@ -9,6 +14,8 @@ export XRDM_PROGRAM_DIR="$HOME/programs"
 export PATH="$HOME/.bin:$PATH"
 export EDITOR="emacs -nw"
 export BROWSER="firefox"
+
+export STARSHIP_CONFIG="$HOME/.config/starship/config.toml"
 
 # ADDITIONAL PATHS
 HOME_OPT="$HOME/opt"
@@ -35,7 +42,10 @@ then
 fi
 
 # Rust
-source "$HOME/.cargo/env"
+if [ -f "$HOME/.cargo/env" ]
+then
+  source "$HOME/.cargo/env"
+fi
 
 ASDF_FOLDER="$HOME_OPT/asdf"
 if [ -f "$ASDF_FOLDER/asdf.sh" ]
@@ -43,18 +53,21 @@ then
     source "$ASDF_FOLDER/asdf.sh"
 fi
 
-eval $(gnome-keyring-daemon --start)
-export SSH_AUTH_SOCK
+if [[ `uname` == "Darwin" ]]; then
+  # do nothing for now
+else
+  eval $(gnome-keyring-daemon --start)
+  export SSH_AUTH_SOCK
 
-# picom &
-xcompmgr -c &
-dunst &
+  # picom &
+  xcompmgr -c &
+  dunst &
 
-sxhkd &
+  sxhkd &
 
-# xset r rate 300 50 &
-redshift &
+  # xset r rate 300 50 &
+  redshift &
 
-nitrogen --restore
-# xrdm preset default
-
+  nitrogen --restore
+  # xrdm preset default
+fi
