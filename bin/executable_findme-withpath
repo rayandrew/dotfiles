@@ -1,0 +1,52 @@
+#!/bin/sh
+
+function quit {
+    echo ""
+    echo "ERROR $1"
+    echo "findme-withpath -p <path> w1 w2 w3"
+    echo ""
+    exit
+}
+
+if [ $# -lt 3 ]; then
+    quit 1
+fi
+
+if [ "$1" != "-p" ]; then
+    quit 2
+fi
+
+if [ ! -e $2 ]; then
+    quit 3
+fi
+
+
+if [ $# == 5 ]; then
+    find $2 -iname "*$3*$4*$5*" | \
+	grep -v "\.svn" | \
+	grep -i --color "$3.*$4.*$5"
+    exit
+fi
+
+if [ $# == 4 ]; then
+    find $2 -iname "*$3*$4*" | \
+	grep -v "\.svn" | \
+	grep -i --color "$3.*$4"
+    exit
+fi
+
+
+if [ $# == 3 ]; then
+    find $2 -iname "*$3*" | \
+	grep -v "\.svn" | \
+	grep -i --color "$3"
+    exit
+fi
+
+
+
+quit 4
+
+
+
+

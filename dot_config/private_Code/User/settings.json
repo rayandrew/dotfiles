@@ -1,0 +1,275 @@
+{
+  "workbench.startupEditor": "none",
+  "workbench.colorTheme": "Jo Light",
+  "workbench.iconTheme": "material-icon-theme",
+  "workbench.settings.editor": "json",
+  // "workbench.settings.useSplitJSON": true,
+
+  "editor.fontFamily": "'UbuntuMono Nerd Font', 'monospace', monospace, 'Droid Sans Fallback'",
+  "editor.fontSize": 24,
+  "editor.lineHeight": 1.25,
+  "editor.minimap.enabled": false,
+  "editor.wordWrap": "wordWrapColumn",
+  "editor.wordWrapColumn": 100,
+  "editor.quickSuggestions": {
+    "strings": true
+  },
+  "editor.inlineSuggest.enabled": true,
+  "editor.autoClosingQuotes": "always",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.stylelint": true
+  },
+
+  "update.mode": "none",
+
+  "typescript.updateImportsOnFileMove.enabled": "never",
+
+  "tailwindCSS.experimental.classRegex": [
+    "tw`([^`]*)", // tw`...`
+    "tw=\"([^\"]*)", // <div tw="..." />
+    "tw={\"([^\"}]*)", // <div tw={"..."} />
+    "tw\\.\\w+`([^`]*)", // tw.xxx`...`
+    "tw\\(.*?\\)`([^`]*)" // tw(Component)`...`
+  ],
+  "tailwindCSS.includeLanguages": {
+    "typescript": "javascript",
+    "typescriptreact": "javascript",
+    "slim": "HTML"
+  },
+
+  "todohighlight.isEnable": true,
+  "todohighlight.isCaseSensitive": true,
+  "todohighlight.keywords": [
+    {
+      "text": "DEBUG:",
+      "color": "#000",
+      "isWholeLine": false
+    },
+    {
+      "text": "REVIEW:",
+      "color": "#000",
+      "isWholeLine": false
+    },
+    {
+      "text": "NOTE:",
+      "color": "white",
+      "border": "1px solid white",
+      "borderRadius": "2px",
+      "backgroundColor": "blue",
+      "overviewRulerColor": "grey"
+    },
+    {
+      "text": "HACK:",
+      "color": "black",
+      "backgroundColor": "orange",
+      "isWholeLine": false
+    },
+    {
+      "text": "TODO:",
+      "color": "red",
+      "border": "1px solid red",
+      "borderRadius": "2px", //NOTE: using borderRadius along with `border` or you will see nothing change
+      "backgroundColor": "rgba(0,0,0,.2)"
+      //other styling properties goes here ...
+    },
+    {
+      "text": "WARNING:",
+      "color": "red",
+      "border": "1px solid red",
+      "borderRadius": "2px", //NOTE: using borderRadius along with `border` or you will see nothing change
+      "backgroundColor": "rgba(255,255,255,.1)"
+      //other styling properties goes here ...
+    }
+  ],
+  "github.copilot.enable": {
+    "*": true,
+    "yaml": false,
+    "plaintext": true,
+    "markdown": false
+  },
+
+  "ruby.useBundler": true, // run non-lint commands with bundle exec
+  "ruby.useLanguageServer": true, // use the internal language server (see below)
+  // "ruby.pathToBundler": "./bin/bundle",
+  "ruby.lint": {
+    "rubocop": {
+      "useBundler": true // enable rubocop via bundler
+    },
+    "reek": {
+      "useBundler": true // enable reek via bundler
+    }
+  },
+  "ruby.format": "rubocop",
+  // "ruby.intellisense": "rubyLocate",
+  "ruby.languageServer": {
+    "enabled": true
+  },
+
+  "solargraph.useBundler": true,
+  "solargraph.autoformat": true,
+  "solargraph.bundlerPath": "/home/rayandrew/.asdf/shims/bundle",
+  "solargraph.commandPath": "/home/rayandrew/.asdf/shims/solargraph",
+
+  "slimLint.executablePath": "slim-lint",
+
+  // "ruby.rubocop.executePath": "/home/rayandrew/.asdf/shims/rubocop",
+  // "ruby.rubocop.useBundler": true,
+  // "ruby.rubocop.bundlerPath": "/home/rayandrew/.asdf/shims/bundle",
+
+  "javascript.updateImportsOnFileMove.enabled": "never",
+
+  "terminal.integrated.fontFamily": "'UbuntuMono Nerd Font'",
+  "terminal.integrated.fontSize": 16,
+
+  "terminal.external.linuxExec": "st",
+  "terminal.integrated.profiles.linux": {
+    "fish": {
+      "path": "/usr/bin/fish"
+    }
+  },
+  "terminal.integrated.defaultProfile.linux": "fish",
+  // "terminal.integrated.shell.linux": "/usr/bin/fish",
+  "terminal.integrated.env.linux": {
+    "PATH": "${env:PATH}"
+  },
+
+  "licenser.license": "MIT",
+  
+  // file header
+  "psi-header.changes-tracking": {
+    "autoHeader": "autoSave"
+  },
+  "psi-header.config": {
+    "forceToTop": true,
+    "blankLinesAfter": 1,
+    "license": "MIT",
+    "author": "Ray Andrew",
+    "initials": "RA",
+    "authorEmail": "contact@rayandrew.me",
+    "company": "Partake AI",
+    "copyrightHolder": "Partake AI Ltd",
+    "creationDateZero": "asIs",
+    "hostname": "lemur"
+  },
+  "psi-header.lang-config": [
+    {
+      "language": "scss",
+      "begin": "////",
+      "prefix": "/// ",
+      "suffix": "",
+      "lineLength": 70,
+      "end": "////",
+      "forceToTop": true,
+      "blankLinesAfter": 3,
+      "beforeHeader": [],
+      "afterHeader": [],
+      // "rootDirFileName": "package.json",
+      "modAuthor": "Modified By:",
+      "modDate": "Last Modified:",
+      "modDateFormat": "dd/MM/yyyy hh:nn:ss",
+      // "replace": ["Filename:", "Project"],
+      "ignoreLines": []
+    },
+    {
+      "language": "sass",
+      "mapTo": "scss"
+    }
+  ],
+
+  "psi-header.templates": [
+    {
+      "language": "scss",
+      "template": [
+        "<<description>>",
+        "",
+        "@file <<filerelativepath>>",
+        "@group <<group>>",
+        // "File: <<filename>>",
+        // "Project: <<projectname>>",
+        // "File Created: <<filecreated('dddd, Do MMMM YYYY h:mm:ss a')>>",
+        "@author <<author>> (<<authoremail>>)",
+        "@license <<licensename>>"
+        // "Copyright <<projectCreationYear>> - <<year>> <<copyrightholder>>, <<company>>"
+      ]
+    }
+  ],
+
+  // languages
+  "files.associations": {
+    "*.html.erb": "erb",
+    "*.html.slim": "slim"
+  },
+
+  "scss.validate": true,
+  "stylelint.validate": ["css", "sass", "scss", "less", "postcss"],
+  "scss.lint.unknownAtRules": "ignore",
+  // "scss.lint."
+
+  "[erb]": {
+    "editor.defaultFormatter": "aliariff.vscode-erb-beautify",
+    "editor.formatOnSave": true
+  },
+
+  "vscode-erb-beautify.tab": false,
+  "vscode-erb-beautify.tabStops": 2,
+
+  "[nix]": {
+    "editor.tabSize": 2
+  },
+
+  "[prisma]": {
+    "editor.defaultFormatter": "Prisma.prisma",
+    "editor.formatOnSave": true
+  },
+
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true
+  },
+
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true
+  },
+
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true
+  },
+
+  "[jsonc]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true
+  },
+
+  "[css]": {
+    "editor.suggest.insertMode": "replace",
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true
+  },
+
+  "[ruby]": {
+    // "editor.defaultFormatter": "rebornix.ruby",
+    "editor.formatOnSave": true
+  },
+
+  // "[slim]": {
+  //   "editor.defaultFormatter": "misogi.ruby-rubocop",
+  //   "editor.formatOnSave": true
+  // },
+
+  "[sass]": {
+    "editor.suggest.insertMode": "replace",
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true
+  },
+  "workbench.editor.enablePreview": false,
+  "window.menuBarVisibility": "toggle",
+  "workbench.editorAssociations": {
+    "*.pdf": "default"
+  }
+}

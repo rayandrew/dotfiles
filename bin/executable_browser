@@ -1,0 +1,16 @@
+#!/bin/sh
+
+# if you use Mac, then use something like this below.
+# you need to choose your own favorite browser app if you hate firefox.
+
+
+#open -a /Applications/Firefox.app $*
+
+
+# if you Linux user, then you need to find where your 
+# browser is by running for example "which firefox".
+# after you know the full path, enable this:
+
+/usr/bin/firefox $*
+
+#/usr/bin/google-chrome-stable $*

@@ -1,0 +1,80 @@
+#!/bin/sh
+
+# -------------------
+ppath=$ALL_PDF_FILES
+
+if [ $# == 0 ]; then
+    echo ""
+    echo "  Usage: pdf <filename-keywords> "
+    echo "  Usage: pdf [acroread/skim/preview] <filename-keywords> "
+    echo "  Search in $ppath"
+    echo ""
+    exit
+fi
+
+if [ "x$ALL_PDF_FILES" == "x" ]; then
+    echo "  ALL_PDF_FILES env variable doesn't exist"
+    exit
+fi
+
+
+# -------------------
+# by default your pdf reader is your ~/bin/pdfreader symbolic link
+prog=$HOME/bin/pdfreader
+
+
+# Har likes to use other pdf readers, here's how to use them
+if [ "$1" == "acrod" ] || [ "$1" == "a" ]; then
+    prog=acroread 
+    shift
+fi
+if [ "$1" == "skim" ] || [ "$1" == "s" ]; then
+    prog=skim 
+    shift
+fi
+if [ "$1" == "reader" ] || [ "$1" == "r" ]; then
+    prog="acroread r"
+    # ~/bin/acroread takes "r" argument to say it's acroread
+    shift
+fi
+if [ "$1" == "preview" ] || [ "$1" == "p" ]; then
+    prog=preview
+    shift
+fi
+
+
+function doAll {
+   filecnt=`findme-withpath -p $ppath $1 $2 $3 | wc -l`
+   file=`findme-withpath -p $ppath $1 $2 $3`
+
+  if [ $filecnt == 1 ] && [ -f $file ]; then
+      echo "  $prog $file &"
+      $prog $file &
+
+      echo "  acroread $file &"
+      echo "  preview $file &"
+      exit
+   fi
+}
+
+doAll $*
+
+# if gets here, doAll does not find one, so let's try something else
+
+if [ $filecnt == 0 ]; then
+    if [ -e /machine/retina ]; then
+      echo "  not found, try to download using first keyword: $1 "
+      cd /scratch/all-pdf-files/
+      ./z-transfer.sh down $1
+      doAll $*
+      exit
+    fi
+    echo " not found " 
+     exit
+fi
+
+echo "  Multiple files exist: "
+
+findme-withpath -p $ppath $1 $2 $3   
+
+

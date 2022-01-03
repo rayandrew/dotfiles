@@ -1,0 +1,49 @@
+icons = "awesome5"
+theme = "space-villain"
+#theme = "bad-wolf"
+
+separator = "|"
+
+[[block]]
+block = "net"
+device = "wlp0s20f3"
+format = "{ssid} {signal_strength} {ip} {speed_down;K*b} {graph_down;K*b}"
+interval = 5
+
+[[block]]
+alert = 10
+alias = "/"
+block = "disk_space"
+info_type = "available"
+interval = 60
+path = "/"
+unit = "GB"
+warning = 20
+
+[[block]]
+block = "memory"
+display_type = "memory"
+format_mem = "{mem_used_percents}"
+format_swap = "{swap_used_percents}"
+
+[[block]]
+block = "cpu"
+interval = 1
+
+[[block]]
+block = "load"
+format = "{1m}"
+interval = 1
+
+[[block]]
+block = "battery"
+format = "{percentage:6#100} {percentage} {time}"
+interval = 10
+
+[[block]]
+block = "sound"
+
+[[block]]
+block = "time"
+format = "%a %d/%m %R"
+interval = 60

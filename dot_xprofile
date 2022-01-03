@@ -1,0 +1,60 @@
+#!/usr/bin/env sh
+
+export HOME="/home/rayandrew"
+export XRDM_DIR="$HOME/.Xresource.d"
+export XRDM_FONT_DIR="$HOME/fonts"
+export XRDM_COLOR_DIR="$HOME/colors"
+export XRDM_PRESET_DIR="$HOME/presets"
+export XRDM_PROGRAM_DIR="$HOME/programs"
+export PATH="$HOME/.bin:$PATH"
+export EDITOR="emacs -nw"
+export BROWSER="firefox"
+
+# ADDITIONAL PATHS
+HOME_OPT="$HOME/opt"
+
+# MPICH
+MPICH_FOLDER="/opt/mpich/"
+if [ -d $MPICH_FOLDER ]
+then
+    export PATH="$MPICH_FOLDER/bin:$PATH"
+    export MANPATH="$MPICH_FOLDER/share/man:$MANPATH"
+    export PKG_CONFIG_PATH="$MPICH_FOLDER/lib/pkgconfig:$PKG_CONFIG_PATH"
+    export LD_LIBRARY_PATH=$MPICH_FOLDER/lib:$LD_LIBRARY_PATH
+    export C_INCLUDE_PATH="$MPICH_FOLDER/include:$C_INCLUDE_PATH"
+fi
+
+PERL5_FOLDER="$HOME/perl5"
+if [ -d "$PERL5_FOLDER" ]
+then
+   export PATH="$PERL5_FOLDER/bin:$PATH"
+   export PERL5LIB="$PERL5_FOLDER/lib/perl5:$PERL5LIB"
+   export PERL_LOCAL_LIB_ROOT="$PERL5_FOLDER:$PERL_LOCAL_LIB_ROOT"
+   export PERL_MB_OPT="--install_base\ \"$PERL5_FOLDER\""
+   export PERL_MB_OPT="INSTALL_BASE=\"$PERL5_FOLDER\""
+fi
+
+# Rust
+source "$HOME/.cargo/env"
+
+ASDF_FOLDER="$HOME_OPT/asdf"
+if [ -f "$ASDF_FOLDER/asdf.sh" ]
+then
+    source "$ASDF_FOLDER/asdf.sh"
+fi
+
+eval $(gnome-keyring-daemon --start)
+export SSH_AUTH_SOCK
+
+# picom &
+xcompmgr -c &
+dunst &
+
+sxhkd &
+
+# xset r rate 300 50 &
+redshift &
+
+nitrogen --restore
+# xrdm preset default
+

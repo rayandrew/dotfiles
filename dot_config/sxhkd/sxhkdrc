@@ -1,0 +1,15 @@
+XF86AudioLowerVolume
+  /usr/bin/env amixer -q sset Master 5%-
+
+XF86AudioMute
+  /usr/bin/env amixer -q set Master toggle
+
+XF86AudioRaiseVolume
+  /usr/bin/env amixer -q sset Master 5%+
+
+XF86MonBrightnessDown
+  /usr/bin/env light -U 10
+
+XF86MonBrightnessUp
+  /usr/bin/env light -A 10
+

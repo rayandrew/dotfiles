@@ -1,0 +1,3 @@
+#!/bin/sh
+
+gpg2 --quiet --for-your-eyes-only --no-tty --decrypt $HOME/bin/har-zoom.secret.gpg
