@@ -1,10 +1,10 @@
 #!/usr/bin/env sh 
 
-if [[ `uname` == "Darwin" ]]; then
-  export HOME="/Users/rayandrew"
-else
-  export HOME="/home/rayandrew"
-fi
+{{- if eq .chezmoi.hostname "mbp" }}
+  export HOME="/Users/{{ .chezmoi.username }}"
+{{- else if eq .chezmoi.hostname "lemur" }}
+  export HOME="{{ .chezmoi.homeDir }}"
+{{- end }}
 
 export XRDM_DIR="$HOME/.Xresource.d"
 export XRDM_FONT_DIR="$HOME/fonts"
@@ -53,9 +53,7 @@ then
     source "$ASDF_FOLDER/asdf.sh"
 fi
 
-if [[ `uname` == "Darwin" ]]; then
-  # do nothing for now
-else
+{{- if eq .chezmoi.hostname "lemur" }}
   eval $(gnome-keyring-daemon --start)
   export SSH_AUTH_SOCK
 
@@ -70,4 +68,4 @@ else
 
   nitrogen --restore
   # xrdm preset default
-fi
+{{- end }}

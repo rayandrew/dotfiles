@@ -28,7 +28,7 @@
 	gpgSign = true
 
 [gpg]
-	program = "/usr/bin/gpg2"
+	program =  {{ .gpg | quote }}
 
 [init]
 	defaultBranch = "main"
@@ -41,7 +41,7 @@
 	smtpEncryption = "tls"
 	smtpServer = "smtp.gmail.com"
 	smtpSslCertPath = "/etc/ssl/certs/ca-certificates.crt"
-	smtpUser = "contact@rayandrew.me"
+	smtpUser = "contact@{{ .chezmoi.username }}.me"
 
 [sendemail "raydreww@gmail.com"]
 	from = "raydreww@gmail.com"
