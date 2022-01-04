@@ -1,0 +1,23 @@
+{{- if (eq .chezmoi.os "darwin") -}}
+#!/bin/bash
+
+brew bundle --no-lock --file=/dev/stdin <<EOF
+tap "homebrew/bundle"
+tap "homebrew/cask"
+tap "homebrew/cask-fonts"
+tap "homebrew/core"
+brew "bat"
+brew "emacs"
+brew "exa"
+brew "fish"
+brew "fzf"
+brew "pinentry"
+brew "gnupg"
+brew "pinentry-mac"
+brew "ripgrep"
+brew "starship"
+brew "subversion"
+brew "tmux"
+cask "font-ubuntu-mono-nerd-font"
+eOF
+{{ end -}}
