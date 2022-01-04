@@ -22,7 +22,6 @@ if test -d "$HOME/opt/darshan/bin"
     fish_add_path "$HOME/opt/darshan/bin"
 end
 
-
 set -gx RESEARCH_DIR "$HOME/research"
 set -gx UCARE_DIR "$RESEARCH_DIR/ucare"
 set -gx DIRPAPERS "$UCARE_DIR/papers"

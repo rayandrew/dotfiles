@@ -1,9 +1,9 @@
 #!/usr/bin/env sh 
 
 {{- if eq .chezmoi.hostname "mbp" }}
-  export HOME="/Users/{{ .chezmoi.username }}"
+export HOME="/Users/{{ .chezmoi.username }}"
 {{- else if eq .chezmoi.hostname "lemur" }}
-  export HOME="{{ .chezmoi.homeDir }}"
+export HOME="{{ .chezmoi.homeDir }}"
 {{- end }}
 
 export XRDM_DIR="$HOME/.Xresource.d"
@@ -54,18 +54,18 @@ then
 fi
 
 {{- if eq .chezmoi.hostname "lemur" }}
-  eval $(gnome-keyring-daemon --start)
-  export SSH_AUTH_SOCK
+eval $(gnome-keyring-daemon --start)
+export SSH_AUTH_SOCK
 
-  # picom &
-  xcompmgr -c &
-  dunst &
+# picom &
+xcompmgr -c &
+dunst &
 
-  sxhkd &
+sxhkd &
 
-  # xset r rate 300 50 &
-  redshift &
+# xset r rate 300 50 &
+redshift &
 
-  nitrogen --restore
-  # xrdm preset default
+nitrogen --restore
+# xrdm preset default
 {{- end }}
