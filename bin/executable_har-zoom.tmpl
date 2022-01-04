@@ -1,0 +1,7 @@
+#!/bin/sh
+
+{{- if eq .chezmoi.hostname "mbp" }}
+gpg --quiet --for-your-eyes-only --no-tty --decrypt $HOME/bin/har-zoom.secret.gpg
+{{- else if eq .chezmoi.hostname "lemur" }}
+gpg2 --quiet --for-your-eyes-only --no-tty --decrypt $HOME/bin/har-zoom.secret.gpg
+{{- end }}
