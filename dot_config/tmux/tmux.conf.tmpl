@@ -1,17 +1,14 @@
-# ============================================= #
-# Start with defaults from the Sensible plugin  #
-# --------------------------------------------- #
-
-# run-shell /nix/store/0rip83fivz30w15i46ikva7d4caxgxvk-tmuxplugin-sensible-unstable-2017-09-05/share/tmux-plugins/sensible/sensible.tmux
-# ============================================= #
-
 set  -g default-terminal "screen-256color"
 set  -g base-index      0
 setw -g pane-base-index 0
 
 
 # We need to set default-shell before calling new-session
-if-shell "uname | grep -q Darwin" "set -g default-shell \"/usr/local/bin/fish\"" "set -g default-shell \"/usr/bin/fish\""
+{{- if eq .chezmoi.hostname "mbp" }}
+set -g default-shell "/usr/local/bin/fish"
+{{- else if eq .chezmoi.hostname "lemur" }}
+set -g default-shell "/usr/bin/fish"
+{{- end }}
 
 set -g status-keys vi
 set -g mode-keys   vi
@@ -30,37 +27,6 @@ setw -g aggressive-resize off
 setw -g clock-mode-style  12
 set  -s escape-time       500
 set  -g history-limit     2000
-
-# ============================================= #
-# Load plugins with Home Manager                #
-# --------------------------------------------- #
-
-# tmuxplugin-cpu
-# ---------------------
-
-# run-shell /nix/store/2lfx832q3jjfzqnk27gxx0paih3cb7hg-tmuxplugin-cpu-unstable-2020-07-25/share/tmux-plugins/cpu/cpu.tmux
-
-
-# tmuxplugin-resurrect
-# ---------------------
-set -g @resurrect-strategy-nvim 'session'
-# run-shell /nix/store/bmcb6a4vxry1z0wr7182hi9l4wbasy3a-tmuxplugin-resurrect-unstable-2020-09-18/share/tmux-plugins/resurrect/resurrect.tmux
-
-
-# tmuxplugin-nord
-# ---------------------
-
-# run-shell /nix/store/2cc7y77qdngisym9jjywzbfgi4jaz5gq-tmuxplugin-nord-0.3.0/share/tmux-plugins/nord/nord.tmux
-
-
-# tmuxplugin-continuum
-# ---------------------
-set -g @continuum-restore 'on'
-set -g @continuum-save-interval '15' # minutes
-
-# run-shell /nix/store/gd4qc40j5g6rnym0srq4qijrj8rxniar-tmuxplugin-continuum-unstable-2020-10-16/share/tmux-plugins/continuum/continuum.tmux
-
-# ============================================= #
 
 set -g base-index 1           # start windows numbering at 1
 setw -g pane-base-index 1     # make pane numbering consistent with windows
@@ -82,7 +48,6 @@ bind -n C-l send-keys C-l \; run 'sleep 0.1' \; clear-history
 set -g monitor-activity on
 set -g visual-activity off
 
-
 # -- navigation ----------------------------------------------------------------
 
 # create session
@@ -93,7 +58,12 @@ bind C-c command-prompt -p "New Session:" "new-session -A -s '%%'"
 bind C-k confirm kill-session
 
 # reload tmux conf
+{{- if eq .chezmoi.hostname "mbp" }}
+bind C-e source-file /Users/rayandrew/.config/tmux/tmux.conf
+{{- else if eq .chezmoi.hostname "lemur" }}
 bind C-e source-file /home/rayandrew/.config/tmux/tmux.conf
+{{- end }}
+
 
 # find session
 bind C-f command-prompt -p find-session 'switch-client -t %%'
@@ -174,6 +144,8 @@ bind P choose-buffer # choose which buffer to paste from
 set -sg escape-time 0
 
 # plugins
+
+set -g @1password-key 'e'
 
 set -g @plugin "tmux-plugins/tpm"
 set -g @plugin "tmux-plugins/tmux-sensible"
