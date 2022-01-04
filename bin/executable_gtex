@@ -41,7 +41,13 @@ ext="\.tex"
 
 echo ""
 
-find "./$RELPATH" -type f -name "*$ext" -exec \
+if [[ $RELPATH == "." ]]; then
+  FINDPATH="."
+else
+  FINDPATH="./$RELPATH"
+fi
+
+find $FINDPATH -type f -name "*$ext" -exec \
 $GREP -i -n "$srcstr" '{}' \; -print  | \
 sed "s/^/    /" | \
 sed "s/^    \.\//-------------------------------------------/" | \
