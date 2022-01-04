@@ -20,6 +20,7 @@ export STARSHIP_CONFIG="$HOME/.config/starship/config.toml"
 # ADDITIONAL PATHS
 HOME_OPT="$HOME/opt"
 
+{{- if eq .chezmoi.hostname "lemur" }}
 # MPICH
 MPICH_FOLDER="/opt/mpich/"
 if [ -d $MPICH_FOLDER ]
@@ -31,6 +32,7 @@ then
     export C_INCLUDE_PATH="$MPICH_FOLDER/include:$C_INCLUDE_PATH"
 fi
 
+# Perl5
 PERL5_FOLDER="$HOME/perl5"
 if [ -d "$PERL5_FOLDER" ]
 then
@@ -40,6 +42,7 @@ then
    export PERL_MB_OPT="--install_base\ \"$PERL5_FOLDER\""
    export PERL_MB_OPT="INSTALL_BASE=\"$PERL5_FOLDER\""
 fi
+{{- end }}
 
 # Rust
 if [ -f "$HOME/.cargo/env" ]

@@ -2,6 +2,8 @@
 
 GREP=grep
 
+RELPATH=$(realpath --relative-to="." $DIRPAPERS)
+
 # if command -v rg &> /dev/null
 # then
 #   GREP=rg
@@ -39,7 +41,7 @@ ext="\.tex"
 
 echo ""
 
-find . -type f -name "*$ext" -exec \
+find "./$RELPATH" -type f -name "*$ext" -exec \
 $GREP -i -n "$srcstr" '{}' \; -print  | \
 sed "s/^/    /" | \
 sed "s/^    \.\//-------------------------------------------/" | \
