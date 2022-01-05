@@ -49,12 +49,12 @@
 ;; ...Or *all* packages (NOT RECOMMENDED; will likely break things)
 ;(unpin! t)
 
-(package! org-roam-timestamps)
+;; (package! org-roam-timestamps)
 
-(use-package! org-roam-timestamps
-  :after org-roam
-  :config (org-roam-timestamps-mode))
+;; (use-package! org-roam-timestamps
+;;   :after org-roam
+;;   :config (org-roam-timestamps-mode))
 
-(package! md-roam
- :recipe (:host github
- :repo "nobiot/md-roam"))
+;; (package! md-roam
+;;  :recipe (:host github
+;;  :repo "nobiot/md-roam"))

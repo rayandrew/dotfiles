@@ -60,25 +60,37 @@
 (setq evil-respect-visual-line-mode t)
 
 ;; org-journal
-(setq org-journal-dir "~/journals")
+;; (setq org-journal-dir "~/journals")
 
 ;; org-roam
 
-(setq org-roam-completion-everywhere t)
-(use-package! md-roam ; load immediately, before org-roam
-  :after org-roam
-  :config
-  (setq org-roam-directory (file-truename "~/kb"))
-  (setq org-roam-capture-template "~/kb")
-  (setq org-roam-file-extensions '("org" "md"))
-  (md-roam-mode 1)
-  (setq md-roam-file-extension-single "md")
-  (org-roam-db-autosync-mode 1)
-  (setq org-roam-capture-templates
-        '(("d" "default" plain "%?"
-           :target (file+head "${slug}.md"
-                              "---\ntitle: ${title}\nid: %<%Y-%m-%dT%H%M%S>\ncategory: \n---\n")
-           :unnarrowed t))))
+;; (setq org-roam-completion-everywhere t)
+;; (use-package! md-roam ; load immediately, before org-roam
+;;   :after org-roam
+;;   :config
+;;   (setq org-roam-directory (file-truename "~/kb"))
+;;   (setq org-roam-capture-template "~/kb")
+;;   (setq org-roam-file-extensions '("org" "md"))
+;;   (md-roam-mode 1)
+;;   (setq md-roam-file-extension-single "md")
+;;   (org-roam-db-autosync-mode 1)
+;;   (setq org-roam-capture-templates
+;;         '(("d" "default" plain "%?"
+;;            :target (file+head "${slug}.md"
+;;                               "---\ntitle: ${title}\nid: %<%Y-%m-%dT%H%M%S>\ncategory: \n---\n")
+;;            :unnarrowed t))))
+
+;; (setq org-roam-directory (file-truename "~/kb"))
+;; (setq org-roam-capture-template "~/kb")
+;; (setq org-roam-file-extensions '("org"))
+;; (md-roam-mode 1)
+;; (setq md-roam-file-extension-single "org")
+;; (org-roam-db-autosync-mode 1)
+;; (setq org-roam-capture-templates
+;;       '(("d" "default" plain "%?"
+;;          :target (file+head "${slug}.org"
+;;                             "#+title: ${title}\n")
+;;          :unnarrowed t)))
 ;; (setq org-roam-directory "~/kb")
 ;; (setq org-roam-capture-templates
 ;;  '(("d" "default" plain "%?"
@@ -89,18 +101,18 @@
 
 
 ;; org-roam timestamp
-(setq org-roam-timestamps-parent-file t)
+;; (setq org-roam-timestamps-parent-file t)
 
 ;; org-journal
-(setq org-journal-file-format "%Y-%m-%d.org")
-(setq org-journal-enable-agenda-integration t)
-(defun org-journal-file-header-func (time)
-  "Custom function to create journal header."
-  (concat
-    (pcase org-journal-file-type
-      (`daily "#+TITLE: Daily Journal\n#+CATEGORY: journal\n#+STARTUP: showeverything")
-      (`weekly "#+TITLE: Weekly Journal\n#+CATEGORY: journal\n#+STARTUP: folded")
-      (`monthly "#+TITLE: Monthly Journal\n#+CATEGORY: journal\n#+STARTUP: folded")
-      (`yearly "#+TITLE: Yearly Journal\n#+CATEGORY: journal\n#+STARTUP: folded"))))
+;; (setq org-journal-file-format "%Y-%m-%d.org")
+;; (setq org-journal-enable-agenda-integration t)
+;; (defun org-journal-file-header-func (time)
+;;   "Custom function to create journal header."
+;;   (concat
+;;     (pcase org-journal-file-type
+;;       (`daily "#+TITLE: Daily Journal\n#+CATEGORY: journal\n#+STARTUP: showeverything")
+;;       (`weekly "#+TITLE: Weekly Journal\n#+CATEGORY: journal\n#+STARTUP: folded")
+;;       (`monthly "#+TITLE: Monthly Journal\n#+CATEGORY: journal\n#+STARTUP: folded")
+;;       (`yearly "#+TITLE: Yearly Journal\n#+CATEGORY: journal\n#+STARTUP: folded"))))
 
-(setq org-journal-file-header 'org-journal-file-header-func)
+;; (setq org-journal-file-header 'org-journal-file-header-func)
