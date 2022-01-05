@@ -1,4 +1,4 @@
-set -q OPT_HOME; or set OPT_HOME "$HOME/opt"
+set -q OPT_DIR; or set OPT_DIR "$HOME/opt"
 set -q XDG_CONFIG_HOME; or set XDG_CONFIG_HOME "$HOME/.config"
 
 if status is-interactive
@@ -52,13 +52,13 @@ if status is-interactive
     end
 
     # ASDF Package
-    if test -e "$HOME/opt/asdf/asdf.fish"
-        source "$HOME/opt/asdf/asdf.fish"
+    if test -e "$OPT_DIR/asdf/asdf.fish"
+        source "$OPT_DIR/asdf/asdf.fish"
     end
 
     # Spack
-    if test -e "$HOME/opt/spack/share/spack/setup-env.fish"
-        source "$HOME/opt/spack/share/spack/setup-env.fish"
+    if test -e "$OPT_DIR/spack/share/spack/setup-env.fish"
+        source "$OPT_DIR/spack/share/spack/setup-env.fish"
     end
 
     # Rust
@@ -67,11 +67,12 @@ if status is-interactive
     end
 
     # Pyenv
-    if test -d "$HOME/opt/pyenv"
-        set -Ux PYENV_ROOT "$HOME/opt/pyenv"
+    if test -d "$OPT_DIR/pyenv"
+        set -Ux PYENV_ROOT "$OPT_DIR/pyenv"
         fish_add_path "$PYENV_ROOT/bin"
         status is-login; and pyenv init --path | source
         status is-interactive; and pyenv init - | source
+	status --is-interactive; and pyenv virtualenv-init - | source
     end
 
     # 1Password

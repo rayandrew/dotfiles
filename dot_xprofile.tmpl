@@ -18,7 +18,7 @@ export BROWSER="firefox"
 export STARSHIP_CONFIG="$HOME/.config/starship/config.toml"
 
 # ADDITIONAL PATHS
-HOME_OPT="$HOME/opt"
+export OPT_DIR="$HOME/opt"
 
 {{- if eq .chezmoi.hostname "lemur" }}
 # MPICH
@@ -50,7 +50,7 @@ then
   source "$HOME/.cargo/env"
 fi
 
-ASDF_FOLDER="$HOME_OPT/asdf"
+export ASDF_FOLDER="$OPT_DIR/asdf"
 if [ -f "$ASDF_FOLDER/asdf.sh" ]
 then
     source "$ASDF_FOLDER/asdf.sh"
