@@ -10,6 +10,11 @@ dependencies:
   - numpy
   - seaborn
   - cffi
+  - networkx
+  - holoviews
+  - hvplot
+  - pygraphviz
+  - pydot
   - pip:
     - darshan==3.3.1.0
 
