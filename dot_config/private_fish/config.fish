@@ -72,7 +72,9 @@ if status is-interactive
         fish_add_path "$PYENV_ROOT/bin"
         status is-login; and pyenv init --path | source
         status is-interactive; and pyenv init - | source
-	status --is-interactive; and pyenv virtualenv-init - | source
+	if test -d "$PYENV_ROOT/plugins/pyenv-virtualenv" 
+	  status is-interactive; and pyenv virtualenv-init - | source
+        end
     end
 
     # 1Password
