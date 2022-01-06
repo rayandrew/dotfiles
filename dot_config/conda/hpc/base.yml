@@ -4,6 +4,12 @@ channels:
 dependencies:
   - python==3.10.1 
   - pip
+  - jupyterlab
+  - matplotlib
+  - pandas
+  - numpy
+  - seaborn
+  - cffi
   - pip:
     - darshan==3.3.1.0
 
