@@ -21,6 +21,13 @@ export STARSHIP_CONFIG="$HOME/.config/starship/config.toml"
 # ADDITIONAL PATHS
 export OPT_DIR="$HOME/opt"
 
+# Fly
+if [ -d "$HOME/.fly" ]
+then
+    export FLYCTL_INSTALL="$HOME/.fly"
+    export PATH="$FLYCTL_INSTALL/bin:$PATH"
+fi
+
 {{- if eq .chezmoi.hostname "lemur" }}
 # MPICH
 MPICH_FOLDER="/opt/mpich/"

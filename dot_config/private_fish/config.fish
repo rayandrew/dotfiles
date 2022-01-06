@@ -77,6 +77,12 @@ if status is-interactive
         end
     end
 
+    # Fish
+    if test -d "$HOME/.fly"
+       set -gx FLYCTL_INSTALL "$HOME/.fly"
+       set -x PATH "$FLYCTL_INSTALL/bin" $PATH 2>/dev/null
+    end
+
     # 1Password
     # eval (op signin my)
 end

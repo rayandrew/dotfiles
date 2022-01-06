@@ -1,0 +1,3 @@
+Host mini-uc
+	Hostname ucare-mini.cs.uchicago.edu
+	HostKeyAlgorithms=+ssh-rsa
