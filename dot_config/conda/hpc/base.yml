@@ -1,0 +1,9 @@
+name: hpc 
+channels:
+  - conda-forge
+dependencies:
+  - python==3.10.1 
+  - pip
+  - pip:
+    - darshan==3.3.1.0
+
