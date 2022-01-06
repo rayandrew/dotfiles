@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-if [ -x "$(command -v svn)" ]
+if ! [ -x "$(command -v svn)" ]
 then
     echo "svn is not installed!"
     exit
