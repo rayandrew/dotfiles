@@ -1,5 +1,7 @@
 set -q OPT_DIR; or set OPT_DIR "$HOME/opt"
 set -q XDG_CONFIG_HOME; or set XDG_CONFIG_HOME "$HOME/.config"
+set -q BRAIN_PROJ_DIR; or set BRAIN_PROJ_DIR "$HOME/brain"
+set -q BRAIN_DIR; or set BRAIN_DIR "$HOME/brain/brain"
 
 if status is-interactive
     if not functions -q fisher
@@ -77,11 +79,16 @@ if status is-interactive
         end
     end
 
-    # Fish
+    # Fly
     if test -d "$HOME/.fly"
        set -gx FLYCTL_INSTALL "$HOME/.fly"
        set -x PATH "$FLYCTL_INSTALL/bin" $PATH 2>/dev/null
     end
+
+    # Second Brain
+    function brainloc
+      cd $BRAIN_DIR
+    end 
 
     # 1Password
     # eval (op signin my)
