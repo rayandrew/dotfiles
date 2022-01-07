@@ -6,6 +6,7 @@ tap "homebrew/bundle"
 tap "homebrew/cask"
 tap "homebrew/cask-fonts"
 tap "homebrew/core"
+tap "homebrew/services"
 tap "mhanberg/zk"
 brew "bat"
 brew "exa"
@@ -30,5 +31,7 @@ brew "cmake"
 cask "emacs"
 brew "mpich"
 brew "automake"
+brew "neovim"
+brew "redis", restart_service: true
 EOF
 {{ end -}}

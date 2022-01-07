@@ -23,7 +23,11 @@ end
 
 if type -q pnpm
     alias np pnpm
-end 
+end
+
+if type -q nvim
+    alias vim nvim
+end
 
 # git
 source "$XDG_CONFIG_HOME/fish/aliases/git.fish"
