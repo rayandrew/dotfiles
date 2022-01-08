@@ -14,6 +14,8 @@ local map = utils.map
 g.mapleader = [[ ]]
 g.maplocalleader = [[,]]
 
+o.clipboard = 'unnamedplus'
+
 -- Disable some built-in plugins we don't want
 local disabled_built_ins = {
   'gzip',
@@ -120,6 +122,7 @@ map('n', '<leader>wk', '<c-w>k') -- go to window up
 map('n', '<leader>wl', '<c-w>l') -- go to window right 
 
 map('n', '<leader>ff', "<cmd>lua require('telescope.builtin').find_files()<cr>", silent)
+map('n', '<leader>fb', "<cmd>lua require('telescope').extensions.file_browser.file_browser()<cr>", { silent = true, noremap = true })
 map('n', '<leader>fg', "<cmd>lua require('telescope.builtin').live_grep()<cr>", silent)
 map('n', '<leader>bb', "<cmd>lua require('telescope.builtin').buffers()<cr>", silent)
 map('n', '<leader>fh', "<cmd>lua require('telescope.builtin').help_tags()<cr>", silent)

@@ -1,8 +1,40 @@
+local fn = vim.fn
+
+-- Automatically install packer
+local install_path = fn.stdpath "data" .. "/site/pack/packer/start/packer.nvim"
+if fn.empty(fn.glob(install_path)) > 0 then
+  PACKER_BOOTSTRAP = fn.system {
+    "git",
+    "clone",
+    "--depth",
+    "1",
+    "https://github.com/wbthomason/packer.nvim",
+    install_path,
+  }
+  print "Installing packer close and reopen Neovim..."
+  vim.cmd [[packadd packer.nvim]]
+end
+
+-- Autocommand that reloads neovim whenever you save the plugins.lua file
+vim.cmd [[
+  augroup packer_user_config
+    autocmd!
+    autocmd BufWritePost plugins.lua source <afile> | PackerSync
+  augroup end
+]]
+
 local packer = nil
 local function init()
   if packer == nil then
     packer = require 'packer'
-    packer.init { disable_commands = true }
+    packer.init { 
+      disable_commands = true,
+      display = {
+        open_fn = function()
+          return require("packer.util").float { border = "rounded" }
+        end,
+      },
+    }
   end
 
   local use = packer.use
@@ -39,6 +71,12 @@ local function init()
     requires = {
       'nvim-treesitter/nvim-treesitter-refactor',
       'nvim-treesitter/nvim-treesitter-textobjects',
+      'JoosepAlviste/nvim-ts-context-commentstring',
+      'ChristianChiarulli/nvim-ts-rainbow',
+      'nvim-treesitter/playground',
+      'windwp/nvim-ts-autotag',
+      'romgrk/nvim-treesitter-context',
+      'mizlan/iswap.nvim',
     },
     run = ':TSUpdate',
   }
@@ -59,6 +97,7 @@ local function init()
         'nvim-lua/plenary.nvim',
         'telescope-frecency.nvim',
         'telescope-fzf-native.nvim',
+        'nvim-telescope/telescope-file-browser.nvim'
       },
       wants = {
         'popup.nvim',
@@ -86,7 +125,28 @@ local function init()
   use {
     'folke/zen-mode.nvim',
     config = function()
-      require("zen-mode").setup {
+      require('zen-mode').setup {
+        window = {
+          options = {
+            signcolumn = 'no', -- disable signcolumn
+            number = false, -- disable number column
+            relativenumber = false, -- disable relative numbers
+            cursorline = false, -- disable cursorline
+            cursorcolumn = false, -- disable cursor column
+            foldcolumn = "0", -- disable fold column
+            list = false, -- disable whitespace characters
+          },
+        },
+        plugins = {
+          options = {
+            enabled = true,
+            ruler = false, -- disables the ruler text in the cmd line area
+            showcmd = false, -- disables the command in the last line of the screen
+          },
+          tmux = { enabled = true },
+          twilight = { enabled = true }, -- enable to start Twilight when zen mode opens
+          gitsigns = { enabled = true }, -- disables git signs
+        },
         -- your configuration comes here
         -- or leave it empty to use the default settings
         -- refer to the configuration section below
@@ -94,11 +154,74 @@ local function init()
     end
   }
 
+  -- Completion
+  use {
+    'hrsh7th/nvim-cmp',
+    requires = {
+      'L3MON4D3/LuaSnip',
+      { 'hrsh7th/cmp-buffer', after = 'nvim-cmp' },
+      'hrsh7th/cmp-nvim-lsp',
+      'hrsh7th/cmp-nvim-lsp-signature-help',
+      { 'hrsh7th/cmp-path', after = 'nvim-cmp' },
+      { 'hrsh7th/cmp-nvim-lua', after = 'nvim-cmp' },
+      { 'saadparwaiz1/cmp_luasnip', after = 'nvim-cmp' },
+      'lukas-reineke/cmp-under-comparator',
+      { 'hrsh7th/cmp-nvim-lsp-document-symbol', after = 'nvim-cmp' },
+    },
+    config = [[require('config.cmp')]],
+    event = 'InsertEnter *',
+  }
+
+  -- LSP
+  use {
+    { 
+      'neovim/nvim-lspconfig',
+      config = function()
+        require('lspconfig').pyright.setup{}
+        require('lspconfig').sumneko_lua.setup{}
+      end,
+    }, -- enable LSP
+    'williamboman/nvim-lsp-installer', -- simple to use language server installer
+    'tamago324/nlsp-settings.nvim', -- language server settings defined in json for
+    'jose-elias-alvarez/null-ls.nvim', -- for formatters and linters
+    'filipdutescu/renamer.nvim',
+    'simrat39/symbols-outline.nvim',
+    'ray-x/lsp_signature.nvim',
+    'b0o/SchemaStore.nvim',
+    {
+      "folke/trouble.nvim",
+      cmd = "TroubleToggle",
+    },
+  }
+
+  -- Commenter
+  use {
+    'numToStr/Comment.nvim',
+    config = function()
+        require('Comment').setup()
+    end
+  } 
+
+  -- use { 
+  --   'terrortylor/nvim-comment',
+  --   config = function ()
+  --     require('nvim_comment').setup()
+  --   end
+  -- }
+
+  -- Multi cursor
+  use {
+    'mg979/vim-visual-multi'
+  }
+  
   -- Dracula
   -- use {'dracula/vim', as = 'dracula'}
 
   -- Challenger Deep
-  use {'challenger-deep-theme/vim', as = 'challenger-deep'}
+  use {
+    'challenger-deep-theme/vim', 
+    as = 'challenger-deep'
+  }
 end
 
 local plugins = setmetatable({}, {
