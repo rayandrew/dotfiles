@@ -22,6 +22,10 @@ export BRAIN_PROJ_DIR="$HOME/brain"
 export BRAIN_DIR="$HOME/brain/brain"
 export ZK_NOTEBOOK_DIR="$HOME/brain/brain"
 
+{{- if eq .chezmoi.hostname "mbp" }}
+export CC="/usr/local/bin/gcc-11"
+{{- end }}
+
 brainloc () {
   cd $BRAIN_DIR
 }

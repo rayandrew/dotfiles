@@ -3,6 +3,10 @@ set -q XDG_CONFIG_HOME; or set XDG_CONFIG_HOME "$HOME/.config"
 set -q BRAIN_PROJ_DIR; or set BRAIN_PROJ_DIR "$HOME/brain"
 set -q BRAIN_DIR; or set BRAIN_DIR "$HOME/brain/brain"
 
+{{- if eq .chezmoi.hostname "mbp" }}
+set -gx CC "/usr/local/bin/gcc-11"
+{{- end }}
+
 if status is-interactive
     if not functions -q fisher
         curl https://git.io/fisher --create-dirs -sLo "$XDG_CONFIG_HOME/fish/functions/fisher.fish"
