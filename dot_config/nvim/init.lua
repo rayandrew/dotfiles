@@ -110,6 +110,7 @@ map('i', '<c-x><c-s>', '<esc><cmd>w<cr>a', silent)
 
 -- DOOM Emacs
 map('n', '<leader>fs', '<cmd>w<cr>', silent)
+map('n', '<leader>bd', '<cmd>bd<cr>', silent) -- buffer delete 
 
 ---- Window
 map('n', '<leader>ws', '<cmd>split<cr>', silent) -- split horizontal 
