@@ -1,6 +1,6 @@
 vim.g.did_load_filetypes = 1
 
-require 'impatient'
+-- require 'impatient'
 
 local g = vim.g
 local cmd = vim.cmd
@@ -78,7 +78,7 @@ opt('termguicolors', true)
 opt('background', 'dark')
 -- cmd [[colorscheme gruvbox-material]]
 -- cmd [[colorscheme dracula]]
-cmd [[colorscheme challenger_deep]]
+-- cmd [[colorscheme challenger_deep]]
 
 cmd [[command! PackerInstall packadd packer.nvim | lua require('plugins').install()]]
 cmd [[command! PackerUpdate packadd packer.nvim | lua require('plugins').update()]]
