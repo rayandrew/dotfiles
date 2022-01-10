@@ -1,6 +1,6 @@
 vim.g.did_load_filetypes = 1
 
--- require 'impatient'
+require 'impatient'
 
 local g = vim.g
 local cmd = vim.cmd
@@ -78,7 +78,7 @@ opt('termguicolors', true)
 opt('background', 'dark')
 -- cmd [[colorscheme gruvbox-material]]
 -- cmd [[colorscheme dracula]]
--- cmd [[colorscheme challenger_deep]]
+cmd [[colorscheme challenger_deep]]
 
 cmd [[command! PackerInstall packadd packer.nvim | lua require('plugins').install()]]
 cmd [[command! PackerUpdate packadd packer.nvim | lua require('plugins').update()]]
@@ -115,8 +115,8 @@ map('n', '<leader>bd', '<cmd>bd<cr>', silent) -- buffer delete
 ---- Window
 map('n', '<leader>ws', '<cmd>split<cr>', silent) -- split horizontal 
 map('n', '<leader>wv', '<cmd>vsplit<cr>', silent) -- split vertical 
-map('n', '<leader>wq', '<cmd>Sayonara<cr>')
--- map('n', '<leader>wq', '<c-w>q') -- quit
+-- map('n', '<leader>wq', '<cmd>Sayonara<cr>')
+map('n', '<leader>wq', '<c-w>q') -- quit
 map('n', '<leader>wh', '<c-w>h') -- go to window left
 map('n', '<leader>wj', '<c-w>j') -- go to window bottom 
 map('n', '<leader>wk', '<c-w>k') -- go to window up 
@@ -132,5 +132,6 @@ map('n', '<leader>z', '<cmd>ZenMode<cr>', silent)
 
 -- Version control
 map('n', 'gs', '<cmd>Neogit<cr>', silent)
+-- map('n', 'gs', '<cmd>Git<cr>', silent)
 
 -- map('n', '<leader>fg', '<cmd>Telescope live_grep<cr>', silent) -- find files
