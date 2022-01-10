@@ -145,6 +145,15 @@ set -sg escape-time 0
 
 # plugins
 
+# tmuxplugin-resurrect
+# ---------------------
+set -g @resurrect-strategy-nvim 'session'
+
+# tmuxplugin-continuum
+# ---------------------
+set -g @continuum-restore 'on'
+set -g @continuum-save-interval '15' # minutes
+
 set -g @1password-key 'e'
 
 set -g @plugin "tmux-plugins/tpm"
