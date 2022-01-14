@@ -13,5 +13,5 @@ when="$year-$month-$day"
 
 mkdir -p $BRAIN_DIR/plans/$year/$month
 $HOME/bin/brain plan \
-  --extra dayname="$dayname",monthname="$monthname",when="$when",year="$year",month="$month",day="$day"
+  --extra dayname="$dayname",monthname="$monthname",when="$when",year="$year",month="$month",day="$day" --dry-run
 
