@@ -2,7 +2,7 @@
 
 {{- if eq .chezmoi.hostname "mbp" }}
 export HOME="/Users/{{ .chezmoi.username }}"
-{{- else if eq .chezmoi.hostname "lemur" }}
+{{- else if or (eq .chezmoi.hostname "lemur") (eq .chezmoi.hostname "omen") }}
 export HOME="{{ .chezmoi.homeDir }}"
 {{- end }}
 
@@ -40,7 +40,7 @@ then
     export PATH="$FLYCTL_INSTALL/bin:$PATH"
 fi
 
-{{- if eq .chezmoi.hostname "lemur" }}
+{{- if or (eq .chezmoi.hostname "lemur") (eq .chezmoi.hostname "omen") }}
 # MPICH
 MPICH_FOLDER="/opt/mpich/"
 if [ -d $MPICH_FOLDER ]
@@ -76,7 +76,7 @@ then
     source "$ASDF_FOLDER/asdf.sh"
 fi
 
-{{- if eq .chezmoi.hostname "lemur" }}
+{{- if or (eq .chezmoi.hostname "lemur") (eq .chezmoi.hostname "omen") }}
 eval $(gnome-keyring-daemon --start)
 export SSH_AUTH_SOCK
 

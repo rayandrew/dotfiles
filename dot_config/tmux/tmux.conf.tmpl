@@ -6,7 +6,7 @@ setw -g pane-base-index 0
 # We need to set default-shell before calling new-session
 {{- if eq .chezmoi.hostname "mbp" }}
 set -g default-shell "/usr/local/bin/fish"
-{{- else if eq .chezmoi.hostname "lemur" }}
+{{- else if or (eq .chezmoi.hostname "lemur") (eq .chezmoi.hostname "omen") }}
 set -g default-shell "/usr/bin/fish"
 {{- end }}
 
@@ -60,7 +60,7 @@ bind C-k confirm kill-session
 # reload tmux conf
 {{- if eq .chezmoi.hostname "mbp" }}
 bind C-e source-file /Users/rayandrew/.config/tmux/tmux.conf
-{{- else if eq .chezmoi.hostname "lemur" }}
+{{- else if or (eq .chezmoi.hostname "lemur") (eq .chezmoi.hostname "omen") }}
 bind C-e source-file /home/rayandrew/.config/tmux/tmux.conf
 {{- end }}
 

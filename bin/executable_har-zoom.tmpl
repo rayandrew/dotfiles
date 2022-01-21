@@ -2,6 +2,6 @@
 
 {{- if eq .chezmoi.hostname "mbp" }}
 gpg --quiet --for-your-eyes-only --no-tty --decrypt $HOME/bin/har-zoom.secret.gpg
-{{- else if eq .chezmoi.hostname "lemur" }}
+{{- else if or (eq .chezmoi.hostname "lemur") (eq .chezmoi.hostname "omen") }}
 gpg2 --quiet --for-your-eyes-only --no-tty --decrypt $HOME/bin/har-zoom.secret.gpg
 {{- end }}

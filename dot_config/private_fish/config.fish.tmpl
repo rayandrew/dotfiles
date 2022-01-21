@@ -5,6 +5,9 @@ set -q BRAIN_DIR; or set BRAIN_DIR "$HOME/brain/brain"
 
 {{- if eq .chezmoi.hostname "mbp" }}
 set -gx CC "/usr/local/bin/gcc-11"
+set -gx SHELL "/usr/local/bin/fish"
+{{- else if or (eq .chezmoi.hostname "lemur") (eq .chezmoi.hostname "omen") }}
+set -gx SHELL "/usr/bin/fish"
 {{- end }}
 
 if status is-interactive

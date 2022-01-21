@@ -2,6 +2,6 @@
 
 {{- if eq .chezmoi.hostname "mbp" }}
 open -a /System/Applications/Preview.app $*
-{{- else if eq .chezmoi.hostname "lemur" }}
+{{- else if or (eq .chezmoi.hostname "lemur") (eq .chezmoi.hostname "omen") }}
 /usr/bin/okular $*
 {{- end }}
