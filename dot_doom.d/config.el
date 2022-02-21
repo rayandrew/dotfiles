@@ -59,6 +59,10 @@
 ;; for better navigation in word wrap
 (setq evil-respect-visual-line-mode t)
 
+(setq doom-font (font-spec :family "Operator Mono" :size 16))
+
+; (setq doom-font (font-spec :family "UbuntuMono Nerd Font Mono Regular" :size 16 :weight 'semi-light))
+
 ;; org-journal
 ;; (setq org-journal-dir "~/journals")
 

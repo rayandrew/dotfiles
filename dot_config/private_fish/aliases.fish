@@ -29,5 +29,9 @@ if type -q nvim
     alias vim nvim
 end
 
+if type -q taskwarrior-tui
+    alias tt taskwarrior-tui
+end
+
 # git
 source "$XDG_CONFIG_HOME/fish/aliases/git.fish"

@@ -1,10 +1,11 @@
 set -q OPT_DIR; or set OPT_DIR "$HOME/opt"
 set -q XDG_CONFIG_HOME; or set XDG_CONFIG_HOME "$HOME/.config"
 set -q BRAIN_PROJ_DIR; or set BRAIN_PROJ_DIR "$HOME/brain"
-set -q BRAIN_DIR; or set BRAIN_DIR "$HOME/brain/brain"
+set -q BRAIN_DIR; or set BRAIN_DIR "$HOME/brain/contents"
+set -q ZK_NOTEBOOK_DIR; or set ZK_NOTEBOOK_DIR "$HOME/brain/contents"
 
 {{- if eq .chezmoi.hostname "mbp" }}
-set -gx CC "/usr/local/bin/gcc-11"
+## set -gx CC "/usr/local/bin/gcc-11"
 set -gx SHELL "/usr/local/bin/fish"
 {{- else if or (eq .chezmoi.hostname "lemur") (eq .chezmoi.hostname "omen") }}
 set -gx SHELL "/usr/bin/fish"
@@ -33,6 +34,14 @@ if status is-interactive
 
     # Doom Emacs
     fish_add_path "$HOME/.emacs.d/bin"
+
+    {{- if eq .chezmoi.hostname "mbp" }}
+    if test -d /usr/local/opt/llvm
+      set -gx LDFLAGS "-L/usr/local/opt/llvm/lib" $LDFLAGS
+      set -gx CPPFLAGS "-I/usr/local/opt/llvm/include" $CPPFLAGS
+      fish_add_path /usr/local/opt/llvm/bin
+    end
+    {{- end }}
 
     # MPICH
     if test -d /opt/mpich
