@@ -8,7 +8,7 @@ thisFile=$HOME/bin/wb
 if [ $# != 1 ];then
     echo " HOW TO USE: wb <key>"
     echo " EXAMPLES: wb cnn (or) wb gmail "
-    e $thisFile
+    editor $thisFile
     exit
 fi
 
