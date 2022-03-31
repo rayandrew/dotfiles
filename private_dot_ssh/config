@@ -5,3 +5,6 @@ Host mini-uc
 Host cs-uchicago 
 	Hostname linux.cs.uchicago.edu
   HostKeyAlgorithms=+ssh-rsa
+
+Host ucare-10 
+	Hostname ucare-10.cs.uchicago.edu
