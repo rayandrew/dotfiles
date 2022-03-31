@@ -15,4 +15,4 @@ shell = ["bash", "--noprofile", "--norc"]
 format = "at $output  "
 
 [gcloud]
-format = 'on [$symbol]($style) '
+format = 'on Google [$symbol]($style) '
