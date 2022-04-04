@@ -1,7 +1,7 @@
 set -q OPT_DIR; or set OPT_DIR "$HOME/opt"
 set -q XDG_CONFIG_HOME; or set XDG_CONFIG_HOME "$HOME/.config"
 set -q BRAIN_PROJ_DIR; or set BRAIN_PROJ_DIR "$HOME/brain"
-set -q BRAIN_DIR; or set BRAIN_DIR "$HOME/brain/contents"
+set BRAIN_DIR "$HOME/brain/contents"
 set -q ZK_NOTEBOOK_DIR; or set ZK_NOTEBOOK_DIR "$HOME/brain/contents"
 
 {{- if eq .chezmoi.hostname "mbp" }}
