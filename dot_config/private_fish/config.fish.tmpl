@@ -1,8 +1,16 @@
-set -q OPT_DIR; or set OPT_DIR "$HOME/opt"
+## Global variables
+## Global variables
 set -q XDG_CONFIG_HOME; or set XDG_CONFIG_HOME "$HOME/.config"
-set -q BRAIN_PROJ_DIR; or set BRAIN_PROJ_DIR "$HOME/brain"
-set BRAIN_DIR "$HOME/brain/contents"
-set -q ZK_NOTEBOOK_DIR; or set ZK_NOTEBOOK_DIR "$HOME/brain/contents"
+
+set -q EDITOR "emacs -nw"
+set -q BROWSER "google-chrome-stable"
+set -q STARSHIP_CONFIG="$HOME/.config/starship/config.toml"
+
+set -q BRAIN_PROJ_DIR "$HOME/brain"
+set -q BRAIN_DIR "$HOME/brain/contents"
+set -q ZK_NOTEBOOK_DIR "$HOME/brain/contents"
+
+set -q OPT_DIR "$HOME/opt"
 
 {{- if eq .chezmoi.hostname "mbp" }}
 ## set -gx CC "/usr/local/bin/gcc-11"
@@ -44,24 +52,28 @@ if status is-interactive
     {{- end }}
 
     # MPICH
-    if test -d /opt/mpich
-        set -gx PATH /opt/mpich/bin $PATH
-        set -gx MANPATH /opt/mpich/share/man $MANPATH
-        set -gx PKG_CONFIG_PATH /opt/mpich/lib/pkgconfig $PKG_CONFIG_PATH
-        set -gx LD_LIBRARY_PATH /opt/mpich/lib $LD_LIBRARY_PATH
-        set -gx C_INCLUDE_PATH /opt/mpich/include $C_INCLUDE_PATH
+    {{- if or (eq .chezmoi.hostname "lemur") (eq .chezmoi.hostname "omen") }}
+    set MPICH_FOLDER "/opt/mpich/"
+    if test -d $MPICH_FOLDER
+        set -gx PATH "$MPICH_FOLDER/bin" $PATH
+        set -gx MANPATH "$MPICH_FOLDER/share/man" $MANPATH
+        set -gx PKG_CONFIG_PATH "$MPICH_FOLDER/lib/pkgconfig" $PKG_CONFIG_PATH
+        set -gx LD_LIBRARY_PATH "$MPICH_FOLDER/lib" $LD_LIBRARY_PATH
+        set -gx C_INCLUDE_PATH "$MPICH_FOLDER/include" $C_INCLUDE_PATH
     end
 
-
-    if test -d "$HOME/perl5"
-        set -gx PATH "$HOME/perl5/bin" $PATH
-        set -q PERL5LIB; and set -x PERL5LIB "$HOME/perl5/lib/perl5":$PERL5LIB
-        set -q PERL5LIB; or set -x PERL5LIB "$HOME/perl5/lib/perl5"
-        set -q PERL_LOCAL_LIB_ROOT; and set -x PERL_LOCAL_LIB_ROOT "$HOME/perl5":$PERL_LOCAL_LIB_ROOT
-        set -q PERL_LOCAL_LIB_ROOT; or set -x PERL_LOCAL_LIB_ROOT "$HOME/perl5"
-        set -x PERL_MB_OPT --install_base\ \"$HOME/perl5\"
-        set -x PERL_MM_OPT INSTALL_BASE="$HOME/perl5"
+    # Perl5
+    set PERL5_FOLDER "$HOME/perl5"
+    if test -d $PERL5_FOLDER
+        set -gx PATH "$PERL5_FOLDER/bin" $PATH
+        set -q PERL5LIB; and set -x PERL5LIB "$PERL5_FOLDER/lib/perl5":$PERL5LIB
+        set -q PERL5LIB; or set -x PERL5LIB "$PERL5_FOLDER/lib/perl5"
+        set -q PERL_LOCAL_LIB_ROOT; and set -x PERL_LOCAL_LIB_ROOT "$PERL5_FOLDER":$PERL_LOCAL_LIB_ROOT
+        set -q PERL_LOCAL_LIB_ROOT; or set -x PERL_LOCAL_LIB_ROOT "$PERL5_FOLDER"
+        set -x PERL_MB_OPT --install_base\ \"$PERL5_FOLDER\"
+        set -x PERL_MM_OPT INSTALL_BASE="$PERL5_FOLDER"
     end
+    {{- end }}
 
 
     # Research Path
