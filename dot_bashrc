@@ -1,4 +1,4 @@
-#!/usr/bin/env sh 
+#!/usr/bin/env sh
 
 {{- if eq .chezmoi.hostname "mbp" }}
 export HOME="/Users/{{ .chezmoi.username }}"
@@ -6,12 +6,6 @@ export HOME="/Users/{{ .chezmoi.username }}"
 export HOME="{{ .chezmoi.homeDir }}"
 {{- end }}
 
-export XDG_CONFIG_HOME="$HOME/.config"
-export XRDM_DIR="$HOME/.Xresource.d"
-export XRDM_FONT_DIR="$HOME/fonts"
-export XRDM_COLOR_DIR="$HOME/colors"
-export XRDM_PRESET_DIR="$HOME/presets"
-export XRDM_PROGRAM_DIR="$HOME/programs"
 export PATH="$HOME/.bin:$PATH"
 export EDITOR="emacs -nw"
 export BROWSER="google-chrome-stable"
@@ -65,9 +59,11 @@ fi
 {{- end }}
 
 # Rust
-if [ -f "$HOME/.cargo/env" ]
+
+export CARGO_FOLDER="$HOME/.cargo"
+if [ -f "$CARGO_FOLDER/env" ]
 then
-  source "$HOME/.cargo/env"
+  source "$CARGO_FOLDER/env"
 fi
 
 export ASDF_FOLDER="$OPT_DIR/asdf"
@@ -78,34 +74,16 @@ fi
 
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
-__conda_setup="$('$OPT_DIR/anaconda3/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
+export CONDA_FOLDER="$OPT_DIR/anaconda3"
+__conda_setup="$('$CONDA_FOLDER/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
 if [ $? -eq 0 ]; then
     eval "$__conda_setup"
 else
-    if [ -f "$OPT_DIR/anaconda3/etc/profile.d/conda.sh" ]; then
-        . "$OPT_DIR/anaconda3/etc/profile.d/conda.sh"
+    if [ -f "$CONDA_FOLDER/etc/profile.d/conda.sh" ]; then
+        . "$CONDA_FOLDER/etc/profile.d/conda.sh"
     else
-        export PATH="$OPT_DIR/anaconda3/bin:$PATH"
+        export PATH="$CONDA_FOLDER/bin:$PATH"
     fi
 fi
 unset __conda_setup
 # <<< conda initialize <<<
-
-# Running some things here...
-
-{{- if or (eq .chezmoi.hostname "lemur") (eq .chezmoi.hostname "omen") }}
-eval $(gnome-keyring-daemon --start)
-export SSH_AUTH_SOCK
-
-# picom &
-xcompmgr -c &
-dunst &
-
-sxhkd &
-
-# xset r rate 300 50 &
-redshift &
-
-nitrogen --restore
-# xrdm preset default
-{{- end }}

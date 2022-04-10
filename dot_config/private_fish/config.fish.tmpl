@@ -97,14 +97,24 @@ if status is-interactive
     end
 
     # Pyenv
-    if test -d "$OPT_DIR/pyenv"
-        set -Ux PYENV_ROOT "$OPT_DIR/pyenv"
-        fish_add_path "$PYENV_ROOT/bin"
-        status is-login; and pyenv init --path | source
-        status is-interactive; and pyenv init - | source
-	      if test -d "$PYENV_ROOT/plugins/pyenv-virtualenv" 
-          status is-interactive; and pyenv virtualenv-init - | source
-        end
+    ## if test -d "$OPT_DIR/pyenv"
+    ##     set -Ux PYENV_ROOT "$OPT_DIR/pyenv"
+    ##     fish_add_path "$PYENV_ROOT/bin"
+    ##     status is-login; and pyenv init --path | source
+    ##     status is-interactive; and pyenv init - | source
+	   ##    if test -d "$PYENV_ROOT/plugins/pyenv-virtualenv" 
+    ##       status is-interactive; and pyenv virtualenv-init - | source
+    ##     end
+    ## end
+
+    # Anaconda
+    if test -d "$OPT_DIR/anaconda3"
+      set -x PATH "$OPT_DIR/anaconda3/bin" $PATH 2>/dev/null
+
+      # >>> conda initialize >>>
+      # !! Contents within this block are managed by 'conda init' !!
+      eval $OPT_DIR/anaconda3/bin/conda "shell.fish" "hook" $argv | source
+      # <<< conda initialize <<<
     end
 
     # Fly
