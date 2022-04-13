@@ -9,3 +9,7 @@ Host cs-uchicago
 Host ucare-10 
 	Hostname ucare-10.cs.uchicago.edu
   HostKeyAlgorithms=+ssh-rsa
+
+Host argonne-cl 
+	Hostname 129.114.108.173 
+  HostKeyAlgorithms=+ssh-rsa
