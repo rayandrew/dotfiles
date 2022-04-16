@@ -1,1 +1,3 @@
+{{- if or (eq .chezmoi.hostname "lemur") (eq .chezmoi.hostname "omen") }}
 pinentry-program {{ .pinentry }}
+{{- end }}
