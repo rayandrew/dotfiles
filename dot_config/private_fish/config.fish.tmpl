@@ -38,10 +38,11 @@ if status is-interactive
     # editor
     set -gx EDITOR "emacs -nw"
 
-    fish_add_path "$HOME/bin"
+    # bin directory
+    set -gx PATH "$HOME/bin" $PATH
 
     # Doom Emacs
-    fish_add_path "$HOME/.emacs.d/bin"
+    set -gx PATH "$HOME/.emacs.d/bin" $PATH
 
     {{- if eq .chezmoi.hostname "mbp" }}
     if test -d /usr/local/opt/llvm
