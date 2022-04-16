@@ -2,15 +2,15 @@
 ## Global variables
 set -q XDG_CONFIG_HOME; or set XDG_CONFIG_HOME "$HOME/.config"
 
-set -q EDITOR; or set -q EDITOR "emacs -nw"
-set -q BROWSER; or set -q BROWSER "google-chrome-stable"
-set -q STARSHIP_CONFIG; or set-q STARSHIP_CONFIG "$HOME/.config/starship/config.toml"
+set -q EDITOR; or set EDITOR "emacs -nw"
+set -q BROWSER; or set BROWSER "google-chrome-stable"
+set -q STARSHIP_CONFIG; or set STARSHIP_CONFIG "$HOME/.config/starship/config.toml"
 
 set -q BRAIN_PROJ_DIR; or set BRAIN_PROJ_DIR "$HOME/brain"
 set -q BRAIN_DIR; or set BRAIN_DIR "$HOME/brain/contents"
 set -q ZK_NOTEBOOK_DIR; or set ZK_NOTEBOOK_DIR "$HOME/brain/contents"
 
-set -q OPT_DIR; or set -q OPT_DIR "$HOME/opt"
+set -q OPT_DIR; or set OPT_DIR "$HOME/opt"
 
 {{- if eq .chezmoi.hostname "mbp" }}
 ## set -gx CC "/usr/local/bin/gcc-11"
