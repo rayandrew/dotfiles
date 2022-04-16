@@ -13,6 +13,8 @@ export XRDM_COLOR_DIR="$HOME/colors"
 export XRDM_PRESET_DIR="$HOME/presets"
 export XRDM_PROGRAM_DIR="$HOME/programs"
 
+source "$HOME/.bashrc"
+
 # Running some things here...
 
 {{- if or (eq .chezmoi.hostname "lemur") (eq .chezmoi.hostname "omen") }}
