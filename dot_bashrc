@@ -6,7 +6,7 @@ export HOME="/Users/{{ .chezmoi.username }}"
 export HOME="{{ .chezmoi.homeDir }}"
 {{- end }}
 
-export PATH="$HOME/.bin:$PATH"
+export PATH="$HOME/bin:$HOME/.bin:$PATH"
 export EDITOR="emacs -nw"
 export BROWSER="google-chrome-stable"
 
