@@ -24,11 +24,13 @@
 	st = "status -sb"
 	tlog = "log --stat --since='1 Day Ago' --graph --pretty=oneline --abbrev-commit --date=relative"
 
+{{- if or (eq .chezmoi.hostname "lemur") (eq .chezmoi.hostname "omen") }}
 [commit]
 	gpgSign = true
 
 [gpg]
 	program =  {{ .gpg | quote }}
+{{- end }}
 
 [init]
 	defaultBranch = "main"
