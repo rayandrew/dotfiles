@@ -1,27 +1,43 @@
 Host mini-uc
-	Hostname ucare-mini.cs.uchicago.edu
+  Hostname ucare-mini.cs.uchicago.edu
   HostKeyAlgorithms=+ssh-rsa
 
 Host cs-uchicago 
-	Hostname linux.cs.uchicago.edu
+  Hostname linux.cs.uchicago.edu
   HostKeyAlgorithms=+ssh-rsa
 
 Host ucare-10 
-	Hostname ucare-10.cs.uchicago.edu
+  Hostname ucare-10.cs.uchicago.edu
   HostKeyAlgorithms=+ssh-rsa
 
 Host argonne-cl 
-	Hostname 129.114.108.173 
+  Hostname 129.114.108.173 
   HostKeyAlgorithms=+ssh-rsa
 
 Host ionet
-	Hostname 192.5.87.206
+  Hostname 192.5.87.206
   HostKeyAlgorithms=+ssh-rsa
 
 Host evstore 
-	Hostname 192.5.86.175
+  Hostname 192.5.86.175
+
+Host kafka-1
+  User cc
+  Hostname 129.114.109.32
+
+Host kafka-2
+  User cc
+  Hostname 129.114.108.39
+
+Host kafka-3
+  User cc
+  Hostname 129.114.109.13
+
+Host kafka-4
+  User cc
+  Hostname 129.114.108.242
 
 {{if (eq .chezmoi.os "darwin") -}}
 Host *
-	IdentityAgent "~/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
+  IdentityAgent "~/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
 {{ end -}}
