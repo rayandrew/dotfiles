@@ -27,7 +27,7 @@ alias gf='git fetch'
 alias gfa='git fetch --all'
 
 # Git pull alias
-alias gp='git pull --rebase'
+alias gpl='git pull --rebase'
 
 # Git pull from origin aliases
 alias gprod='git pull --rebase origin develop'
@@ -40,8 +40,9 @@ alias gprum='git pull --rebase upstream master'
 alias gprus='git pull --rebase upstream staging'
 
 # Git push to origin aliases
+alias gp='git push'
 alias gpod='git push origin develop'
-alias gpom='git push origin master'
+alias gpom='git push origin main'
 alias gpos='git push origin staging'
 
 # Git push to upstream aliases
