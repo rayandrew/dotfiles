@@ -15,4 +15,8 @@ shell = ["bash", "--noprofile", "--norc"]
 format = "at $output  "
 
 [gcloud]
+disabled = true
 format = 'on Google [$symbol]($style) '
+
+[conda]
+format = "[$symbol$environment](dimmed green) "

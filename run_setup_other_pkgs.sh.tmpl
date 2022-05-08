@@ -2,6 +2,15 @@
 {{- if (or (or (eq .chezmoi.hostname "lemur") (eq .chezmoi.hostname "omen")) (eq .chezmoi.hostname
 "mbp")) }}
 
+if [ ! -d "$HOME/.config/nvim" ]
+then
+  git clone https://github.com/NvChad/NvChad $HOME/.config/nvim --depth 1
+fi
+
+echo "Configuring NVIM"
+cp -r $HOME/.config/nvchad-custom/* $HOME/.config/nvim
+nvim --headless -c 'autocmd User PackerComplete quitall' -c 'PackerSync'
+
 if [ ! -d "$HOME/opt/asdf" ] 
 then
   git clone https://github.com/asdf-vm/asdf.git $HOME/opt/asdf --branch v0.9.0
