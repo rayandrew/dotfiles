@@ -2,7 +2,6 @@ set  -g default-terminal "screen-256color"
 set  -g base-index      0
 setw -g pane-base-index 0
 
-
 # We need to set default-shell before calling new-session
 {{- if eq .chezmoi.hostname "mbp" }}
 #set -g default-shell "/usr/local/bin/fish"
@@ -15,15 +14,10 @@ set -g default-shell "/usr/bin/zsh"
 set -g status-keys vi
 set -g mode-keys   vi
 
-
-
 # rebind main key: C-a
 unbind C-b
 set -g prefix C-a
 bind C-a send-prefix
-
-
-
 
 setw -g aggressive-resize off
 setw -g clock-mode-style  12
@@ -176,7 +170,7 @@ set -g @plugin "tmux-plugins/tmux-sensible"
 set -g @plugin "tmux-plugins/tmux-resurrect"
 set -g @plugin "tmux-plugins/tmux-continuum"
 set -g @plugin "tmux-plugins/tmux-resurrect"
-set -g @plugin "arcticicestudio/nord-tmux"
+# set -g @plugin "arcticicestudio/nord-tmux"
 set -g @plugin "yardnsm/tmux-1password"
 
 run "~/.tmux/plugins/tpm/tpm"
