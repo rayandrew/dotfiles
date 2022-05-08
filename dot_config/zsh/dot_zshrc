@@ -38,6 +38,8 @@ alias vim="nvim"
 
 source "$HOME/.aliases/git_aliases"
 
+export PATH="$HOME/bin:$PATH"
+
 ## Defer 
 
 ### Conda
