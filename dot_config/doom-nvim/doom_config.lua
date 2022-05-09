@@ -260,7 +260,7 @@ M.config = {
     -- Set max cols
     -- Defines the column to show a vertical marker
     -- @default = 80
-    max_columns = 80,
+    max_columns = 300,
 
     -- Completion box height
     -- @default = 10
