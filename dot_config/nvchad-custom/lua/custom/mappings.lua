@@ -23,7 +23,7 @@ map("n", "<leader>wl", "<c-w>l") -- go to window right
 api.nvim_del_keymap("t", "jk" )
 
 -- Ranger
-map("n", "<leader>fm", "<cmd> :RnvimrToggle <CR>", { noremap = true, silent = true})
-map("t", "<leader>fm", "<cmd> :RnvimrToggle <CR>", { noremap = true, silent = true})
-
--- map("n", "<leader>fb", "<cmd>Ranger<cr>", silent)
+-- map("n", "<leader>fm", "<cmd> :RnvimrToggle <CR>", { noremap = true, silent = true})
+-- map("t", "<leader>fm", "<cmd> :RnvimrToggle <CR>", { noremap = true, silent = true})
+--
+map("n", "<leader>fm", "<cmd>Ranger<cr>", silent)

@@ -60,8 +60,8 @@ return {
   },
 
   --
-  -- ["francoiscabrol/ranger.vim"] = {
-  -- },
+  ["francoiscabrol/ranger.vim"] = {
+  },
   --
   -- ["mcchrish/nnn.vim"] = {
   --   config = function()
@@ -70,10 +70,10 @@ return {
   --   end
   -- },
 
-  ["kevinhwang91/rnvimr"] = {
-    cmd = { "RnvimrToggle" },
-    setup = function()
-      require("custom.plugins.rnvimr").setup()
-    end
-  }
+  -- ["kevinhwang91/rnvimr"] = {
+  --   cmd = { "RnvimrToggle" },
+  --   setup = function()
+  --     require("custom.plugins.rnvimr").setup()
+  --   end
+  -- }
 }
