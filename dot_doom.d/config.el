@@ -5,38 +5,58 @@
 
 
 ;; Some functionality uses this to identify you, e.g. GPG configuration, email
-;; clients, file templates and snippets.
+;; clients, file templates and snippets. It is optional.
 (setq user-full-name "Ray Andrew"
       user-mail-address "contact@rayandrew.me")
 
-;; Doom exposes five (optional) variables for controlling fonts in Doom. Here
-;; are the three important ones:
+;; Doom exposes five (optional) variables for controlling fonts in Doom:
 ;;
-;; + `doom-font'
-;; + `doom-variable-pitch-font'
-;; + `doom-big-font' -- used for `doom-big-font-mode'; use this for
+;; - `doom-font' -- the primary font to use
+;; - `doom-variable-pitch-font' -- a non-monospace font (where applicable)
+;; - `doom-big-font' -- used for `doom-big-font-mode'; use this for
 ;;   presentations or streaming.
+;; - `doom-unicode-font' -- for unicode glyphs
+;; - `doom-serif-font' -- for the `fixed-pitch-serif' face
 ;;
-;; They all accept either a font-spec, font string ("Input Mono-12"), or xlfd
-;; font string. You generally only need these two:
-;; (setq doom-font (font-spec :family "monospace" :size 12 :weight 'semi-light)
-;;       doom-variable-pitch-font (font-spec :family "sans" :size 13))
+;; See 'C-h v doom-font' for documentation and more examples of what they
+;; accept. For example:
+;;
+;;(setq doom-font (font-spec :family "Fira Code" :size 12 :weight 'semi-light)
+;;      doom-variable-pitch-font (font-spec :family "Fira Sans" :size 13))
+;;
+;; If you or Emacs can't find your font, use 'M-x describe-font' to look them
+;; up, `M-x eval-region' to execute elisp code, and 'M-x doom/reload-font' to
+;; refresh your font settings. If Emacs still can't find your font, it likely
+;; wasn't installed correctly. Font issues are rarely Doom issues!
 
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
-;; (setq doom-theme 'doom-one)
-(setq doom-theme 'doom-tomorrow-night)
-
-;; If you use `org' and don't want your org files in the default location below,
-;; change `org-directory'. It must be set before org loads!
-(setq org-directory "~/org/")
+(setq doom-theme 'doom-one)
 
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
 (setq display-line-numbers-type t)
 
-;; Here are some additional functions/macros that could help you configure Doom:
+;; If you use `org' and don't want your org files in the default location below,
+;; change `org-directory'. It must be set before org loads!
+(setq org-directory "~/org/")
+
+
+;; Whenever you reconfigure a package, make sure to wrap your config in an
+;; `after!' block, otherwise Doom's defaults may override your settings. E.g.
+;;
+;;   (after! PACKAGE
+;;     (setq x y))
+;;
+;; The exceptions to this rule:
+;;
+;;   - Setting file/directory variables (like `org-directory')
+;;   - Setting variables which explicitly tell you to set them before their
+;;     package is loaded (see 'C-h v VARIABLE' to look up their documentation).
+;;   - Setting doom variables (which start with 'doom-' or '+').
+;;
+;; Here are some additional functions/macros that will help you configure Doom.
 ;;
 ;; - `load!' for loading external *.el files relative to this one
 ;; - `use-package!' for configuring packages
@@ -49,74 +69,12 @@
 ;; To get information about any of these functions/macros, move the cursor over
 ;; the highlighted symbol at press 'K' (non-evil users must press 'C-c c k').
 ;; This will open documentation for it, including demos of how they are used.
+;; Alternatively, use `C-h o' to look up a symbol (functions, variables, faces,
+;; etc).
 ;;
 ;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
 ;; they are implemented.
 
-
-(after! evil-escape (evil-escape-mode -1))
-
-;; for better navigation in word wrap
-(setq evil-respect-visual-line-mode t)
-
-(setq doom-font (font-spec :family "Operator Mono" :size 16))
-
-; (setq doom-font (font-spec :family "UbuntuMono Nerd Font Mono Regular" :size 16 :weight 'semi-light))
-
-;; org-journal
-;; (setq org-journal-dir "~/journals")
-
-;; org-roam
-
-;; (setq org-roam-completion-everywhere t)
-;; (use-package! md-roam ; load immediately, before org-roam
-;;   :after org-roam
-;;   :config
-;;   (setq org-roam-directory (file-truename "~/kb"))
-;;   (setq org-roam-capture-template "~/kb")
-;;   (setq org-roam-file-extensions '("org" "md"))
-;;   (md-roam-mode 1)
-;;   (setq md-roam-file-extension-single "md")
-;;   (org-roam-db-autosync-mode 1)
-;;   (setq org-roam-capture-templates
-;;         '(("d" "default" plain "%?"
-;;            :target (file+head "${slug}.md"
-;;                               "---\ntitle: ${title}\nid: %<%Y-%m-%dT%H%M%S>\ncategory: \n---\n")
-;;            :unnarrowed t))))
-
-;; (setq org-roam-directory (file-truename "~/kb"))
-;; (setq org-roam-capture-template "~/kb")
-;; (setq org-roam-file-extensions '("org"))
-;; (md-roam-mode 1)
-;; (setq md-roam-file-extension-single "org")
-;; (org-roam-db-autosync-mode 1)
-;; (setq org-roam-capture-templates
-;;       '(("d" "default" plain "%?"
-;;          :target (file+head "${slug}.org"
-;;                             "#+title: ${title}\n")
-;;          :unnarrowed t)))
-;; (setq org-roam-directory "~/kb")
-;; (setq org-roam-capture-templates
-;;  '(("d" "default" plain "%?"
-;;     :target (file+head "${slug}.org"
-;;                        "#+title: ${title}\n")
-;;     :unnarrowed t)))
-
-
-
-;; org-roam timestamp
-;; (setq org-roam-timestamps-parent-file t)
-
-;; org-journal
-;; (setq org-journal-file-format "%Y-%m-%d.org")
-;; (setq org-journal-enable-agenda-integration t)
-;; (defun org-journal-file-header-func (time)
-;;   "Custom function to create journal header."
-;;   (concat
-;;     (pcase org-journal-file-type
-;;       (`daily "#+TITLE: Daily Journal\n#+CATEGORY: journal\n#+STARTUP: showeverything")
-;;       (`weekly "#+TITLE: Weekly Journal\n#+CATEGORY: journal\n#+STARTUP: folded")
-;;       (`monthly "#+TITLE: Monthly Journal\n#+CATEGORY: journal\n#+STARTUP: folded")
-;;       (`yearly "#+TITLE: Yearly Journal\n#+CATEGORY: journal\n#+STARTUP: folded"))))
-
-;; (setq org-journal-file-header 'org-journal-file-header-func)
+(setq doom-theme 'doom-one-light
+      doom-font (font-spec :family "UbuntuMono Nerd Font" :size 18 :weight 'light))
+      ; doom-variable-pitch-font (font-spec :family "Fira Sans" :size 13)

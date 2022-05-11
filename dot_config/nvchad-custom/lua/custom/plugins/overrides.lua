@@ -14,4 +14,18 @@ M.nvterm = {
   -- },
 }
 
+M.nvimtree = {
+  git = {
+    enable = true,
+  },
+}
+
+M.telescope = {
+  extensions = {
+    media_files = {
+      filetypes = { "png", "webp", "jpg", "jpeg" },
+    },
+  },
+}
+
 return M

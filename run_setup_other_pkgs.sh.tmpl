@@ -4,14 +4,14 @@
 
 if [ ! -d "$HOME/.config/nvim" ]
 then
-  git clone --depth 1 https://github.com/NTBBloodbath/doom-nvim.git ${XDG_CONFIG_HOME:-$HOME/.config}/nvim
-  # git clone https://github.com/NvChad/NvChad $HOME/.config/nvim --depth 1
+  # git clone --depth 1 https://github.com/NTBBloodbath/doom-nvim.git ${XDG_CONFIG_HOME:-$HOME/.config}/nvim
+  git clone https://github.com/NvChad/NvChad $HOME/.config/nvim --depth 1
 fi
 
-#echo "Configuring NVIM"
-#cp -r $HOME/.config/nvchad-custom/* $HOME/.config/nvim
-#nvim --headless -c 'autocmd User PackerComplete quitall' -c 'PackerSync'
-cp -r $HOME/.config/doom-nvim/* $HOME/.config/nvim
+echo "Configuring NVIM"
+cp -r $HOME/.config/nvchad-custom/* $HOME/.config/nvim
+nvim --headless -c 'autocmd User PackerComplete quitall' -c 'PackerSync'
+#cp -r $HOME/.config/doom-nvim/* $HOME/.config/nvim
 
 if [ ! -d "$HOME/opt/asdf" ] 
 then

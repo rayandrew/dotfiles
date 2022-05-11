@@ -1,30 +1,30 @@
-local pluginConfs = require("custom.plugins.configs")
-
--- let g:neovide_input_use_logo=v:true
+local overrides = require "custom.plugins.overrides"
+local userPlugins = require "custom.plugins"
 
 local M = {}
 
 M.plugins = {
+  options = {
+    lspconfig = {
+      setup_lspconf = "custom.plugins.lspconfig",
+    },
 
-   options = {
-      -- lspconfig = {
-      --    setup_lspconf = "custom.plugins.lspconfig",
-      -- },
+    statusline = {
+      separator_style = "round",
+    },
+  },
 
-      statusline = {
-         separator_style = "round",
-      },
-   },
+  override = {
+    ["NvChad/nvterm"] = overrides.nvterm,
+    ["kyazdani42/nvim-tree.lua"] = overrides.nvimtree,
+    ["nvim-telescope/telescope.nvim"] = overrides.telescope,
+  },
 
-   override = {
-     ["NvChad/nvterm"] = pluginConfs.nvterm,
-   },
-
-   -- user = userPlugins,
+  user = userPlugins,
 }
 
 M.ui = {
-   theme = "one_light",
+  theme = "one_light",
 }
 
 return M

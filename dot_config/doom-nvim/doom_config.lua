@@ -357,8 +357,8 @@ M.config = {
     -- Set gui fonts here
     -- @default = "FiraCode Nerd Font", @default font size = 15,
     -- WARNING: Font sizes must be in string format!
-    guifont = "FiraCode Nerd Font",
-    guifont_size = "15",
+    guifont = "UbuntuMono Nerd Font",
+    guifont_size = "18",
 
     -- Change Which Key background color
     -- can use hex, or normal color names (eg: Red, Gree, Blue)
@@ -440,7 +440,10 @@ M.config = {
     --     ':Lspsaga ...' is the command to be executed
     --     options is a Lua table containing the mapping options, e.g.
     --     { silent = true }, see ':h map-arguments'.
-    mappings = {},
+    mappings = {
+    	{'n', '<leader>wq', '<C-W>c', { silent = true }},
+    	{'n', '<leader>bd', ':bd<CR>', { silent = true }},
+    },
 
     -- Set custom commands
     -- @default = {}
