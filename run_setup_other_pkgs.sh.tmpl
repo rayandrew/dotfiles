@@ -2,6 +2,9 @@
 {{- if (or (or (eq .chezmoi.hostname "lemur") (eq .chezmoi.hostname "omen")) (eq .chezmoi.hostname
 "mbp")) }}
 
+echo "Download NNN Plugins"
+rm -rf ${XDG_CONFIG_HOME:-$HOME/.config}/nnn/plugins; curl -Ls https://raw.githubusercontent.com/jarun/nnn/master/plugins/getplugs | sh
+
 if [ ! -d "$HOME/.config/nvim" ]
 then
   # git clone --depth 1 https://github.com/NTBBloodbath/doom-nvim.git ${XDG_CONFIG_HOME:-$HOME/.config}/nvim
@@ -13,7 +16,7 @@ cp -r $HOME/.config/nvchad-custom/* $HOME/.config/nvim
 nvim --headless -c 'autocmd User PackerComplete quitall' -c 'PackerSync'
 #cp -r $HOME/.config/doom-nvim/* $HOME/.config/nvim
 
-if [ ! -d "$HOME/opt/asdf" ] 
+if [ ! -d "$HOME/opt/asdf" ]
 then
   git clone https://github.com/asdf-vm/asdf.git $HOME/opt/asdf --branch v0.9.0
 
