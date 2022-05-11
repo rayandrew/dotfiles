@@ -59,13 +59,21 @@ return {
     end
   },
 
-  ["francoiscabrol/ranger.vim"] = {
-  },
+  --
+  -- ["francoiscabrol/ranger.vim"] = {
+  -- },
+  --
+  -- ["mcchrish/nnn.vim"] = {
+  --   config = function()
+  --     vim.g.nnn = {}
+  --     vim.g.nnn["set_default_mappings"] = 0
+  --   end
+  -- },
 
-  ["mcchrish/nnn.vim"] = {
-    config = function()
-      vim.g.nnn = {}
-      vim.g.nnn["set_default_mappings"] = 0
+  ["kevinhwang91/rnvimr"] = {
+    cmd = { "RnvimrToggle" },
+    setup = function()
+      require("custom.plugins.rnvimr").setup()
     end
-  },
+  }
 }

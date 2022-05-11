@@ -2,8 +2,8 @@
 {{- if (or (or (eq .chezmoi.hostname "lemur") (eq .chezmoi.hostname "omen")) (eq .chezmoi.hostname
 "mbp")) }}
 
-echo "Download NNN Plugins"
-rm -rf ${XDG_CONFIG_HOME:-$HOME/.config}/nnn/plugins; curl -Ls https://raw.githubusercontent.com/jarun/nnn/master/plugins/getplugs | sh
+## echo "Download NNN Plugins"
+## rm -rf ${XDG_CONFIG_HOME:-$HOME/.config}/nnn/plugins; curl -Ls https://raw.githubusercontent.com/jarun/nnn/master/plugins/getplugs | sh
 
 if [ ! -d "$HOME/.config/nvim" ]
 then
