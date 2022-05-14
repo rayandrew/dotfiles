@@ -1,6 +1,4 @@
 #!/bin/bash
-## {{- if (or (or (eq .chezmoi.hostname "lemur") (eq .chezmoi.hostname "omen")) (eq .chezmoi.hostname
-"mbp")) }}
 
 ## echo "Download NNN Plugins"
 ## rm -rf ${XDG_CONFIG_HOME:-$HOME/.config}/nnn/plugins; curl -Ls https://raw.githubusercontent.com/jarun/nnn/master/plugins/getplugs | sh
@@ -24,4 +22,3 @@ then
   asdf plugin-add ruby https://github.com/asdf-community/asdf-ruby.git
   asdf plugin-add nodejs https://github.com/asdf-community/asdf-nodejs.git
 fi
-## {{ end -}}
