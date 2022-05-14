@@ -1,5 +1,5 @@
 #!/bin/bash
-{{- if (or (or (eq .chezmoi.hostname "lemur") (eq .chezmoi.hostname "omen")) (eq .chezmoi.hostname
+## {{- if (or (or (eq .chezmoi.hostname "lemur") (eq .chezmoi.hostname "omen")) (eq .chezmoi.hostname
 "mbp")) }}
 
 ## echo "Download NNN Plugins"
@@ -24,4 +24,4 @@ then
   asdf plugin-add ruby https://github.com/asdf-community/asdf-ruby.git
   asdf plugin-add nodejs https://github.com/asdf-community/asdf-nodejs.git
 fi
-{{ end -}}
+## {{ end -}}
