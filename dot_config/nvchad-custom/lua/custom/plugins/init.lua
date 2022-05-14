@@ -36,8 +36,8 @@ return {
   --   config = function()
   --     -- _G.VM_leader = {}
   --     vim.g.VM_maps = {}
-  --     vim.g.VM_maps['Find Under'] = "<c-d>"
-  --     vim.g.VM_maps['Find Subword Under'] = "<c-d>"
+  --     vim.g.VM_maps["Find Under"] = "<c-d>"
+  --     vim.g.VM_maps["Find Subword Under"] = "<c-d>"
   --   end
   -- },
 
@@ -59,21 +59,25 @@ return {
     end
   },
 
-  --
   ["francoiscabrol/ranger.vim"] = {
+    setup = function()
+      vim.g.ranger_map_keys = 0
+    end
   },
-  --
-  -- ["mcchrish/nnn.vim"] = {
-  --   config = function()
-  --     vim.g.nnn = {}
-  --     vim.g.nnn["set_default_mappings"] = 0
-  --   end
-  -- },
 
-  -- ["kevinhwang91/rnvimr"] = {
-  --   cmd = { "RnvimrToggle" },
-  --   setup = function()
-  --     require("custom.plugins.rnvimr").setup()
-  --   end
-  -- }
+  ["TimUntersberger/neogit"] = {
+    requires = "nvim-lua/plenary.nvim"
+  },
+
+  ["tpope/vim-fugitive"] = {
+    cmd = {
+      "Git"
+    },
+  },
+
+  ["aserowy/tmux.nvim"] = {
+    config = function()
+      require "custom.plugins.tmux"
+    end
+  },
 }

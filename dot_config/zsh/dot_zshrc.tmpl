@@ -8,7 +8,7 @@ export HOME="{{ .chezmoi.homeDir }}"
 {{- end }}
 
 export PATH="$HOME/bin:$HOME/.bin:$PATH"
-export EDITOR="emacs -nw"
+export EDITOR="nvim"
 export BROWSER="google-chrome-stable"
 
 export STARSHIP_CONFIG="$HOME/.config/starship/config.toml"
@@ -52,8 +52,11 @@ source "$OPT_DIR/zsh-snap/znap.zsh"
 
 ### Spaceship Prompt
 export STARSHIP_CONFIG="$XDG_CONFIG_HOME/starship/config.toml"
-znap eval starship "starship init zsh"
-znap prompt starship
+#znap eval starship "starship init zsh"
+#znap prompt starship
+
+### Pure prompt
+znap prompt sindresorhus/pure
 
 ### ZSH
 #znap source marlonrichert/zsh-autocomplete
@@ -73,7 +76,7 @@ source "$HOME/.aliases/git_aliases"
 
 export PATH="$HOME/bin:$PATH"
 
-## Defer 
+## Defer
 
 #############################################################################################################################
 
@@ -83,13 +86,14 @@ export PATH="$HOME/bin:$PATH"
 #############################################################################################################################
 
 ### Conda
+export PATH="$OPT_DIR/anaconda3/bin:$PATH"
 # >>> conda initialize >>>
 # !! Contents within this block are managed by "conda init" !!
 __conda_setup="$("$OPT_DIR/anaconda3/bin/conda" "shell.zsh" "hook" 2> /dev/null)"
-if [ $? -eq 0 ]; 
+if [ $? -eq 0 ];
 then
     # znap function _conda condan 'eval "$__conda_setup"'
-    # compctl -K    _conda conda 
+    # compctl -K    _conda conda
     eval "$__conda_setup"
 else
     if [ -f "$OPT_DIR/anaconda3/etc/profile.d/conda.sh" ]; then

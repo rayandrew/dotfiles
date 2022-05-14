@@ -8,22 +8,20 @@ local silent = { silent = true }
 map("n", "<leader>fs", "<cmd> :w <CR>", silent)
 map("n", "<leader>bd", "<cmd>bp<bar>sp<bar>bn<bar>bd<CR>", silent)
 map("n", "<leader>bb", "<cmd> :Telescope buffers<CR>", silent)
+map("n", "<leader>sp", "<cmd> :Telescope live_grep<CR>", silent)
 
 -- Window
 map("n", "<leader>ws", "<cmd> :split <CR>", silent) -- split horizontal
 map("n", "<leader>wv", "<cmd> :vsplit <CR>", silent) -- split vertical
-map("n", "<leader>wq", "<c-w>q") -- quit
-map("n", "<leader>wh", "<c-w>h") -- go to window left
-map("n", "<leader>wj", "<c-w>j") -- go to window bottom
-map("n", "<leader>wk", "<c-w>k") -- go to window up
-map("n", "<leader>wl", "<c-w>l") -- go to window right
-
-
--- api.nvim_del_keymap("n", "<leader>fb")
-api.nvim_del_keymap("t", "jk" )
+map("n", "<leader>wq", "<C-w>q") -- quit
+map("n", "<leader>wh", "<C-w>h") -- go to window left
+map("n", "<leader>wj", "<C-w>j") -- go to window bottom
+map("n", "<leader>wk", "<C-w>k") -- go to window up
+map("n", "<leader>wl", "<C-w>l") -- go to window right
 
 -- Ranger
--- map("n", "<leader>fm", "<cmd> :RnvimrToggle <CR>", { noremap = true, silent = true})
--- map("t", "<leader>fm", "<cmd> :RnvimrToggle <CR>", { noremap = true, silent = true})
---
-map("n", "<leader>fm", "<cmd>Ranger<cr>", silent)
+api.nvim_del_keymap("t", "jk")
+map("n", "<leader>fm", "<cmd> :Ranger <CR>")
+
+-- Git
+map("n", "<leader>gg", "<cmd> :Neogit <CR>")
