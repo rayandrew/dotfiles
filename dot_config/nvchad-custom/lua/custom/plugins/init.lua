@@ -53,11 +53,11 @@ return {
     end
   },
 
-  ["folke/which-key.nvim"] = {
-    config = function()
-      require("which-key").setup()
-    end
-  },
+  -- ["folke/which-key.nvim"] = {
+  --   config = function()
+  --     require("which-key").setup()
+  --   end
+  -- },
 
   ["francoiscabrol/ranger.vim"] = {
     setup = function()

@@ -1,5 +1,6 @@
 local overrides = require "custom.plugins.overrides"
 local userPlugins = require "custom.plugins"
+local mappings = require "custom.mappings"
 
 local M = {}
 
@@ -26,5 +27,7 @@ M.plugins = {
 M.ui = {
   theme = "onedark",
 }
+
+M.mappings = mappings;
 
 return M
