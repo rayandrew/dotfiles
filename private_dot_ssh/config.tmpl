@@ -14,6 +14,10 @@ Host argonne-cl
   Hostname 192.5.87.191
   HostKeyAlgorithms=+ssh-rsa
 
+Host argonne-cl-2
+  Hostname 192.5.87.222
+  HostKeyAlgorithms=+ssh-rsa
+
 Host ionet
   Hostname 192.5.87.206
   HostKeyAlgorithms=+ssh-rsa
@@ -36,6 +40,18 @@ Host kafka-3
 Host kafka-4
   User cc
   Hostname 129.114.108.242
+
+Host kafka-exp
+  User cc
+  Hostname 129.114.109.108
+
+Host kafka-exp-add-1
+  User cc
+  Hostname 129.114.108.21
+
+Host kafka-exp-add-2
+  User cc
+  Hostname 129.114.109.115
 
 {{if (eq .chezmoi.os "darwin") -}}
 Host *

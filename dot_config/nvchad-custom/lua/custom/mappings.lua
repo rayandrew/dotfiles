@@ -31,55 +31,64 @@ local M = {}
 -- add this table only when you want to disable default keys
 M.disabled = {
   n = {
-      ["<C-h"] = "",
-      -- navigate within insert mode
-      ["<C-h>"] = "",
-      ["<C-l>"] = "",
-      ["<C-j>"] = "",
-      ["<C-k>"] = "",
+    -- navigate within insert mode
+    ["<C-h>"] = "",
+    ["<C-l>"] = "",
+    ["<C-j>"] = "",
+    ["<C-k>"] = "",
   },
   i = {
-      ["<C-h>"] = "",
-      ["<C-l>"] = "",
-      ["<C-j>"] = "",
-      ["<C-k>"] = "",
+    ["<C-h>"] = "",
+    ["<C-l>"] = "",
+    ["<C-j>"] = "",
+    ["<C-k>"] = "",
   },
   t = {
-      ["jk"] = "",
+    ["jk"] = "",
   },
 }
 
 M.buffer = {
   n = {
-    ["<leader>fs"] = { "<cmd> :w <CR>", "﬚  save file"},
-    ["<leader>bd"] = {"<cmd>bp<bar>sp<bar>bn<bar>bd<CR>", "close current buffer"},
-    ["<leader>bb"]  = {"<cmd> :Telescope buffers <CR>", "show list of buffers"},
-    ["<leader>sp"]  = {"<cmd> :Telescope live_grep<CR>", "search text in current directory"},
-  }
+    ["<leader>fs"] = { "<cmd> :w <CR>", "﬚  save file" },
+    ["<leader>bd"] = { "<cmd>bp<bar>sp<bar>bn<bar>bd<CR>", "close current buffer" },
+    ["<leader>bb"] = { "<cmd> :Telescope buffers <CR>", "show list of buffers" },
+    ["<leader>sp"] = { "<cmd> :Telescope live_grep<CR>", "search text in current directory" },
+  },
 }
 
 M.window = {
   n = {
-    ["<leader>ws"] = {"<cmd> :split <CR>", "split window horizontally"},
-    ["<leader>wv"] = {"<cmd> :vsplit <CR>", "split window vertically"},
-    ["<leader>wq"] = {"<C-w>q", "quit curent window"},
-    ["<leader>wh"] = {"<C-w>h", "go to left window"},
-    ["<leader>wj"] = {"<C-w>j", "go to bottom window"},
-    ["<leader>wk"] = {"<C-w>k", "go to upper window"},
-    ["<leader>wl"] = {"<C-w>l", "go to right window"},
-  }
+    ["<leader>ws"] = { "<cmd> :split <CR>", "split window horizontally" },
+    ["<leader>wv"] = { "<cmd> :vsplit <CR>", "split window vertically" },
+    ["<leader>wq"] = { "<C-w>q", "quit curent window" },
+    ["<leader>wh"] = { "<C-w>h", "go to left window" },
+    ["<leader>wj"] = { "<C-w>j", "go to bottom window" },
+    ["<leader>wk"] = { "<C-w>k", "go to upper window" },
+    ["<leader>wl"] = { "<C-w>l", "go to right window" },
+  },
 }
 
 M.ranger = {
   n = {
-    ["<leader>fm"] = {"<cmd> :Ranger <CR>", "open ranger file manager"},
-  }
+    ["<leader>fm"] = { "<cmd> :Ranger <CR>", "open ranger file manager" },
+  },
 }
 
 M.git = {
   n = {
-    ["<leader>gg"] = {"<cmd> :Neogit <CR>", "open neogit"},
-  }
+    ["<leader>gg"] = { "<cmd> :Neogit <CR>", "open neogit" },
+  },
+}
+
+M.trouble = {
+  n = {
+    ["<leader>xx"] = { "<cmd> :Trouble <CR>", "open trouble" },
+    ["<leader>xw"] = { "<cmd> :Trouble workspace_diagnostics <CR>", "open trouble workspace diagnostics" },
+    ["<leader>xd"] = { "<cmd> :Trouble document_diagnostics <CR>", "open trouble document diagnostics" },
+    ["<leader>xl"] = { "<cmd> :Trouble loclist <CR>", "open trouble loclist" },
+    ["<leader>xq"] = { "<cmd> :Trouble quickfix <CR>", "open trouble quickfix" },
+  },
 }
 
 return M

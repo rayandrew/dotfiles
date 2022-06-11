@@ -17,7 +17,7 @@ return {
   ["nvim-telescope/telescope-media-files.nvim"] = {
     after = "telescope.nvim",
     config = function()
-      require("telescope").load_extension "media_files"
+      require("telescope").load_extension("media_files")
     end,
   },
 
@@ -28,7 +28,7 @@ return {
       "TZFocus",
     },
     config = function()
-      require "custom.plugins.truezen"
+      require("custom.plugins.truezen")
     end,
   },
 
@@ -43,14 +43,14 @@ return {
 
   ["nathom/filetype.nvim"] = {
     config = function()
-      require "custom.plugins.filetype"
+      require("custom.plugins.filetype")
     end,
   },
 
   ["luukvbaal/stabilize.nvim"] = {
     config = function()
       require("stabilize").setup()
-    end
+    end,
   },
 
   -- ["folke/which-key.nvim"] = {
@@ -62,22 +62,28 @@ return {
   ["francoiscabrol/ranger.vim"] = {
     setup = function()
       vim.g.ranger_map_keys = 0
-    end
+    end,
   },
 
   ["TimUntersberger/neogit"] = {
-    requires = "nvim-lua/plenary.nvim"
+    requires = "nvim-lua/plenary.nvim",
   },
 
   ["tpope/vim-fugitive"] = {
     cmd = {
-      "Git"
+      "Git",
     },
   },
 
   ["aserowy/tmux.nvim"] = {
     config = function()
-      require "custom.plugins.tmux"
-    end
+      require("custom.plugins.tmux")
+    end,
+  },
+
+  ["folke/trouble.nvim"] = {
+    config = function()
+      require("custom.plugins.trouble").setup()
+    end,
   },
 }
