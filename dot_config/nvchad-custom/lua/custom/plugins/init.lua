@@ -86,4 +86,12 @@ return {
       require("custom.plugins.trouble").setup()
     end,
   },
+
+  ["nvim-treesitter/nvim-treesitter-context"] = {
+    requires = "nvim-treesitter/nvim-treesitter",
+    after = "nvim-treesitter",
+    config = function()
+      require("custom.plugins.treesitter-context")
+    end,
+  },
 }

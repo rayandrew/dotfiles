@@ -1,6 +1,6 @@
-local overrides = require "custom.plugins.overrides"
-local userPlugins = require "custom.plugins"
-local mappings = require "custom.mappings"
+local overrides = require("custom.plugins.overrides")
+local userPlugins = require("custom.plugins")
+local mappings = require("custom.mappings")
 
 local M = {}
 
@@ -19,6 +19,7 @@ M.plugins = {
     ["NvChad/nvterm"] = overrides.nvterm,
     ["kyazdani42/nvim-tree.lua"] = overrides.nvimtree,
     ["nvim-telescope/telescope.nvim"] = overrides.telescope,
+    ["nvim-treesitter/nvim-treesitter"] = overrides.treesitter,
   },
 
   user = userPlugins,
@@ -28,6 +29,6 @@ M.ui = {
   theme = "onedark",
 }
 
-M.mappings = mappings;
+M.mappings = mappings
 
 return M
