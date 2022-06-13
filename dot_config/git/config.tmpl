@@ -1,79 +1,65 @@
 [alias]
-	a = "add -p"
-	bD = "branch -D"
-	ba = "branch -a"
-	bd = "branch -d"
-	bdm = "!git branch --merged | grep -v '*' | xargs -n 1 git branch -d"
-	c = "commit"
-	co = "checkout"
-	cob = "checkout -b"
-	d = "diff"
-	dc = "diff --cached"
-	ds = "diff --staged"
-	f = "fetch -p"
-	h1rd = "hard HEAD~1"
-	hard = "reset --hard"
-	lg = "log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
-	p = "push"
-	plog = "log --graph --pretty='format:%C(red)%d%C(reset) %C(yellow)%h%C(reset) %ar %C(green)%aN%C(reset) %s'"
-	r = "restore"
-	rank = "shortlog -sn --no-merges"
-	rs = "restore --staged"
-	s1ft = "soft HEAD~1"
-	soft = "reset --soft"
-	st = "status -sb"
-	tlog = "log --stat --since='1 Day Ago' --graph --pretty=oneline --abbrev-commit --date=relative"
+  a = "add -p"
+  bD = "branch -D"
+  ba = "branch -a"
+  bd = "branch -d"
+  bdm = "!git branch --merged | grep -v '*' | xargs -n 1 git branch -d"
+  c = "commit"
+  co = "checkout"
+  cob = "checkout -b"
+  d = "diff"
+  dc = "diff --cached"
+  ds = "diff --staged"
+  f = "fetch -p"
+  h1rd = "hard HEAD~1"
+  hard = "reset --hard"
+  lg = "log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
+  p = "push"
+  plog = "log --graph --pretty='format:%C(red)%d%C(reset) %C(yellow)%h%C(reset) %ar %C(green)%aN%C(reset) %s'"
+  r = "restore"
+  rank = "shortlog -sn --no-merges"
+  rs = "restore --staged"
+  s1ft = "soft HEAD~1"
+  soft = "reset --soft"
+  st = "status -sb"
+  tlog = "log --stat --since='1 Day Ago' --graph --pretty=oneline --abbrev-commit --date=relative"
 
-{{- if or (eq .chezmoi.hostname "lemur") (eq .chezmoi.hostname "omen") }}
+{{- if or (eq .chezmoi.hostname "lemur") (eq .chezmoi.hostname "omen") (eq .chezmoi.hostname "mbp") }}
 [commit]
-	gpgSign = true
+  gpgSign = true
 
 [gpg]
-	program =  {{ .gpg | quote }}
+  program =  {{ .gpg | quote }}
 {{- end }}
 
 [init]
-	defaultBranch = "main"
+  defaultBranch = "main"
 
 [pull]
-	rebase = false
+  rebase = false
 
 [core]
-    pager = delta --show-syntax-themes --light
+  pager = delta --show-syntax-themes --light
 
 [interactive]
-    diffFilter = delta --color-only
+  diffFilter = delta --color-only
 
 [delta]
-    navigate = true
+  navigate = true
 
 [merge]
-    conflictstyle = diff3
+  conflictstyle = diff3
 
 [diff]
-    colorMoved = default
-
-[sendemail "contact@rayandrew.me"]
-	from = "contact@rayandrew.me"
-	smtpEncryption = "tls"
-	smtpServer = "smtp.gmail.com"
-	smtpSslCertPath = "/etc/ssl/certs/ca-certificates.crt"
-	smtpUser = "contact@{{ .chezmoi.username }}.me"
-
-[sendemail "raydreww@gmail.com"]
-	from = "raydreww@gmail.com"
-	smtpEncryption = "tls"
-	smtpServer = "smtp.gmail.com"
-	smtpSslCertPath = "/etc/ssl/certs/ca-certificates.crt"
-	smtpUser = "raydreww@gmail.com"
+  colorMoved = default
 
 [user]
-	email = "4437323+rayandrews@users.noreply.github.com"
-	name = "Ray Andrew"
-	signingKey = "3DF30C0071130B7D"
+  email = "4437323+rayandrews@users.noreply.github.com"
+  name = "Ray Andrew"
+  signingKey = "3DF30C0071130B7D"
 
 [includeIf "gitdir:~/courses/"]
   path = ~/courses/.gitconfig
 
 [github]
-  user = rayandrews
+  user = rayandrew

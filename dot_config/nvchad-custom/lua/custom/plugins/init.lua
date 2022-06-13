@@ -94,4 +94,6 @@ return {
       require("custom.plugins.treesitter-context")
     end,
   },
+
+  ["kdheepak/lazygit.nvim"] = {},
 }

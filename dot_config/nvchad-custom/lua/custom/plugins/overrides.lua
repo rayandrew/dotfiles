@@ -24,6 +24,12 @@ M.nvimtree = {
 }
 
 M.telescope = {
+  requires = { { "nvim-lua/plenary.nvim" }, { "kdheepak/lazygit.nvim" } },
+
+  config = function()
+    require("telescope").load_extension("lazygit")
+  end,
+
   setup = function()
     -- api.nvim_del_keymap("n", "<leader>fb")
     --   -- map("n", "<leader>fb", "<cmd> :Telescope buffers <CR>")

@@ -13,4 +13,6 @@ export SAVEHIST=10000                   # Maximum events in history file
 
 export OPT_DIR="$HOME/opt"
 
+
+export GPG_TTY=$(tty)
 # . "$HOME/.cargo/env"

@@ -7,6 +7,7 @@ export HOME="/Users/{{ .chezmoi.username }}"
 export HOME="{{ .chezmoi.homeDir }}"
 {{- end }}
 
+export GPG_TTY=$(tty)
 export PATH="$HOME/bin:$HOME/.bin:$PATH"
 export EDITOR="nvim"
 export BROWSER="google-chrome-stable"
@@ -159,6 +160,23 @@ if [ -d "$XDG_CONFIG_HOME/composer/vendor/bin" ]
 then
   export PATH="$XDG_CONFIG_HOME/composer/vendor/bin:$PATH"
 fi
+
+### Lazygit
+lg()
+{
+  export LAZYGIT_NEW_DIR_FILE=~/.lazygit/newdir
+
+  lazygit "$@"
+
+  if [ -f $LAZYGIT_NEW_DIR_FILE ]; then
+    cd "$(cat $LAZYGIT_NEW_DIR_FILE)"
+    rm -f $LAZYGIT_NEW_DIR_FILE > /dev/null
+  fi
+}
+
+### PNPM
+export PNPM_HOME="$XDG_CONFIG_HOME/local/share/pnpm"
+export PATH="$PNPM_HOME:$PATH"
 #############################################################################################################################
 
 #############################################################################################################################

@@ -77,7 +77,9 @@ M.ranger = {
 
 M.git = {
   n = {
-    ["<leader>gg"] = { "<cmd> :Neogit <CR>", "open neogit" },
+    -- ["<leader>gg"] = { "<cmd> :Neogit <CR>", "open neogit" },
+    ["<leader>gg"] = { "<cmd> ::LazyGit <CR>", "open lazygit" },
+    ["<leader>gc"] = { "<cmd> ::LazyGitConfig <CR>", "open lazygit config" },
   },
 }
 
