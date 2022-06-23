@@ -32,14 +32,47 @@ return {
     end,
   },
 
-  -- ["mg979/vim-visual-multi"] = {
-  --   config = function()
-  --     -- _G.VM_leader = {}
-  --     vim.g.VM_maps = {}
-  --     vim.g.VM_maps["Find Under"] = "<c-d>"
-  --     vim.g.VM_maps["Find Subword Under"] = "<c-d>"
-  --   end
-  -- },
+  ["mg979/vim-visual-multi"] = {
+    -- shamelessly copied from
+    -- https://github.com/jceb/vimrc/blob/master/lua/plugins.lua
+    opt = true,
+    keys = {
+      { "n", "<C-j>" },
+      { "n", "<C-k>" },
+      { "n", "<C-c>" },
+      { "n", "<C-d>" },
+      { "v", "<C-d>" },
+    },
+    setup = function()
+      vim.cmd([[
+      let g:VM_Mono_hl   = 'Substitute'
+      let g:VM_Cursor_hl = 'IncSearch'
+      ]])
+      vim.g.VM_maps = {
+        ["Find Under"] = "<C-d>",
+        ["Find Subword Under"] = "<C-d>",
+        ["Next"] = "n",
+        ["Previous"] = "N",
+        ["Skip"] = "q",
+        -- ["Add Cursor Down"] = "<C-j>",
+        -- ["Add Cursor Up"] = "<C-k>",
+        -- ["Select l"] = "<S-Left>",
+        -- ["Select r"] = "<S-Right>",
+        -- ["Add Cursor at Position"] = [[\\\]],
+        ["Select All"] = "<C-c>",
+        ["Visual All"] = "<C-c>",
+        ["Exit"] = "<Esc>",
+      }
+      -- let g:VM_leader = {'default': '\', 'visual': '\', 'buffer': 'z'}
+    end,
+    -- config = function()
+    --   -- _G.VM_leader = {}
+    --
+    --   vim.g.VM_maps = {}
+    --   vim.g.VM_maps["Find Under"] = "<c-d>"
+    --   vim.g.VM_maps["Find Subword Under"] = "<c-d>"
+    -- end
+  },
 
   ["nathom/filetype.nvim"] = {
     config = function()
@@ -96,4 +129,21 @@ return {
   },
 
   ["kdheepak/lazygit.nvim"] = {},
+
+  ["JoosepAlviste/nvim-ts-context-commentstring"] = {
+    requires = "nvim-treesitter/nvim-treesitter",
+    -- config = function()
+    --   require("nvim-treesitter.configs").setup({
+    --
+    --   })
+    -- end,
+  },
+
+  ["stevearc/dressing.nvim"] = {
+    requires = "nvim-treesitter/nvim-treesitter",
+    after = "nvim-treesitter",
+    config = function()
+      require("custom.plugins.dressing")
+    end,
+  },
 }

@@ -4,24 +4,34 @@ M.setup_lsp = function(attach, capabilities)
   local lspconfig = require("lspconfig")
 
   local servers = {
-    "html",
-    "cssls",
-    "bashls",
-    "emmet_ls",
-    "tsserver",
-    "clangd",
-    "solargraph",
-    "tailwindcss",
-    "pyright",
-    "sumneko_lua",
-    "eslint",
+    ["html"] = true,
+    ["cssls"] = true,
+    ["bashls"] = true,
+    ["emmet_ls"] = true,
+    ["tsserver"] = false,
+    ["clangd"] = true,
+    ["solargraph"] = true,
+    ["tailwindcss"] = true,
+    ["pyright"] = true,
+    ["sumneko_lua"] = false,
+    ["eslint"] = true,
   }
 
-  for _, lsp in ipairs(servers) do
-    lspconfig[lsp].setup({
-      on_attach = attach,
-      capabilities = capabilities,
-    })
+  for lsp, format in pairs(servers) do
+    if not format then
+      lspconfig[lsp].setup({
+        on_attach = function(client, bufnr)
+          client.resolved_capabilities.document_formatting = false
+          attach(client, bufnr)
+        end,
+        capabilities = capabilities,
+      })
+    else
+      lspconfig[lsp].setup({
+        on_attach = attach,
+        capabilities = capabilities,
+      })
+    end
   end
 end
 

@@ -20,13 +20,14 @@ M.plugins = {
     ["kyazdani42/nvim-tree.lua"] = overrides.nvimtree,
     ["nvim-telescope/telescope.nvim"] = overrides.telescope,
     ["nvim-treesitter/nvim-treesitter"] = overrides.treesitter,
+    ["numToStr/Comment.nvim"] = overrides.comment,
   },
 
   user = userPlugins,
 }
 
 M.ui = {
-  theme = "onedark",
+  theme = "ayu-dark",
 }
 
 M.mappings = mappings
