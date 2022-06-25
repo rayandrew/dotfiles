@@ -66,8 +66,10 @@ znap source zsh-users/zsh-autosuggestions
 znap source zsh-users/zsh-syntax-highlighting
 znap install ohmyzsh/ohmyzsh
 
+{{- if eq .chezmoi.hostname "mbp" }}
 ### Iterm2
 znap eval iterm2 "curl -fsSL https://iterm2.com/shell_integration/zsh"
+{{- end }}
 
 ## Aliases
 
