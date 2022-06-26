@@ -31,13 +31,14 @@ local M = {}
 -- add this table only when you want to disable default keys
 M.disabled = {
   n = {
-    -- navigate within insert mode
+    -- navigate within normal mode
     ["<C-h>"] = "",
     ["<C-l>"] = "",
     ["<C-j>"] = "",
     ["<C-k>"] = "",
   },
   i = {
+    -- navigate within insert mode
     ["<C-h>"] = "",
     ["<C-l>"] = "",
     ["<C-j>"] = "",
@@ -66,6 +67,8 @@ M.window = {
     ["<leader>wj"] = { "<C-w>j", "go to bottom window" },
     ["<leader>wk"] = { "<C-w>k", "go to upper window" },
     ["<leader>wl"] = { "<C-w>l", "go to right window" },
+    ["<C-k>"] = { '<cmd> lua require("tmux").move_top() <CR>', "go to upper window" },
+    ["<C-j>"] = { '<cmd> lua require("tmux").move_bottom() <CR>', "go to bottom window" },
   },
 }
 
