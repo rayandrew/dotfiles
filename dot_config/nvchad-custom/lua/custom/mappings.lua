@@ -55,6 +55,8 @@ M.buffer = {
     ["<leader>bd"] = { "<cmd>bp<bar>sp<bar>bn<bar>bd<CR>", "close current buffer" },
     ["<leader>bb"] = { "<cmd> :Telescope buffers <CR>", "show list of buffers" },
     ["<leader>sp"] = { "<cmd> :Telescope live_grep<CR>", "search text in current directory" },
+    ["<leader>bc"] = { "<cmd> :%bd|e# <CR>", "close all buffers except this one"},
+    ["<leader>ba"] = { "<cmd> :bufdo bd <CR>", "close all buffers"}
   },
 }
 
