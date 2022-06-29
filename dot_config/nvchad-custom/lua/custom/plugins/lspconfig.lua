@@ -15,6 +15,7 @@ M.setup_lsp = function(attach, capabilities)
     ["pyright"] = true,
     ["sumneko_lua"] = false,
     ["eslint"] = true,
+    ["svelte"] = false,
   }
 
   for lsp, format in pairs(servers) do

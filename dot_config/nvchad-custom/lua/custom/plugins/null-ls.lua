@@ -13,8 +13,46 @@ local sources = {
 
   -- js/ts/jsx/tsx
   -- b.formatting.prettier,
-  b.formatting.prettierd,
-  b.formatting.eslint_d,
+  b.formatting.prettierd.with({
+    filetypes = {
+      "javascript",
+      "javascriptreact",
+      "typescript",
+      "typescriptreact",
+      "vue",
+      "svelte",
+      "css",
+      "scss",
+      "less",
+      "html",
+      "json",
+      "jsonc",
+      "yaml",
+      "markdown",
+      "graphql",
+      "handlebars",
+    },
+  }),
+  b.formatting.eslint_d.with({
+    filetypes = {
+      "javascript",
+      "javascriptreact",
+      "typescript",
+      "typescriptreact",
+      "vue",
+      "svelte",
+      "css",
+      "scss",
+      "less",
+      "html",
+      "json",
+      "jsonc",
+      "yaml",
+      "markdown",
+      "graphql",
+      "handlebars",
+    },
+  }),
   b.code_actions.eslint_d,
 
   -- Lua

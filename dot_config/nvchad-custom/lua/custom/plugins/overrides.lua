@@ -84,6 +84,7 @@ M.treesitter = {
     "prisma",
     "tsx",
     "vue",
+    "svelte",
 
     -- comm
     "graphql",

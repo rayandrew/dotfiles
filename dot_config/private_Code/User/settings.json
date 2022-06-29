@@ -271,5 +271,6 @@
   "window.menuBarVisibility": "toggle",
   "workbench.editorAssociations": {
     "*.pdf": "default"
-  }
+  },
+  "svelte.enable-ts-plugin": true
 }
