@@ -1,4 +1,35 @@
 return {
+  ["nvim-telescope/telescope-media-files.nvim"] = {
+    -- after = "telescope",
+    --
+    -- config = function()
+    --   require("telescope").load_extension("media_files")
+    -- end,
+    --
+    -- setup = function()
+    --   require("telescope").load_extension("media_files")
+    --   require("telescope").setup({
+    --     extensions = {
+    --       media_files = {
+    --         filetypes = { "png", "jpg", "mp4", "webm", "pdf" },
+    --         find_cmd = "fd",
+    --       },
+    --     },
+    --   })
+    -- end,
+  },
+
+  ["kdheepak/lazygit.nvim"] = {
+    -- after = "telescope",
+    -- config = function()
+    --   require("telescope").load_extension("lazygit")
+    -- end,
+  },
+
+  ["nvim-telescope/telescope.nvim"] = {
+    module = "telescope",
+  },
+
   ["windwp/nvim-ts-autotag"] = {
     ft = { "html", "javascriptreact" },
     after = "nvim-treesitter",
@@ -11,13 +42,6 @@ return {
     after = "nvim-lspconfig",
     config = function()
       require("custom.plugins.null-ls").setup()
-    end,
-  },
-
-  ["nvim-telescope/telescope-media-files.nvim"] = {
-    after = "telescope.nvim",
-    config = function()
-      require("telescope").load_extension("media_files")
     end,
   },
 
@@ -127,8 +151,6 @@ return {
       require("custom.plugins.treesitter-context")
     end,
   },
-
-  ["kdheepak/lazygit.nvim"] = {},
 
   ["JoosepAlviste/nvim-ts-context-commentstring"] = {
     requires = "nvim-treesitter/nvim-treesitter",

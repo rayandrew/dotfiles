@@ -25,28 +25,46 @@ M.nvimtree = {
 }
 
 M.telescope = {
-  requires = { { "nvim-lua/plenary.nvim" }, { "kdheepak/lazygit.nvim" } },
+  -- module = "Telescope",
+  --
+  -- requires = {
+  --   { "nvim-lua/plenary.nvim" },
+  --   { "kdheepak/lazygit.nvim" },
+  --   { "nvim-telescope/telescope-media-files.nvim" },
+  -- },
 
-  config = function()
-    require("telescope").load_extension("lazygit")
-  end,
+  extensions_list = { "lazygit", "media_files" },
 
-  setup = function()
-    -- api.nvim_del_keymap("n", "<leader>fb")
-    --   -- map("n", "<leader>fb", "<cmd> :Telescope buffers <CR>")
-    --   map("n", "<leader>ff", "<cmd> :Telescope find_files <CR>")
-    --   map("n", "<leader>fa", "<cmd> :Telescope find_files follow=true no_ignore=true hidden=true <CR>")
-    --   map("n", "<leader>cm", "<cmd> :Telescope git_commits <CR>")
-    --   map("n", "<leader>gt", "<cmd> :Telescope git_status <CR>")
-    --   map("n", "<leader>fh", "<cmd> :Telescope help_tags <CR>")
-    --   map("n", "<leader>fw", "<cmd> :Telescope live_grep <CR>")
-    --   map("n", "<leader>fo", "<cmd> :Telescope oldfiles <CR>")
-    --   map("n", "<leader>th", "<cmd> :Telescope themes <CR>")
-    --   map("n", "<leader>tk", "<cmd> :Telescope keymaps <CR>")
-    --
-    --   -- pick a hidden term
-    --   map("n", "<leader>W", "<cmd> :Telescope terms <CR>")
-  end,
+  -- config = function()
+  --   require("telescope").load_extension("lazygit")
+  --   require("telescope").load_extension("media_files")
+  --   -- require("telescope").setup({
+  --   --   extensions = {
+  --   --     media_files = {
+  --   --       filetypes = { "png", "jpg", "mp4", "webm", "pdf" },
+  --   --       find_cmd = "fd",
+  --   --     },
+  --   --   },
+  --   -- })
+  -- end,
+
+  -- setup = function()
+
+  -- api.nvim_del_keymap("n", "<leader>fb")
+  --   -- map("n", "<leader>fb", "<cmd> :Telescope buffers <CR>")
+  --   map("n", "<leader>ff", "<cmd> :Telescope find_files <CR>")
+  --   map("n", "<leader>fa", "<cmd> :Telescope find_files follow=true no_ignore=true hidden=true <CR>")
+  --   map("n", "<leader>cm", "<cmd> :Telescope git_commits <CR>")
+  --   map("n", "<leader>gt", "<cmd> :Telescope git_status <CR>")
+  --   map("n", "<leader>fh", "<cmd> :Telescope help_tags <CR>")
+  --   map("n", "<leader>fw", "<cmd> :Telescope live_grep <CR>")
+  --   map("n", "<leader>fo", "<cmd> :Telescope oldfiles <CR>")
+  --   map("n", "<leader>th", "<cmd> :Telescope themes <CR>")
+  --   map("n", "<leader>tk", "<cmd> :Telescope keymaps <CR>")
+  --
+  --   -- pick a hidden term
+  --   map("n", "<leader>W", "<cmd> :Telescope terms <CR>")
+  -- end,
 
   extensions = {
     media_files = {

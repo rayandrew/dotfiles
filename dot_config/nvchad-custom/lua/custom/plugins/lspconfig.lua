@@ -16,6 +16,7 @@ M.setup_lsp = function(attach, capabilities)
     ["sumneko_lua"] = false,
     ["eslint"] = true,
     ["svelte"] = false,
+    ["jsonls"] = true,
   }
 
   for lsp, format in pairs(servers) do

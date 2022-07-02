@@ -27,7 +27,9 @@ M.plugins = {
 }
 
 M.ui = {
-  theme = "ayu-dark",
+  -- theme = "ayu-dark",
+  theme = "catppuccin",
+  theme_toggle = { "catppuccin", "catppuccin_latte" },
 }
 
 M.mappings = mappings
