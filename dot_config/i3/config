@@ -33,7 +33,7 @@ bindsym Mod4+9 workspace number 9
 bindsym Mod4+Down focus down
 bindsym Mod4+Left focus left
 # bindsym Mod4+Return exec st -e /nix/store/l4jwipy5768pwyf2193k1ip9gxkr2qp4-fish-3.3.1/bin/fish
-bindsym Mod4+Return exec kitty fish
+bindsym Mod4+Return exec kitty zsh 
 bindsym Mod4+Right focus right
 bindsym Mod4+Shift+0 move container to workspace number 10
 bindsym Mod4+Shift+1 move container to workspace number 1
