@@ -13,6 +13,8 @@ Host ucare-10
 Host argonne-cl
   Hostname 192.5.87.222
   HostKeyAlgorithms=+ssh-rsa
+  ForwardAgent yes
+  IdentityAgent "~/.1password/agent.sock"
 
 Host ionet
   Hostname 192.5.87.206
@@ -53,6 +55,6 @@ Host kafka-exp-add-2
 Host *
   IdentityAgent "~/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
 {{ else if eq .chezmoi.os "linux" }}
-Host *
-  IdentityAgent ~/.1password/agent.sock
+# Host *
+#  IdentityAgent "~/.1password/agent.sock"
 {{ end -}}
