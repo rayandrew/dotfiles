@@ -3,12 +3,16 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
-    home = {
+    home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nix-darwin = {
       url = "github:lnl7/nix-darwin/master";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    nix-index-database = {
+      url = "github:nix-community/nix-index-database";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nur.url = "github:nix-community/NUR";
@@ -18,7 +22,18 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # Apps
+    neovim-nightly-overlay = {
+      url = "github:nix-community/neovim-nightly-overlay";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-compat.follows = "flake-compat";
+    };
+
     # Flake utils
+    flake-compat = {
+      url = "github:edolstra/flake-compat";
+      flake = false;
+    };
     nixos-flake.url = "github:srid/nixos-flake";
     flake-parts.url = "github:hercules-ci/flake-parts";
     flake-utils.url = "github:numtide/flake-utils";
@@ -48,11 +63,12 @@
 
       flake = {
         darwinConfigurations = {
-          appreciate = self.nixos-flake.lib.mkMacosSystem {
+          midnight = self.nixos-flake.lib.mkMacosSystem {
             nixpkgs.hostPlatform = "aarch64-darwin";
             imports = [
-              self.darwinModules.default # Defined in nix-darwin/default.nix
+              self.darwinModules.default
               ./systems/darwin.nix
+              ./nix-darwin/homebrew.nix
             ];
           };
         };
@@ -77,6 +93,7 @@
           packages = [
             pkgs.sops
             pkgs.ssh-to-age
+            pkgs.alejandra
           ];
           DIRENV_LOG_FORMAT = "";
           shellHook = ''
@@ -97,7 +114,11 @@
         };
 
         formatter = config.treefmt.build.wrapper;
-        packages.default = self'.packages.activate;
+        packages = {
+          default = self'.packages.activate;
+          nix-cleanup = self'.packages.nix-cleanup;
+          nixos-cleanup = self'.packages.nixos-cleanup;
+        };
 
         _module.args.pkgs = import inputs.nixpkgs {
           inherit system;

@@ -9,7 +9,20 @@
       common = {
         home.stateVersion = "23.11";
         imports = [
-          flake.inputs.sops-nix.homeManagerModules.sops
+          inputs.sops-nix.homeManagerModules.sops
+          inputs.nix-index-database.hmModules.nix-index
+          ./chezmoi.nix
+          ./terminal.nix
+          ./neovim.nix
+          ./git.nix
+          ./tmux.nix
+          ./zsh.nix
+          ./direnv.nix
+        ];
+      };
+      common-graphics = {
+        imports = [
+          ./kitty.nix
         ];
       };
       common-linux = {
@@ -20,6 +33,7 @@
       common-darwin = {
         imports = [
           self.homeModules.common
+          self.homeModules.common-graphics
         ];
       };
     };
