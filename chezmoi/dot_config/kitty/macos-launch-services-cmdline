@@ -1,0 +1,1 @@
+-o allow_remote_control=yes --directory=~ --single-instance --listen-on unix:/tmp/mykitty

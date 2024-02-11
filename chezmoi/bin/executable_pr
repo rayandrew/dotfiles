@@ -1,0 +1,138 @@
+#!/usr/bin/env bash
+
+if [ "x$DIRPAPERS" == "x" ]; then
+  echo -e "\033[1;31mERROR\033[0m: DIRPAPERS env variable doesn't exist"
+  exit 1
+fi
+
+if [[ ! -d "$DIRPAPERS" ]]; then
+  echo -e "\033[1;31mERROR\033[0m: DIR_PAPERS env variable ($DIRPAPERS) is not a directory"
+  exit 1
+fi
+
+PROJECT=""
+VERBOSE=0
+COMPILE=1
+if [ $# -gt 0 ]; then
+  while [ $# -gt 0 ]; do
+    case "$1" in
+      -v|--verbose)
+        VERBOSE=1
+        shift
+        ;;
+      -n|--no-compile)
+        COMPILE=0
+        shift
+        ;;
+      *)
+        PROJECT="$1"
+        shift
+        ;;
+     esac
+   done
+fi
+
+TEX_DIR="$DIRPAPERS/list-tex"
+
+open_tex() {
+  local file="$1"
+
+  # check if file is ""
+  if [[ "x$file" == "x" ]]; then
+    if [[ $VERBOSE -eq 1 ]]; then
+      echo -e "\033[1;34mINFO\033[0m: will not open file"
+    fi
+    exit 0
+  fi
+
+  # check if extension .tex exists, if not add it
+  if [[ ! "$file" =~ \.tex$ ]]; then
+    file="$file.tex"
+  fi
+
+  if [ $VERBOSE -eq 1 ]; then
+    echo -e "\033[1;34mINFO\033[0m: opening $file"
+  fi
+
+  editor "$TEX_DIR/$file"
+  if [ $COMPILE -eq 1 ]; then
+    cd "$TEX_DIR"
+    ./all.sh "$file"
+  fi
+}
+
+if [[ "x$PROJECT" == "x" ]]; then
+  # check if fzf exists
+  if command -v fzf &> /dev/null; then
+    # if darwin using pbcopy, otherwise xclip
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+      PROJECT=$(find $TEX_DIR -mindepth 1 -maxdepth 1 -type f -name "*.tex" -exec basename {} \; | sort -u | sed 's/\.tex$//' | fzf --multi --preview "bat --color=always --style=numbers --line-range :500 $TEX_DIR/{}.tex" --preview-window=right:70%:wrap --bind "ctrl-u:clear-query" --bind "ctrl-y:execute-silent(echo $TEX_DIR/{}.tex | pbcopy)+abort")
+    else
+      PROJECT=$(find $TEX_DIR -mindepth 1 -maxdepth 1 -type f -name "*.tex" -exec basename {} \; | sort -u | sed 's/\.tex$//' | fzf --multi --preview "bat --color=always --style=numbers --line-range :500 $TEX_DIR/{}.tex" --preview-window=right:70%:wrap --bind "ctrl-u:clear-query" --bind "ctrl-y:execute-silent(echo $TEX_DIR/{}.tex| xclip -selection clipboard)+abort")
+    fi
+
+    if [[ $VERBOSE -eq 1 ]]; then
+      if [[ "x$PROJECT" == "x" ]]; then
+        echo -e "\033[1;34mINFO\033[0m: no project choosen"
+      else
+        echo -e "\033[1;34mINFO\033[0m: choosen project $PROJECT"
+      fi
+    fi
+
+    open_tex "$PROJECT"
+  else
+    echo -e "\033[1;32mAvailable projects:\033[0m"
+    # add extra space at the beginning of each line
+    find $TEX_DIR -mindepth 1 -maxdepth 1 -type f -name "*.tex" -exec basename {} \; | sort -u | sed 's/\.tex$//' | sed 's/^/  /'
+  fi
+  exit 0
+fi
+
+# find filename similar to PROJECT
+PROJECTS=()
+while IFS= read -r line; do
+  PROJECTS+=("$line")
+done < <(find $TEX_DIR -mindepth 1 -maxdepth 1 -type f -name "*.tex" -exec basename {} \; | sed 's/\.tex$//' | sort -u | grep -i "$PROJECT")
+
+if [[ ${#PROJECTS[@]} -eq 0 ]]; then
+  echo -e "\033[1;31mERROR\033[0m: no projects found"
+  exit 1
+fi
+
+if [[ ${#PROJECTS[@]} -eq 1 ]]; then
+  open_tex "${PROJECTS[0]}"
+else
+  # check if fzf exists
+  if command -v fzf &> /dev/null; then
+    # choose using fzf
+    if [[ $VERBOSE -eq 1 ]]; then
+      echo -e "\033[1;34mINFO\033[0m: multiple projects found:"
+      for project in "${PROJECTS[@]}"; do
+        echo "  $project"
+      done
+      echo -e "\033[1;34mINFO\033[0m: choosing using fzf"
+    fi
+
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+      PROJECT=$(printf '%s\n' "${PROJECTS[@]}" | fzf --preview "bat --color=always --style=numbers --line-range :500 $TEX_DIR/{}.tex" --preview-window=right:70%:wrap --bind "ctrl-y:execute-silent(echo $TEX_DIR/{}.tex | pbcopy)+abort")
+    else
+      PROJECT=$(printf '%s\n' "${PROJECTS[@]}" | fzf --preview "bat --color=always --style=numbers --line-range :500 $TEX_DIR/{}.tex" --preview-window=right:70%:wrap --bind "ctrl-y:execute-silent(echo $TEX_DIR/{}.tex | xclip -selection -clipboard)+abort")
+    fi
+
+    if [[ $VERBOSE -eq 1 ]]; then
+      if [[ "x$PROJECT" == "x" ]]; then
+        echo -e "\033[1;34mINFO\033[0m: no project choosen"
+      else
+        echo -e "\033[1;34mINFO\033[0m: choosen project $PROJECT"
+      fi
+    fi
+
+    open_tex "$PROJECT"
+  else
+    echo -e "\033[1;32mMultiple projects found:\033[0m"
+    for project in "${PROJECTS[@]}"; do
+      echo "  $project"
+    done
+  fi
+fi
+

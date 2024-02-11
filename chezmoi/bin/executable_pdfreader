@@ -1,0 +1,5 @@
+#!/bin/sh
+
+# open -a /System/Applications/Preview.app "$*"
+# open -a /Applications/PDF\ Expert.app "$*"
+open -a /Applications/Skim.app "$*"

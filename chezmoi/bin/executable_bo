@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+if [ "x$RS_BOOKMARKS_FILE" == "x" ]; then
+	echo -e "\033[1;31mERROR\033[0m: RS_BOOKMARKS_FILE env variable doesn't exist"
+	exit 1
+fi
+
+if [[ ! -f "$RS_BOOKMARKS_FILE" ]]; then
+	echo -e "\033[1;31mERROR\033[0m: RS_BOOKMARKS_FILE env variable doesn't point to a file"
+	exit 1
+fi
+
+editor "$RS_BOOKMARKS_FILE"

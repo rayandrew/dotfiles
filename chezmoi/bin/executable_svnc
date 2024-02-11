@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+
+# A fast way (one line command) to run svnc commit with messages
+
+# This script runs svn update before you try to commit.
+# This way you reduce conflicts.
+
+# Put this svnc file in your ~/bin/ ($HOME/bin) folder
+# Run: chmod 700 ~/bin/svnc
+#   (all script must be in executable 700 mode)
+# If you use bash for your shell, open your ~/.bashrc file (or create one)
+# and add this line to your ~/.bashrc
+#    PATH="~/bin:$PATH"
+# and then run bash again in your shell so your .bashrc is reloaded
+# or just exist the current shell, and open a new one
+# If you use csh as your shell, then modify your ~/.cshrc appropriately
+# similar to above.
+
+# no arg, mean this prints the instruction
+if [ $# == 0 ]; then
+	echo ""
+	echo "  Use : svnc <commit message in one line> "
+	echo "  Ex  : svnc I added some new code "
+	echo ""
+	exit
+fi
+
+# update first
+echo "-------------------------------------- svn up"
+svn up
+
+# the commit message, if you supply "svnc ." then "." means No message
+msg="$*"
+if [ "$msg" == "." ]; then
+	msg="No message"
+fi
+
+# commit
+echo "-------------------------------------- svn ci --message $USER: $msg"
+svn ci --message "$USER: $msg"
+
+# show the log
+echo "-------------------------------------- svn log -r HEAD"
+svn log -r HEAD
+
+# check status again
+echo "-------------------------------------- svn status"
+svn st

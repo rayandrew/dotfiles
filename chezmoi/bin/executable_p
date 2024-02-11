@@ -1,0 +1,81 @@
+#!/usr/bin/env bash
+
+# check if RS_PROJECT_NOTES env variable exists
+if [ -z "$RS_PROJECT_NOTES" ]; then
+	echo -e "\033[1;31mERROR\033[0m: RS_PROJECT_NOTES env variable doesn't exist"
+	exit 1
+fi
+
+if [ ! -d "$RS_PROJECT_NOTES" ]; then
+	echo -e "\033[1;31mERROR\033[0m: RS_PROJECT_NOTES env variable doesn't point to a directory"
+	exit 1
+fi
+
+if [ -z "$RS_NOTES_EXTS" ]; then
+	RS_NOTES_EXTS="md txt"
+fi
+
+VERBOSE=0
+FORCE=0
+FILE=""
+if [ $# -gt 0 ]; then
+	while [ $# -gt 0 ]; do
+		case "$1" in
+		-f | --force)
+			FORCE=1
+			shift
+			exit
+			;;
+		-v)
+			VERBOSE=1
+			shift
+			;;
+		*)
+			if [ -z "$FILE" ]; then
+				FILE="$1"
+			fi
+			shift
+			;;
+		esac
+	done
+fi
+
+NOTE_PATH="$RS_PROJECT_NOTES"
+EXTS=($RS_NOTES_EXTS)
+
+EXT_QUERIES=""
+for EXT in "${EXTS[@]}"; do
+	if [ "x$EXT_QUERIES" == "x" ]; then
+		EXT_QUERIES="-iname *.${EXT}"
+	else
+		EXT_QUERIES+=" -o -iname *.${EXT}"
+	fi
+done
+
+if [ "x$FILE" == "x" ]; then
+	set -o noglob
+	if [[ "$OSTYPE" == "darwin"* ]]; then
+		find "$NOTE_PATH" -type f $EXT_QUERIES | fzf --bind "ctrl-y:execute-silent(echo {} | tr -d '\n' | pbcopy)+abort" --ansi --height 100% --reverse --border --inline-info --preview-window=right:70% --preview 'bat --color=always --style=numbers --line-range :500 {}' --bind "enter:execute(editor {})+abort"
+	else
+		# linux
+		find "$NOTE_PATH" -type f $EXT_QUERIES | fzf --bind "ctrl-y:execute-silent(echo {} | tr -d '\n' | xclip -selection clipboard)+abort" --ansi --height 100% --reverse --border --inline-info --preview-window=right:70% --preview 'bat --color=always --style=numbers --line-range :500 {}' --bind "enter:execute(editor {})+abort"
+	fi
+	set +o noglob
+else
+	# check if arg is a file inside NOTE_PATH
+	if [ -f "$NOTE_PATH/$FILE.txt" ]; then
+		editor "$NOTE_PATH/$FILE.txt"
+	else
+		if [ $FORCE -eq 1 ]; then
+			if [ $VERBOSE -eq 1 ]; then
+				echo -e "\033[1;33mWARNING\033[0m: $1 doesn't exist, creating..."
+			fi
+			touch "$NOTE_PATH/$FILE.txt"
+			editor "$NOTE_PATH/$FILE.txt"
+			exit 0
+		fi
+
+		echo -e "\033[1;31mERROR\033[0m: '$NOTE_PATH/$FILE.txt' doesn't exist"
+		echo -e "\033[1;34mINFO\033[0m: Use \033[1;32m-f/--force\033[0m to create it"
+	fi
+fi

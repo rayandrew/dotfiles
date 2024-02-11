@@ -1,0 +1,74 @@
+// Place your key bindings in this file to override the defaults
+[
+    {
+        "key": "ctrl+h",
+        "command": "workbench.action.navigateLeft",
+    },
+    {
+        "key": "ctrl+l",
+        "command": "workbench.action.navigateRight"
+    },
+    {
+        "key": "ctrl+k",
+        "command": "workbench.action.navigateUp"
+    },
+    {
+        "key": "ctrl+j",
+        "command": "workbench.action.navigateDown"
+    },
+    {
+        "key": "alt+;",
+        "command": "editor.action.commentLine"
+    },
+    {
+        "key": "alt+p",
+        "command": "editor.action.moveLinesUpAction",
+        "when": "editorTextFocus && !editorReadonly"
+    },
+    {
+        "key": "alt+n",
+        "command": "editor.action.moveLinesDownAction",
+        "when": "editorTextFocus && !editorReadonly"
+    },
+    {
+        "key": "cmd+,",
+        "command": "workbench.action.openSettingsJson"
+    },
+    // {
+    //     "key": "shift+cmd+f",
+    //     "command": "workbench.view.search",
+    //     "when": "workbench.view.search.active && neverMatch =~ /doesNotMatch/"
+    // },
+    // {
+    //     "key": "shift+cmd+f",
+    //     "command": "-workbench.view.search",
+    //     "when": "workbench.view.search.active && neverMatch =~ /doesNotMatch/"
+    // },
+    // {
+    //     "key": "ctrl+x ctrl+/",
+    //     "command": "workbench.action.findInFiles"
+    // },
+    // {
+    //     "key": "shift+cmd+f",
+    //     "command": "-workbench.action.findInFiles"
+    // },
+    {
+        "key": "ctrl+x s",
+        "command": "workbench.action.files.saveWithoutFormatting"
+    },
+    {
+        "key": "cmd+k s",
+        "command": "-workbench.action.files.saveWithoutFormatting"
+    },
+    // {
+    //     "key": "shift+h",
+    //     "command": "workbench.action.previousEditor",
+    //     // "when": "editorTextFocus && vim.active"
+    //     "when": "vim.active && vim.mode == 'Normal' && !terminalFocus && !textInputFocus"
+    // },
+    // {
+    //     "key": "shift+l",
+    //     "command": "workbench.action.nextEditor",
+    //     "when": "vim.active && vim.mode == 'Normal' && !terminalFocus && !textInputFocus"
+    // },
+]

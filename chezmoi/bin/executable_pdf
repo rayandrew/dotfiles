@@ -1,0 +1,126 @@
+#!/usr/bin/env bash
+
+# -------------------
+ppath=$ALL_PDF_FILES
+
+# if [ $# == 0 ]; then
+# 	echo ""
+# 	echo "  Usage: pdf <filename-keywords> "
+# 	echo "  Usage: pdf [acroread/skim/preview] <filename-keywords> "
+# 	echo "  Search in $ppath"
+# 	echo ""
+# 	exit
+# fi
+
+if [ "$ALL_PDF_FILES" == "" ]; then
+  echo "  ALL_PDF_FILES env variable doesn't exist"
+  exit
+fi
+
+# -------------------
+# by default your pdf reader is your ~/bin/pdfreader symbolic link
+prog=pdfreader
+
+# Har likes to use other pdf readers, here's how to use them
+if [ "$1" == "acrod" ] || [ "$1" == "a" ]; then
+  prog=acroread
+  shift
+fi
+if [ "$1" == "skim" ] || [ "$1" == "s" ]; then
+  prog=skim
+  shift
+fi
+if [ "$1" == "reader" ] || [ "$1" == "r" ]; then
+  prog="acroread r"
+  # ~/bin/acroread takes "r" argument to say it's acroread
+  shift
+fi
+if [ "$1" == "preview" ] || [ "$1" == "p" ]; then
+  prog=preview
+  shift
+fi
+
+function openPDF {
+  if [ "x$1" != "x" ] && [ -f "$1" ]; then
+    # echo (blue) Opening (green) $1 using (yellow) $prog
+    echo -e "\033[1;34mOpening:\033[0m \033[1;32m$1\033[0m using \033[1;33m$prog\033[0m"
+    $prog "$1" &
+    exit
+  fi
+}
+
+function doAll {
+  if [ $# == 0 ]; then
+    if command -v fzf &>/dev/null; then
+      if [[ "$OSTYPE" == "darwin"* ]]; then
+        # macOS
+        file=$(find -L "$ppath" -type f -name "*.pdf" | fzf --preview "pdftotext {} - | head -2000" --bind "ctrl-y:execute-silent(echo {} | tr -d '\n' | pbcopy)+abort" --preview-window=right:50%:wrap --header="Choose File" --layout=reverse --border --prompt="File> ")
+      else
+        # Linux
+        file=$(find -L "$ppath" -type f -name "*.pdf" | fzf --preview "pdftotext {} - | head -2000" --bind "ctrl-y:execute-silent(echo {} | tr -d '\n' | xclip -selection clipboard)+abort" --preview-window=right:50%:wrap --header="Choose File" --layout=reverse --border --prompt="File> ")
+
+      fi
+      if [ "x$file" != "x" ] && [ -f "$file" ]; then
+        openPDF "$file"
+      fi
+    fi
+    echo -e "\033[1;34mINFO:\033[0m no file selected"
+    exit 0
+  fi
+
+  file=($(findme-withpath -f -p "$ppath" $@))
+  filecnt=${#file[@]}
+  if [ "$filecnt" == 0 ]; then
+    echo -e "\033[1;31mERROR:\033[0m no file found"
+    exit 1
+  fi
+
+  if [ "$filecnt" == 1 ] && [ -f "$file" ]; then
+    openPDF "$file"
+  elif [ "$filecnt" -gt 1 ]; then
+    if command -v fzf &>/dev/null; then
+      # select from file array using fzf
+      file=$(printf '%s\n' "${file[@]}" | fzf --preview "pdftotext {} - | head -2000" --preview-window=right:50%:wrap --header="Choose File" --layout=reverse --border --prompt="File> ")
+      if [ "x$file" != "x" ] && [ -f "$file" ]; then
+        openPDF "$file"
+      fi
+    else
+      echo "Multiple files found:"
+      file_normalized=()
+      for f in "${file[@]}"; do
+        file_normalized+=("- $(basename "$f")")
+      done
+      printf '%s\n' "${file_normalized[@]}"
+    fi
+  else
+    # check if fzf exists
+    if command -v fzf &>/dev/null; then
+      file=$(findme-withpath -f -p "$ppath" $@ | fzf --preview "pdftotext {} - | head -2000" --preview-window=right:50%:wrap --header="Choose File" --layout=reverse --border --prompt="File> ")
+      if [ "x$file" != "x" ] && [ -f "$file" ]; then
+        openPDF "$file"
+      fi
+    else
+      findme-withpath -f -p "$ppath" $@
+    fi
+  fi
+}
+
+doAll $@
+
+# if gets here, doAll does not find one, so let's try something else
+
+# if [ "$filecnt" == 0 ]; then
+# 	if [ -e /machine/retina ]; then
+# 		echo "  not found, try to download using first keyword: $1 "
+# 		cd /scratch/all-pdf-files/
+# 		./z-transfer.sh down "$1"
+# 		doAll "$*"
+# 		exit
+# 	fi
+# 	echo " not found "
+# 	exit
+# fi
+#
+# echo "  Multiple files exist: "
+#
+# findme-withpath -p "$ppath" "$1" "$2" "$3"

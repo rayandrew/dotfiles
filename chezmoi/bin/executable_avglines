@@ -1,0 +1,15 @@
+#!/bin/sh
+
+read -d '' SCRIPT <<'EOF'
+BEGIN { FS = ","; }
+{
+    sum = 0
+    for (i=1;i<=NF;i++) sum += $i
+    avg = sum / NF
+    total += avg
+    print "#" NR ": " avg
+}
+END { print "Total average: " total/NR }
+EOF
+
+awk "$SCRIPT" "$1"

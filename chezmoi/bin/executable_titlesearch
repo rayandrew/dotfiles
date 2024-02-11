@@ -1,0 +1,125 @@
+#!/usr/bin/env bash
+
+
+# 8/21: todo
+# change title search to do a for loop on the arguments, and
+# search per word by argument, until there is no
+# something like "for word in $* grep $word ...
+
+if [ "x$DIRPAPERS" == "x" ]; then
+    echo "   DIRPAPERS environment variable does not exist."
+    echo "   check your .bashrc or other .*rc files"
+    exit
+fi
+
+
+
+if [ $# == 0 ]; then
+    echo ""
+    echo "  titleSearch <keywords>   --> open firefox "
+    echo "  titleSearch . <keywords> --> command line output"
+    echo ""
+    exit
+fi
+
+echo "cd $DIRPAPERS/list-tex"
+cd $DIRPAPERS/list-tex
+
+
+# if local output, shift ignore "."
+localoutput=0
+if [ "$1" == "." ]; then
+    localoutput=1
+    shift
+fi
+
+
+srcstr=""
+if [ $# -gt 0 ]; then
+ while [ $# -gt 0 ]; do
+   case "$1" in
+     *)
+        srcstr="$srcstr.*$1"
+        shift
+       ;;
+   esac
+  done
+fi
+
+if [ "$srcstr" == "" ]; then
+    echo "  titleSearch.sh: no search string"
+    exit
+fi
+
+kname=`echo $srcstr | sed -e 's/.\*//g'`
+fname="tmp-$kname"
+
+if [ -e $fname.tex ]; then
+    echo "  info: $fname.tex already exists, removing.."
+    # removing file
+    rm -f $fname.tex
+    # echo "  remove this file, or change the search term"
+    # exit
+fi
+
+where=`pwd`
+echo "  Where: $where"
+
+# grep search string, and then valid entries
+echo "  titleSearch.sh: grep -i '$srcstr' all-papers > $fname.tex"
+grep -i "$srcstr" all-papers > .tmp1
+wc -l .tmp1
+grep "^[A-Z].* \\\\\\\\ [0-9][0-9]" .tmp1 > $fname.tex
+
+
+
+
+# if local output only then exit
+if [ $localoutput == 1 ]; then
+    mv $fname.tex /tmp/
+    exit
+fi
+
+
+
+
+# generate the html file (using all.sh)
+cp $fname.tex /tmp/$fname.tex
+echo "  titleSearch.sh: calling ./all.sh $fname"
+./all.sh $fname
+
+cd ..
+
+# remove the temporary files
+echo "  titleSearch.sh: clean up ..."
+if [ ! -e /tmp/titlesearch ]; then
+    mkdir /tmp/titlesearch
+fi
+rm -f /tmp/titlesearch/tmp-*.html
+mv -f html/$fname.html /tmp/titlesearch/
+mv -f list-tex/$fname.tex /tmp/titlesearch/
+rm -f .tmp*
+
+# open the html file
+echo "  titleSearch.sh: open /tmp/titlesearch/$fname.html"
+open /tmp/titlesearch/$fname.html
+
+
+# show results on screen
+echo ""
+grep -i --color "$srcstr" /tmp/$fname.tex
+echo ""
+
+
+# check sum link
+if [ ! -e /tmp/titlesearch/sum ]; then
+   ln -s $DIRPAPERS/summaries /tmp/titlesearch/sum
+fi
+
+# done
+echo "  titleSearch.sh: done.  The outputs in: "
+echo "    /tmp/titlesearch/$fname.tex"
+echo "    /tmp/titlesearch/$fname.html"
+echo ""
+
+

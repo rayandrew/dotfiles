@@ -86,7 +86,7 @@
         nixos-flake.primary-inputs = ["nixpkgs" "home-manager" "nix-darwin" "nixos-flake"];
 
         devShells.default = pkgs.mkShell {
-          name = "nix-config";
+          name = "dotfiles";
           nativeBuildInputs = [
             config.treefmt.build.wrapper
           ];

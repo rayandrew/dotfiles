@@ -1,0 +1,432 @@
+{
+  "editor.accessibilitySupport": "off",
+  "editor.renderControlCharacters": false,
+  "editor.scrollbar.horizontalScrollbarSize": 2,
+  "editor.scrollbar.verticalScrollbarSize": 2,
+  "editor.wordWrap": "on",
+  "isort.args": [
+    "--profile",
+    "black"
+  ],
+  "telemetry.telemetryLevel": "off",
+  "terminal.integrated.allowChords": false,
+  "terminal.integrated.fontSize": 18,
+  "terminal.integrated.macOptionClickForcesSelection": true,
+  "update.mode": "none",
+  "files.watcherExclude": {
+    "**/.git/objects/**": true,
+    "**/.git/subtree-cache/**": true,
+    "**/node_modules/*/**": true
+  },
+  // vim
+  "vim.disableExtension": false,
+  "vim.easymotion": true,
+  "vim.handleKeys": {
+    "<C-a>": false,
+    "<C-f>": false
+  },
+  "vim.hlsearch": true,
+  "vim.incsearch": true,
+  "vim.insertModeKeyBindings": [
+    {
+      "after": [
+        "<Esc>"
+      ],
+      "before": [
+        "j",
+        "j"
+      ]
+    }
+  ],
+  "vim.leader": "<space>",
+  "vim.normalModeKeyBindingsNonRecursive": [
+    {
+      "before": [
+        "<leader>",
+        "d"
+      ],
+      "after": [
+        "d",
+        "d"
+      ],
+    },
+    {
+      "before": [
+        "j"
+      ],
+      "after": [
+        "g",
+        "j"
+      ],
+    },
+    {
+      "after": [
+        "g",
+        "k"
+      ],
+      "before": [
+        "k"
+      ]
+    },
+    {
+      "before": [
+        "<C-n>"
+      ],
+      "commands": [
+        ":nohl"
+      ]
+    },
+    {
+      "before": [
+        "K"
+      ],
+      "commands": [
+        "editor.action.peekDefinition"
+      ]
+    },
+    {
+      "before": [
+        "<leader>",
+        "f",
+        "s"
+      ],
+      "commands": [
+        ":w"
+      ]
+    },
+    {
+      "before": [
+        "<leader>",
+        "e"
+      ],
+      "commands": [
+        "workbench.action.toggleSidebarVisibility"
+      ]
+    },
+    {
+      "before": [
+        "<leader>",
+        "s",
+        "p"
+      ],
+      "commands": [
+        "workbench.action.findInFiles",
+        // "find-it-faster.findWithinFiles"
+      ]
+    },
+    {
+      "before": [
+        "<leader>",
+        "s",
+        "/"
+      ],
+      "commands": [
+        // "find-it-faster.findWithinFiles"
+      ]
+    },
+    {
+      "before": [
+        "<leader>",
+        "<leader>"
+      ],
+      "commands": [
+        "workbench.action.showCommands"
+      ]
+    },
+    {
+      "before": [
+        "<leader>",
+        "f",
+        "f"
+      ],
+      "commands": [
+        "workbench.action.quickOpen"
+        // "find-it-faster.findFiles"
+      ]
+    },
+    {
+      "after": [
+        "<C-w>",
+        "v"
+      ],
+      "before": [
+        "<leader>",
+        "w",
+        "v"
+      ]
+    },
+    {
+      "after": [
+        "<C-w>",
+        "s"
+      ],
+      "before": [
+        "<leader>",
+        "w",
+        "s"
+      ]
+    },
+    {
+      "after": [
+        "<C-w>",
+        "q"
+      ],
+      "before": [
+        "<leader>",
+        "w",
+        "q"
+      ]
+    },
+    {
+      "after": [
+        "<C-w>",
+        "j"
+      ],
+      "before": [
+        "<C-j>"
+      ]
+    },
+    {
+      "after": [
+        "<C-w>",
+        "h"
+      ],
+      "before": [
+        "<leader>",
+        "w",
+        "h"
+      ]
+    },
+    {
+      "after": [
+        "<C-w>",
+        "j"
+      ],
+      "before": [
+        "<C-j>"
+      ]
+    },
+    {
+      "after": [
+        "<C-w>",
+        "j"
+      ],
+      "before": [
+        "<leader>",
+        "w",
+        "j"
+      ]
+    },
+    {
+      "after": [
+        "<C-w>",
+        "k"
+      ],
+      "before": [
+        "<C-k>"
+      ]
+    },
+    {
+      "after": [
+        "<C-w>",
+        "k"
+      ],
+      "before": [
+        "<leader>",
+        "w",
+        "k"
+      ]
+    },
+    {
+      "after": [
+        "<C-w>",
+        "l"
+      ],
+      "before": [
+        "<C-l>"
+      ]
+    },
+    {
+      "after": [
+        "<C-w>",
+        "l"
+      ],
+      "before": [
+        "<leader>",
+        "w",
+        "l"
+      ]
+    },
+    {
+      "before": [
+        "<leader>",
+        "b",
+        "d"
+      ],
+      "commands": [
+        ":bd"
+      ]
+    },
+    {
+      "before": [
+        "<leader>",
+        "b",
+        "b"
+      ],
+      "commands": [
+        "workbench.action.openPreviousEditorFromHistory"
+      ]
+    },
+
+    // {
+    //   "before": [
+    //     "shift",
+    //     "h",
+    //   ],
+    //     "commands": [
+    //       "workbench.action.previousEditor"
+    //     ]
+    // },
+    // {
+    //   "before": [
+    //     "shift",
+    //     "l",
+    //   ],
+    //     "commands": [
+    //       "workbench.action.nextEditor"
+    //     ]
+    // }
+  ],
+  "vim.useCtrlKeys": true,
+  "vim.useSystemClipboard": true,
+  "window.commandCenter": false,
+  "workbench.editor.enablePreview": false,
+  "workbench.startupEditor": "none",
+  "extensions.experimental.affinity": {
+    "ms-toolsai.jupyter": 1,
+    "ms-toolsai.jupyter-renderers": 1,
+    "ms-python.python": 1
+  },
+  "editor.inlineSuggest.enabled": true,
+  "terminal.integrated.inheritEnv": false,
+  // Disables the Minimap
+  "editor.minimap.enabled": false,
+  // Only renders whitespace when a portion of text is selected
+  "editor.renderWhitespace": "selection",
+  // Disable line highlight, you can enable this if you want
+  "editor.renderLineHighlight": "none",
+  // Disables the overview ruler.
+  "editor.overviewRulerBorder": false,
+  // Some stuff about the overview rules
+  "editor.hideCursorInOverviewRuler": true,
+  // Disables code folding
+  "editor.folding": false,
+  // Do not highlight word occurences
+  "editor.occurrencesHighlight": "off",
+  // Don't match brackets
+  "editor.matchBrackets": "never",
+  // Bracket-pair colorization
+  "editor.bracketPairColorization.enabled": false,
+  // Bracket-pair guides
+  "editor.guides.bracketPairsHorizontal": true,
+  "editor.guides.highlightActiveBracketPair": true,
+  // Indentation guides
+  "editor.guides.indentation": true,
+  "editor.guides.highlightActiveIndentation": true,
+  // Disable glyph margin
+  "editor.glyphMargin": false,
+  // Don't show open editors in the Explorer pane
+  "explorer.openEditors.visible": 0,
+  // Disable icons in the tabs
+  "workbench.editor.showIcons": false,
+  // Color for Indenticator(for indentation level)
+  "indenticator.color.dark": "rgba(255,255,255,.1)",
+  "workbench.colorCustomizations": {
+    // Tab active border
+    "tab.activeBorder": "#0000"
+  },
+  // Set font family. You can use your custom font, for example 'Fira Code'
+  "editor.fontFamily": "Inconsolata",
+  "editor.fontSize": 16,
+  "editor.lineHeight": 20,
+  // "editor.fontFamily": "Fira Mono",
+  // "editor.fontSize": 14,
+  // "editor.lineHeight": 22,
+  // Enable font ligatures
+  "editor.fontLigatures": true,
+  // Enable the cool cursive like font variations
+  "editor.fontVariations": true,
+  // Enables that smooth caret animation, mwah !
+  // "editor.cursorStyle": "block",
+  "editor.cursorBlinking": "solid",
+  // Make the cursor move around the code smoothly
+  "editor.cursorSmoothCaretAnimation": "off",
+  // Enable line numbesr
+  "editor.lineNumbers": "on",
+  // Enables different color pools for different bracket types, for example {}, [], ()
+  "editor.bracketPairColorization.independentColorPoolPerBracketType": true,
+  // Enable guides for bracket pairs
+  "editor.guides.bracketPairs": false,
+  // Disbles breadcrumbs. Please, do not enable them, for the love of god, please
+  "breadcrumbs.enabled": true,
+  // Hides the ugly menu bar
+  "window.menuBarVisibility": "hidden",
+  // Sets the window title 
+  "window.title": "${rootName} -- ${dirty}${activeEditorShort}",
+  // Disable indent guides
+  "workbench.tree.renderIndentGuides": "none",
+  // Icon theme for the window icons and autocomplete suggestions
+  "workbench.productIconTheme": "material-product-icons",
+  // Enables smooth scrolling, a must have 
+  "editor.smoothScrolling": true,
+  // Disables the close button on tabs, you can enable if you want
+  "workbench.editor.tabCloseButton": "off",
+  "workbench.layoutControl.enabled": false,
+  "workbench.statusBar.visible": true,
+  "workbench.list.openMode": "doubleClick",
+  "workbench.layoutControl.type": "menu",
+  "workbench.editor.limit.enabled": true,
+  "workbench.editor.limit.value": 10,
+  "workbench.editor.limit.perEditorGroup": true,
+  "workbench.editor.splitInGroupLayout": "horizontal",
+  "workbench.editor.showTabs": "multiple",
+  // programming language
+  // "[python]": {
+  //   "editor.codeActionsOnSave": {
+  //     "source.organizeImports": true
+  //   },
+  //   "editor.defaultFormatter": "ms-python.black-formatter",
+  //   "editor.formatOnSave": true
+  // },
+  "notebook.codeActionsOnSave": {
+    "source.organizeImports": true
+  },
+  "notebook.formatOnSave.enabled": true,
+  "workbench.activityBar.location": "hidden",
+  "editor.codeActionsOnSave": {
+  
+  },
+  "[c]": {
+    "editor.defaultFormatter": "xaver.clang-format"
+  },
+  "everforest.darkContrast": "hard",
+  "everforest.darkWorkbench": "flat",
+  "workbench.editor.tabActionCloseVisibility": false,
+  // "editor.tokenColorCustomizations": {
+  //   "textMateRules": [
+  //     {
+  //       "scope": [
+  //         "variable",
+  //         "variable.other",
+  //         "variable.other.readwrite",
+  //         "variable.function",
+  //         "entity.name.function",
+  //       ],
+  //       "settings": {
+  //         "foreground": "#d1b897",
+  //       }
+  //     }
+  //   ]
+  // }
+  "python.terminal.activateEnvironment": false
+}

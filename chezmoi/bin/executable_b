@@ -1,0 +1,289 @@
+#!/usr/bin/env bash
+
+BOOKMARKS_FILE="$RS_BOOKMARKS_FILE"
+
+if [ "x$BOOKMARKS_FILE" == "x" ]; then
+	echo -e "\033[1;31mERROR\033[0m: BOOKMARKS_FILE env variable doesn't exist"
+	exit 1
+fi
+
+SEARCHTERM=""
+VERBOSE=0
+if [ $# -gt 0 ]; then
+	while [ $# -gt 0 ]; do
+		case "$1" in
+		-o | --open)
+			editor "$BOOKMARKS_FILE"
+			shift
+			exit
+			;;
+		--version)
+			echo "b version 0.1.0"
+			shift
+			exit
+			;;
+		-v)
+			VERBOSE=1
+			shift
+			;;
+		*)
+			if [[ "$SEARCHTERM" == "" ]]; then
+				SEARCHTERM+="$1"
+			else
+				SEARCHTERM+=".*$1"
+			fi
+			shift
+			;;
+		esac
+	done
+fi
+
+# check if fzf is installed, if not, exit
+if ! command -v fzf &>/dev/null; then
+	echo -e "\033[1;31mERROR\033[0m: fzf is not installed"
+	exit 1
+fi
+
+# create key-value of descriptions using url as key
+declare -A SECTIONS
+declare -A DESCRIPTIONS
+declare -A DESCRIPTIONS_LINE
+
+description=""
+description_line=""
+section=""
+url=""
+tags=""
+old_IFS=$IFS # save the field separator
+IFS=$'\n'    # new field separator, the end of line
+while read -r -a line; do
+	# empty line skip
+	if [[ "$line" =~ ^$ ]]; then
+		if [[ "$url" != "" ]]; then
+			SECTIONS["$url"]="$section"
+			DESCRIPTIONS["$url"]="$description"
+			if [ "$tags" != "" ]; then
+				DESCRIPTIONS_LINE["$url"]="$section -- $description_line ($tags)"
+			else
+				DESCRIPTIONS_LINE["$url"]="$section -- $description_line"
+			fi
+			url=""
+			description=""
+			description_line=""
+			tags=""
+			continue
+		fi
+		url=""
+		description=""
+		description_line=""
+		tags=""
+		continue
+	fi
+	if [[ "$line" =~ ^\= ]]; then
+		section=$(echo "$line" | sed -e 's/=//g')
+		# remove leading and trailing space
+		section=$(echo "$section" | sed -e 's/^[[:space:]]*//g' -e 's/[[:space:]]*$//g')
+		continue
+	fi
+
+	if [[ "$line" =~ ^http ]]; then
+		url="$line"
+		description=""
+		description_line=""
+		continue
+	fi
+
+	# if line starts with %, it is a comment
+	if [[ "$line" =~ ^% ]]; then
+		continue
+	fi
+
+	if [[ "$line" =~ ^[^\t] ]]; then
+		# remove leading tab
+		# remove string before dash --<space> (this is just for helping us searching in editor)
+		line=$(echo "$line" | sed -e 's/.*-- //g')
+		# remove leading space/tab
+		line=$(echo "$line" | sed -e 's/^\t//g')
+
+		# if line starts with tags: it is tags, separated by comma and space
+		if [[ "$line" =~ ^tags: ]]; then
+			tags=$(echo "$line" | sed -e 's/tags: //g')
+			tags=$(echo "$tags" | sed -e 's/, /,/g')
+			continue
+		fi
+
+		if [[ "$description" != "" ]]; then
+			description+="\n"
+		fi
+		description+="$line"
+		# remove symbols, quotes, except dash
+		cleaned_line=$(echo "$line" | sed -e 's/[^a-zA-Z0-9 \-]//g')
+		# remove all newline, tab
+		cleaned_line=$(echo "$cleaned_line" | sed -e ':a' -e 'N' -e '$!ba' -e 's/\\n/ /g' -e 's/\\t/ /g' -e 's/^\t//g')
+		# remove excessive space
+		cleaned_line=$(echo "$cleaned_line" | sed -e 's/^[[:space:]]*//g' -e 's/[[:space:]]*$//g')
+		if [[ "$description_line" != "" ]]; then
+			description_line+=" "
+		fi
+		description_line+="$cleaned_line"
+	fi
+done <"$BOOKMARKS_FILE"
+IFS=$old_IFS
+
+# =========== PREVIEW ===========
+
+function generate_preview() {
+	# generate /tmp/bookmarks.sh
+	TEMP=$(mktemp /tmp/bookmarks.XXXXXX.sh)
+	echo "#!/usr/bin/env bash" >"$TEMP"
+	echo "declare -A SECTIONS" >>"$TEMP"
+	echo "declare -A DESCRIPTIONS" >>"$TEMP"
+	echo "declare -A DESCRIPTIONS_LINE" >>"$TEMP"
+	echo "SECTIONS=(" >>"$TEMP"
+	for i in "${!SECTIONS[@]}"; do
+		echo "    [\"$i\"]=\"${SECTIONS[$i]}\"" >>"$TEMP"
+	done
+	echo ")" >>"$TEMP"
+	echo "DESCRIPTIONS=(" >>"$TEMP"
+	for i in "${!DESCRIPTIONS[@]}"; do
+		echo "    [\"$i\"]=\"${DESCRIPTIONS[$i]}\"" >>"$TEMP"
+	done
+	echo ")" >>"$TEMP"
+	echo "DESCRIPTIONS_LINE=(" >>"$TEMP"
+	for i in "${!DESCRIPTIONS_LINE[@]}"; do
+		echo "    [\"$i\"]=\"${DESCRIPTIONS_LINE[$i]}\"" >>"$TEMP"
+	done
+	echo ")" >>"$TEMP"
+	echo "url_preview() {" >>"$TEMP"
+	echo "    # get all arguments" >>"$TEMP"
+	echo "    criteria=\"\$@\"" >>"$TEMP"
+	echo "    # change newline to space" >>"$TEMP"
+	echo "    criteria=\$(echo \"\$criteria\" | sed -e ':a' -e 'N' -e '\$!ba' -e 's/\\n/ /g')" >>"$TEMP"
+	echo "    # change tab to space" >>"$TEMP"
+	echo "    criteria=\$(echo \"\$criteria\" | sed -e 's/\\t/ /g')" >>"$TEMP"
+	echo "    # change space to *" >>"$TEMP"
+	echo "    criteria=\$(echo \"\$criteria\" | sed -e 's/ /\\.*/g')" >>"$TEMP"
+	echo "    # echo \"criteria = \$criteria\"" >>"$TEMP"
+	echo "    # search for url" >>"$TEMP"
+	echo "    for url in \"\${!DESCRIPTIONS_LINE[@]}\"; do" >>"$TEMP"
+	echo "        desc=\"\${DESCRIPTIONS_LINE[\$url]}\"" >>"$TEMP"
+	echo "        # grep case insensitive" >>"$TEMP"
+	echo "        found=\$(echo \"\$desc\" | grep -i \"\$criteria\")" >>"$TEMP"
+	echo "        # echo \"desc = \$desc, found = \$found\"" >>"$TEMP"
+	echo "        if [[ -n \"\$found\" ]]; then" >>"$TEMP"
+	echo "            section=\"\${SECTIONS[\$url]}\"" >>"$TEMP"
+	echo "            description=\"\${DESCRIPTIONS[\$url]}\"" >>"$TEMP"
+	echo "            echo \"\$url\"" >>"$TEMP"
+	echo "            echo \"\"" >>"$TEMP"
+	echo "            # echo \"Section: \$section\"" >>"$TEMP"
+	echo "            # section using yellow color" >>"$TEMP"
+	echo "            printf \"\033[1;33mSection:\033[0m \$section\n\"" >>"$TEMP"
+	echo "            # description using green color" >>"$TEMP"
+	echo "            printf \"\033[1;32mDescription:\033[0m \n\"" >>"$TEMP"
+	echo "            printf \"\$description\n\"" >>"$TEMP"
+	echo "            break" >>"$TEMP"
+	echo "        fi" >>"$TEMP"
+	echo "    done" >>"$TEMP"
+	echo "}" >>"$TEMP"
+	echo "url_preview \"\$@\"" >>"$TEMP"
+	chmod +x "$TEMP"
+	echo "$TEMP"
+}
+
+if [[ "$VERBOSE" == 1 ]]; then
+	# info blue color
+	echo -e "\033[1;34mINFO\033[0m: Generating preview script"
+fi
+
+TEMP=$(generate_preview)
+
+if [[ "$VERBOSE" == 1 ]]; then
+	# info blue color
+	echo -e "\033[1;34mINFO\033[0m: Preview script generated at $TEMP"
+fi
+
+rm_temp() {
+	if [[ "$VERBOSE" == 1 ]]; then
+		# info blue color
+		echo -e "\033[1;34mINFO\033[0m: Removing preview script at $TEMP"
+	fi
+	rm "$TEMP"
+}
+
+# =========== SEARCHTERM ===========
+
+open_url() {
+	url="$1"
+	if [[ "$VERBOSE" == 1 ]]; then
+		# info blue color
+		echo -e "\033[1;34mINFO\033[0m: Opening $url"
+	fi
+	xdg-open "$url"
+	rm_temp
+	exit 0
+}
+
+if [[ "$SEARCHTERM" != "" ]]; then
+	SEARCHTERM="$SEARCHTERM.*"
+	# search all possible descriptions from DESCRIPTIONS_LINE in insensitive case
+	# and put them in an array
+	declare -a SEARCH_RESULTS
+	for i in "${!DESCRIPTIONS_LINE[@]}"; do
+		desc="${DESCRIPTIONS_LINE[$i]}"
+		found=$(echo "${desc}" | grep -i "$SEARCHTERM")
+		# echo "$found ---- $i ---- $desc ---- $SEARCHTERM"
+		if [[ -n "$found" ]]; then
+			SEARCH_RESULTS+=("${DESCRIPTIONS_LINE[$i]}")
+		fi
+	done
+
+	# if there is no result, exit
+	if [[ "${#SEARCH_RESULTS[@]}" == 0 ]]; then
+		echo -e "\033[1;31mERROR\033[0m: No result found"
+		rm_temp
+		exit 1
+	fi
+
+	# if there is only one result, open it
+	if [[ "${#SEARCH_RESULTS[@]}" == 1 ]]; then
+		for i in "${!DESCRIPTIONS_LINE[@]}"; do
+			if [[ "${DESCRIPTIONS_LINE[$i]}" == *"${SEARCH_RESULTS[0]}"* ]]; then
+				url="$i"
+				break
+			fi
+		done
+		open_url "$url"
+	fi
+
+	# if there are more than one result, open fzf
+	# and let user choose
+	selected=$(printf '%s\n' "${SEARCH_RESULTS[@]}" | sort -u | fzf --preview="bash $TEMP {}" --preview-window=right:50%:wrap --header="Choose Desc" --layout=reverse --border --prompt="DESC> ")
+	if [[ "$selected" != "" ]]; then
+		for i in "${!DESCRIPTIONS_LINE[@]}"; do
+			if [[ "${DESCRIPTIONS_LINE[$i]}" == *"$selected"* ]]; then
+				url="$i"
+				break
+			fi
+		done
+		open_url "$url"
+	fi
+
+	echo -e "\033[1;31mERROR\033[0m: No result found"
+	rm_temp
+	exit 1
+fi
+
+# =========== FZF ===========
+
+selected=$(printf '%s\n' "${DESCRIPTIONS_LINE[@]}" | sort -u | fzf --preview="bash $TEMP {}" --preview-window=right:50%:wrap --header="Choose Desc" --layout=reverse --border --prompt="DESC> ")
+if [[ "$selected" != "" ]]; then
+	for i in "${!DESCRIPTIONS_LINE[@]}"; do
+		if [[ "${DESCRIPTIONS_LINE[$i]}" == *"$selected"* ]]; then
+			url="$i"
+			break
+		fi
+	done
+	open_url "$url"
+fi
+
+rm_temp

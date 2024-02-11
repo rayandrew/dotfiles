@@ -1,0 +1,88 @@
+#!/usr/bin/env bash
+
+# This was paper-summ, paper-summary before
+
+if [ "x$DIRPAPERS" == "x" ]; then
+    echo "   DIRPAPERS environment variable does not exist."
+    echo "   check your .bashrc or other .*rc files"
+    exit
+fi
+
+str=""
+verbose=0
+if [ $# -gt 0 ]; then
+ while [ $# -gt 0 ]; do
+   case "$1" in
+     -v|--verbose)
+      verbose=1
+      shift
+      ;;
+     *)
+      if [ "x$str" == "x" ]; then
+        str="$1"
+      else
+        str="$str.*$1"
+      fi
+      shift
+      ;;
+    esac
+  done
+fi
+
+
+ppath="$DIRPAPERS/summaries"
+
+cd $ppath
+
+
+files=($(find -L . -type f -iname "*.txt" | grep -i "$str" | grep -v '~' | sed 's/^\.\///g' | sort -r))
+filecnt=${#files[@]}
+
+if [ $verbose == 1 ]; then
+  # echo info blue
+  echo -e "\e[34mINFO:\e[0m searching in $ppath"
+  echo -e "\e[34mINFO:\e[0m searching for files matching: $str"
+  echo -e "\e[34mINFO:\e[0m $filecnt files found"
+  echo -e "\e[34mINFO:\e[0m Found files:"
+  for file in "${files[@]}"; do
+    echo -e "   $file"
+  done
+fi
+
+
+if [ $filecnt == 1 ]; then
+    file=${files[0]}
+    echo ""
+    echo "  $file "
+    echo ""
+    echo "  textedit $ppath/$file "
+    echo ""
+
+    editor $file
+elif [ $filecnt == 0 ]; then
+  echo -e "\e[31mERROR:\e[0m no files found"
+else
+    # check if fzf exists
+    if command -v fzf &> /dev/null; then
+      if [[ "$OSTYPE" == "darwin"* ]]; then
+        # macOS
+        # select from files
+        # file=$(printf '%s\n' "${files[@]}" | xargs -n 1 -I @ sh -c 'echo $(basename $(dirname "@"))/$(basename "@")' | fzf --preview "cat $ppath/{}" --preview-window=right:50%:wrap --header="Choose File" --layout=reverse --border --prompt="File> " --bind "ctrl-y:execute-silent(echo {} | tr -d '\n' | pbcopy)+abort" --preview-window=right:50%:wrap --header="Choose File" --layout=reverse --border --prompt="File> ")
+        file=$(printf '%s\n' "${files[@]}" | fzf --preview "cat {}" --preview-window=right:50%:wrap --header="Choose File" --layout=reverse --border --prompt="File> " --bind "ctrl-y:execute-silent(realpath {} | tr -d '\n' | pbcopy)+abort" --preview-window=right:50%:wrap --header="Choose File" --layout=reverse --border --prompt="File> ")
+        # file=$(find -L "." -type f -iname "*.txt" | fzf --preview "cat {}" --preview-window=right:50%:wrap --header="Choose File" --layout=reverse --border --prompt="File> " --bind "ctrl-y:execute-silent(echo {} | tr -d '\n' | pbcopy)+abort" --preview-window=right:50%:wrap --header="Choose File" --layout=reverse --border --prompt="File> ")
+      else
+        # Linux
+        # file=$(printf '%s\n' "${files[@]}" | xargs -n 1 -I @ sh -c 'echo $(basename $(dirname "@"))/$(basename "@")' | fzf --preview "cat $ppath/{}" --preview-window=right:50%:wrap --header="Choose File" --layout=reverse --border --prompt="File> " --bind "ctrl-y:execute-silent(echo {} | tr -d '\n' | xclip -selection clipboard)+abort" --preview-window=right:50%:wrap --header="Choose File" --layout=reverse --border --prompt="File> ")
+        file=$(find -L . -type f -iname "*.txt" | fzf --preview "cat {}" --preview-window=right:50%:wrap --header="Choose File" --layout=reverse --border --prompt="File> " --bind "ctrl-y:execute-silent(realpath {} | tr -d '\n' | xclip -selection clipboard)+abort" --preview-window=right:50%:wrap --header="Choose File" --layout=reverse --border --prompt="File> ")
+      fi
+      if [ "x$file" != "x" ]; then
+        echo ""
+        echo "  $file "
+        echo ""
+        echo ""
+        editor "$ppath/$file"
+      fi
+    else
+      find -L . -name "*" | grep -v '~' | grep -i --color "$str"
+    fi
+fi

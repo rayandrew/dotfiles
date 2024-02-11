@@ -1,0 +1,198 @@
+# Use emacs keymap as the default.
+bindkey -e
+
+export PATH="/etc/profiles/per-user/$USER/bin:/run/current-system/sw/bin/:$PATH"
+export PATH="$HOME/.bin:$PATH"
+export PATH="$HOME/bin:$PATH"
+export PATH="$HOME/.local/bin:$PATH"
+export PATH="$HOME/opt/go/bin:$PATH"
+export PATH="$HOME/opt/parallel/bin:$PATH"
+export PATH="$PATH:$HOME/.local/bin"
+export PATH="$PATH:$HOME/.cargo/bin"
+
+source "$HOME/.config/zsh/general.zsh"
+
+source "$HOME/.config/zsh/conda.zsh"
+source "$HOME/.config/zsh/nix.zsh"
+source "$HOME/.config/zsh/utils.zsh"
+
+source "$HOME/.config/zsh/aliases.zsh"
+source "$HOME/.config/zsh/personal.zsh"
+source "$HOME/.config/zsh/teaching.zsh"
+
+ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
+[ ! -d $ZINIT_HOME ] && mkdir -p "$(dirname $ZINIT_HOME)"
+[ ! -d $ZINIT_HOME/.git ] && git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
+source "${ZINIT_HOME}/zinit.zsh"
+
+zinit light zdharma-continuum/zinit-annex-patch-dl
+zinit light zdharma-continuum/zinit-annex-bin-gem-node
+
+zinit ice wait'!' lucid atload'source $HOME/.p10k.zsh; _p9k_precmd' nocd
+zinit light romkatv/powerlevel10k
+
+zinit ice \
+  wait"0a" \
+  from"gh-r" \
+  as"program" \
+  dl"https://raw.githubusercontent.com/junegunn/fzf/master/bin/fzf-tmux" \
+  dl"https://raw.githubusercontent.com/junegunn/fzf/master/shell/completion.zsh -> _fzf_completion" \
+  dl"https://raw.githubusercontent.com/junegunn/fzf/master/shell/key-bindings.zsh -> key-bindings.zsh" \
+  dl"https://raw.githubusercontent.com/junegunn/fzf/master/man/man1/fzf-tmux.1 -> $ZPFX/man/man1/fzf-tmux.1" \
+  dl"https://raw.githubusercontent.com/junegunn/fzf/master/man/man1/fzf.1 -> $ZPFX/man/man1/fzf.1" \
+  src"key-bindings.zsh"
+# zinit ice from"gh-r" as"program"
+zinit light junegunn/fzf
+zinit light unixorn/fzf-zsh-plugin
+
+function init_zvm() {
+}
+
+zvm_config() {
+  ZVM_LINE_INIT_MODE=$ZVM_MODE_INSERT
+  ZVM_CURSOR_STYLE_ENABLED=false
+}
+zinit ice depth=1
+zinit light jeffreytse/zsh-vi-mode
+zvm_after_init_commands+=(init_zvm)
+
+zinit ice wait"0c" lucid reset \
+  atclone"local P=${${(M)OSTYPE:#*darwin*}:+g}
+      \${P}sed -i \
+      '/DIR/c\DIR 38;5;63;1' LS_COLORS; \
+      \${P}dircolors -b LS_COLORS > c.zsh" \
+  atpull'%atclone' pick"c.zsh" nocompile'!' \
+  atload'zstyle ":completion:*" list-colors "${(s.:.)LS_COLORS}"'
+zinit light trapd00r/LS_COLORS
+
+ZSH_AUTOSUGGEST_STRATEGY=(history completion)
+zinit light zsh-users/zsh-autosuggestions
+zinit light zsh-users/zsh-history-substring-search
+
+# Autosuggestions & fast-syntax-highlighting
+zinit wait lucid for \
+  atinit"ZINIT[COMPINIT_OPTS]=-C; zicompinit; zicdreplay" \
+      zdharma-continuum/fast-syntax-highlighting \
+  blockf \
+      zsh-users/zsh-completions \
+  atload"!_zsh_autosuggest_start" \
+      zsh-users/zsh-autosuggestions
+
+if ! command -v zoxide &> /dev/null; then
+  zinit ice wait"1" as"command" from"gh-r" lucid \
+    mv"zoxide*/zoxide -> zoxide" \
+    atclone"./zoxide init zsh > init.zsh" \
+    atpull"%atclone" src"init.zsh" nocompile'!'
+  zinit light ajeetdsouza/zoxide
+else
+  if [ ! -f "$HOME/.config/zsh/zoxide.zsh" ]; then
+    zoxide init zsh > "$HOME/.config/zsh/zoxide.zsh"
+  fi
+  source $HOME/.config/zsh/zoxide.zsh
+fi
+
+if ! command -v eza &> /dev/null; then
+  zinit ice wait"0" lucid from"gh-r" as"program" depth=1 \
+    atclone'chmod +x *eza \
+        && git clone https://github.com/eza-community/eza.git eza-src \
+        && cp eza-src/completions/zsh/_eza . \
+        && rm -rf eza-src'
+  zinit light eza-community/eza
+fi
+
+if ! command -v rg &> /dev/null; then
+  zinit ice wait"1" lucid as"command" from"gh-r" mv"ripgrep* -> rg" pick"rg/rg"
+  zinit light BurntSushi/ripgrep
+fi
+
+if ! command -v fd &> /dev/null; then
+  zinit ice wait"1" lucid from"gh-r" as"command" mv"fd* -> fd-src" depth=1 \
+    atclone'chmod +x fd-src/fd \
+      && cp fd-src/fd . \
+      && cp fd-src/autocomplete/_fd . \
+      && rm -rf fd-src'
+  zinit light sharkdp/fd
+fi
+
+if ! command -v bat &> /dev/null; then
+  zinit ice wait"1" lucid from"gh-r" as"command" mv"bat* -> bat-src" depth=1 \
+    atclone'chmod +x bat-src/bat \
+      && cp bat-src/bat . \
+      && cp bat-src/autocomplete/bat.zsh _bat \
+      && rm -rf bat-src'
+  zinit light sharkdp/bat
+fi
+
+if ! command -v fnm &> /dev/null; then
+  zinit ice wait"1" lucid \
+      from'gh-r' \
+      as'command' \
+      atclone"./fnm completions --shell zsh > _fnm" \
+      atload'eval "$(fnm env --shell zsh --use-on-cd)"' \
+      atpull'%atclone' \
+      nocompile \
+      sbin'fnm'
+  zinit light Schniz/fnm
+else
+  eval "$(fnm env --shell zsh --use-on-cd)"
+fi
+
+if ! command -v direnv &> /dev/null; then
+  zinit ice wait"1" lucid \
+      as"program" \
+      atclone'./direnv hook zsh > zhook.zsh' \
+      from"gh-r" \
+      light-mode \
+      mv"direnv* -> direnv" \
+      src'zhook.zsh'
+  zinit light direnv/direnv
+fi
+
+if ! command -v delta &> /dev/null; then
+  zinit ice wait"1" lucid \
+      from'gh-r' \
+      as'program' \
+      sbin'**/delta -> delta'
+  zinit light dandavison/delta
+fi
+
+if ! command -v tokei &> /dev/null; then
+  zinit ice wait"1" lucid \
+      from'gh-r' \
+      as'program' \
+      sbin'**/tokei -> tokei'
+  zinit light XAMPPRocky/tokei
+fi
+
+if ! command -v fx &> /dev/null; then
+  zinit ice wait"1" lucid \
+      from'gh-r'  \
+      atclone'mv fx* fx && chmod +x fx' \
+      as'program'
+  zinit light antonmedv/fx
+fi
+
+zinit ice wait"0c" lucid reset depth=1 \
+  atclone"" \
+  atpull"%atclone" pick"zsh/fzf-zsh-completion.sh" nocompile'!' \
+  atload"bindkey '^I' fzf-completion"
+zinit light lincheney/fzf-tab-completion
+
+# typeset -U path cdpath fpath manpath
+
+HISTSIZE="10000"
+SAVEHIST="10000"
+
+HISTFILE="$HOME/.zsh_history"
+mkdir -p "$(dirname "$HISTFILE")"
+
+setopt HIST_FCNTL_LOCK
+setopt HIST_IGNORE_DUPS
+unsetopt HIST_IGNORE_ALL_DUPS
+setopt HIST_IGNORE_SPACE
+unsetopt HIST_EXPIRE_DUPS_FIRST
+setopt SHARE_HISTORY
+unsetopt EXTENDED_HISTORY
+
+# autoload -Uz compinit
+# compinit -u

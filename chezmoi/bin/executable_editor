@@ -1,0 +1,9 @@
+#!/bin/sh
+
+# if you love emacs, then nothing to be changed here
+
+# emacs $*
+
+# if you love vi, then enable this below:
+
+vim $@

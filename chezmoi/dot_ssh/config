@@ -1,0 +1,174 @@
+Host *.amazonaws.com
+  ControlMaster no
+  ControlPath none
+  LogLevel FATAL
+  RequestTTY yes
+Host login-gce
+  User rayandrew
+  HostName logins.cels.anl.gov
+  ControlMaster auto
+  ControlPersist yes
+  LogLevel FATAL
+Host *.cels.anl.gov !logins.cels.anl.gov
+  ForwardX11Trusted yes
+  User rayandrew
+  ProxyJump login-gce
+Host *.github.com
+  AddKeysToAgent yes
+Host bebop
+  ForwardX11Trusted yes
+  User rayandrew
+  HostName bebop.lcrc.anl.gov
+  ControlMaster auto
+  ControlPersist yes
+  LogLevel FATAL
+Host swing
+  ForwardX11Trusted yes
+  User rayandrew
+  HostName swing.lcrc.anl.gov
+  ControlMaster auto
+  ControlPersist yes
+  LogLevel FATAL
+Host *.lcrc.anl.gov
+  ForwardX11Trusted yes
+  User rayandrew
+  ControlMaster auto
+  ControlPersist yes
+  LogLevel FATAL
+Host box
+  Port 23
+  ForwardAgent yes
+  ForwardX11 yes
+  User u369179
+  HostName box.rs.ht
+  ControlMaster auto
+  ControlPersist yes
+  LogLevel FATAL
+  RequestTTY yes
+Host personal-box
+  Port 23
+  ForwardAgent yes
+  ForwardX11 yes
+  User u369179-sub2
+  HostName box.rs.ht
+  ControlMaster auto
+  ControlPersist yes
+  LogLevel FATAL
+  RequestTTY yes
+Host cl-data
+  ForwardAgent yes
+  ForwardX11 yes
+  User rayandrew
+  HostName 192.5.87.68
+  RequestTTY yes
+Host clperf-box
+  Port 23
+  ForwardAgent yes
+  ForwardX11 yes
+  User u369179-sub1
+  HostName box.rs.ht
+  ControlMaster auto
+  ControlPersist yes
+  LogLevel FATAL
+  RequestTTY yes
+Host cs-uc
+  User rayandrew
+  HostName linux6.cs.uchicago.edu
+  ControlMaster auto
+  ControlPersist yes
+  LogLevel FATAL
+Host flashnet-ct-1
+  Port 22
+  ForwardAgent yes
+  ForwardX11 yes
+  User cc
+  HostName 192.5.87.85
+  ControlMaster auto
+  ControlPersist yes
+  LogLevel FATAL
+  RequestTTY yes
+Host git.rs.ht
+  Port 22
+  ForwardAgent yes
+  HostName git.rs.ht
+Host gitea
+  Port 22
+  ForwardAgent yes
+  ForwardX11 yes
+  HostName git.rs.ht
+  RequestTTY yes
+Host homes-gce
+  ForwardX11Trusted yes
+  User rayandrew
+  HostName homes.cels.anl.gov
+  ProxyJump login-gce
+Host mail
+  Port 22
+  ForwardAgent yes
+  ForwardX11 yes
+  User rayandrew
+  HostName mail.rs.ht
+  RequestTTY yes
+Host theta
+  ForwardX11Trusted yes
+  User rayandrew
+  HostName thetalogin5.alcf.anl.gov
+  ControlMaster auto
+  ControlPersist yes
+  LogLevel FATAL
+Host ucare-07
+  ForwardAgent yes
+  ForwardX11 yes
+  User rayandrew
+  HostName ucare-07.cs.uchicago.edu
+  RequestTTY yes
+Host ucare-10
+  ForwardAgent yes
+  ForwardX11 yes
+  ForwardX11Trusted yes
+  User rayandrew
+  HostName ucare-10.cs.uchicago.edu
+  RequestTTY yes
+  ProxyJump cs-uc
+  ControlMaster auto
+  ControlPersist yes
+  LogLevel FATAL
+  RequestTTY yes
+Host ucare-gpu-1
+  ForwardAgent yes
+  ForwardX11 yes
+  ForwardX11Trusted yes
+  User rayandrew
+  HostName ucare-gpu-1.a.cs.uchicago.edu
+  ProxyJump cs-uc
+  ControlMaster auto
+  ControlPersist yes
+  LogLevel FATAL
+  RequestTTY yes
+Host ucare-mini
+  ForwardAgent yes
+  ForwardX11 yes
+  User ucare
+  HostName ucare-mini.cs.uchicago.edu
+  RequestTTY yes
+Host wiki
+  Port 22
+  ForwardAgent yes
+  ForwardX11 yes
+  User rayandrew
+  HostName rs.ht
+  RequestTTY yes
+
+Host *
+  ForwardAgent no
+  AddKeysToAgent no
+  Compression no
+  ServerAliveInterval 60
+  ServerAliveCountMax 120
+  HashKnownHosts no
+  UserKnownHostsFile ~/.ssh/known_hosts
+  ControlMaster no
+  ControlPath /Users/rayandrew/.ssh/.control_channels/%h:%p:%r
+  ControlPersist no
+
+

@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+
+if [ "x$DIRPAPERS" == "x" ]; then
+  echo -e "\033[1;31mERROR\033[0m: DIRPAPERS env variable doesn't exist"
+  exit 1
+fi
+
+if [[ ! -d "$DIRPAPERS" ]]; then
+  echo -e "\033[1;31mERROR\033[0m: DIR_PAPERS env variable ($DIRPAPERS) is not a directory"
+  exit 1
+fi
+
+PROJECT_QUERIES=""
+OPEN=0
+if [ $# -gt 0 ]; then
+  while [ $# -gt 0 ]; do
+    case "$1" in
+      -o|--open)
+        OPEN=1
+        shift
+        ;;
+      *)
+        if [ "x$PROJECT_QUERIES" == "x" ]; then
+          PROJECT_QUERIES="-iname *$1*"
+        else
+          PROJECT_QUERIES+=" -o -iname *$1* "
+        fi
+        shift
+        ;;
+     esac
+   done
+fi
+
+if [ "x$PROJECT_QUERIES" == "x" ]; then
+  echo -e "\033[1;31mERROR\033[0m: no project queries specified"
+  exit 1
+fi
+
+cd "$DIRPAPERS/list-tex"
+echo "Searching for projects with queries: $PROJECT_QUERIES"
+
+PROJECTS=$(find . -maxdepth 1 -type f $PROJECT_QUERIES | sed 's/^\.\///g' | sed 's/\.tex$//g' | sort -u)
+PROJECTS=($PROJECTS)
+
+for project in "${PROJECTS[@]}"; do
+  ./all.sh "$project"
+  if [ $OPEN -eq 1 ]; then
+    xdg-open "$DIRPAPERS/html/$project.html"
+  fi
+done
+wait
