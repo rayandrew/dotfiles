@@ -63,9 +63,11 @@ alias la='ls -a'
 alias ll='ls -l'
 alias lt='ls --tree'
 
-if ! command -v lsd &> /dev/null; then
+if command -v lsd &> /dev/null; then
   alias ls='lsd'
-elif ! command -v eza &> /dev/null; then
+  alias tree='lsd --tree'
+elif command -v eza &> /dev/null; then
   alias ls='eza'
   alias ll='eza -l --time-style long-iso --icons'
+  alias tree='eza --tree'
 fi

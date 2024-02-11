@@ -17,6 +17,7 @@ in {
       coreutils-full
       gnugrep
       gawk
+      tree
 
       # Useful for Nix development
       nil
@@ -31,11 +32,9 @@ in {
     ]
     ++ lib.optionals stdenv.isDarwin [
       # macOS-specific tools
-      nix-cleanup
     ]
     ++ lib.optionals stdenv.isLinux [
       # Linux-specific tools
-      nixos-cleanup
     ];
 
   home.shellAliases = {

@@ -120,10 +120,21 @@
         };
 
         formatter = config.treefmt.build.wrapper;
-        packages = {
-          default = self'.packages.activate;
+        packages = let
+          allpkgs = pkgs.symlinkJoin {
+            name = "all";
+            paths = [
+              self'.packages.activate
+              self'.packages.nix-cleanup
+              self'.packages.nixos-cleanup
+            ];
+          };
+        in {
+          default = allpkgs;
+          activate = self'.packages.activate;
           nix-cleanup = self'.packages.nix-cleanup;
           nixos-cleanup = self'.packages.nixos-cleanup;
+          all = allpkgs;
         };
 
         _module.args.pkgs = import inputs.nixpkgs {
