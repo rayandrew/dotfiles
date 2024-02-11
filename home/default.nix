@@ -58,6 +58,7 @@
               nix-cleanup
             ];
 
+            disabledModules = ["targets/darwin/linkapps.nix"];
             home.activation = {
               copyApplications = let
                 apps = pkgs.buildEnv {
