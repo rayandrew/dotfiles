@@ -16,8 +16,17 @@ in {
       eza
       coreutils-full
       gnugrep
+      gnumake
+      gnupg
+      gnused
+      gnutar
+      curl
       gawk
       tree
+      watch
+      wget
+      jq
+      just
 
       # Useful for Nix development
       nil
@@ -26,6 +35,8 @@ in {
 
       # Publishing
       asciinema
+      pandoc
+      texlive.combined.scheme-full
 
       # Dev
       gh
