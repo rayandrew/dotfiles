@@ -61,5 +61,9 @@ in {
     jq.enable = true;
     htop.enable = true;
     rio.enable = true;
+    yazi = {
+      enable = true;
+      enableZshIntegration = true;
+    };
   };
 }

@@ -18,11 +18,13 @@
           ./tmux.nix
           ./zsh.nix
           ./direnv.nix
+          ./fonts.nix
         ];
       };
       common-graphics = {
         imports = [
           ./kitty.nix
+          ./vscode.nix
         ];
       };
       common-linux = {
@@ -30,10 +32,21 @@
           self.homeModules.common
         ];
       };
+      common-linux-graphics = {
+        imports = [
+          self.homeModules.common
+          self.homeModules.common-graphics
+        ];
+      };
       common-darwin = {
         imports = [
           self.homeModules.common
           self.homeModules.common-graphics
+          ({pkgs, ...}: {
+            home.packages = with pkgs; [
+              iterm2
+            ];
+          })
         ];
       };
     };

@@ -29,6 +29,12 @@
       inputs.flake-compat.follows = "flake-compat";
     };
 
+    # Fonts
+    sf-mono-liga-src = {
+      url = "github:shaunsingh/SFMono-Nerd-Font-Ligaturized";
+      flake = false;
+    };
+
     # Flake utils
     flake-compat = {
       url = "github:edolstra/flake-compat";
