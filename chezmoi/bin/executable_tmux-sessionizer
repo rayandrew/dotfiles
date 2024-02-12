@@ -1,72 +1,76 @@
 #!/usr/bin/env bash
 
+source "$HOME/.config/zsh/general.zsh"
+
 ### tmux sessionizer
 ### https://github.com/ThePrimeagen/.dotfiles/blob/master/bin/.local/scripts/tmux-sessionizer
 tmux-sessionizer() {
-	tmux_running=$(pgrep tmux)
+  tmux_running=$(pgrep tmux)
 
-	if [[ $# -eq 1 ]]; then
-		selected=$1
-	else
-		# find .git in the specified directory and then go up one level
-		ARR=($(find "$HOME/Projects" "$HOME/Ucare" "$HOME/TA" "$HOME/Ucare/papers/" -mindepth 1 -maxdepth 1 -type d -exec test -e "{}/.git" ';' -print -prune))
-		ARR+=($(find "$HOME/Personal" -mindepth 1 -maxdepth 1 -type d -not -path '*/\.*' -not -path '*/\.*/*'))
-		ARR+=("$HOME/.config/nix-config")
-		ARR+=("$HOME/.config/dotfiles")
-		ARR+=("$HOME/.config/nvim")
-		ARR+=("$HOME/Code")
-		ARR+=("$HOME/Code/website")
-		ARR+=("$HOME/Projects")
-		ARR+=("$HOME/Personal")
-		ARR+=("$HOME/Screenshots")
+  if [[ $# -eq 1 ]]; then
+    selected=$1
+  else
+    # find .git in the specified directory and then go up one level
+    ARR=($(find "$HOME/Projects" "$HOME/Ucare" "$HOME/TA" "$HOME/Ucare/papers/" -mindepth 1 -maxdepth 1 -type d -exec test -e "{}/.git" ';' -print -prune))
+    ARR+=($(find "$HOME/Personal" -mindepth 1 -maxdepth 1 -type d -not -path '*/\.*' -not -path '*/\.*/*'))
+    ARR+=("$HOME/Code")
+    ARR+=("$HOME/Code/dotfiles")
+    ARR+=("$HOME/Code/nvim")
+    ARR+=("$HOME/Code/website")
+    ARR+=("$HOME/Code/OLD-nix-config")
+    ARR+=("$HOME/Projects")
+    ARR+=("$HOME/Personal")
+    ARR+=("$HOME/Screenshots")
 
-		TA_DIRS=($(find "$HOME/TA" -mindepth 2 -maxdepth 2 -type d -not -path '*/\.*' -not -path '*/\.*/*'))
-		for dir in "${TA_DIRS[@]}"; do
-			ARR+=("$dir")
-		done
+    TA_DIRS=($(find "$HOME/TA" -mindepth 2 -maxdepth 2 -type d -not -path '*/\.*' -not -path '*/\.*/*'))
+    for dir in "${TA_DIRS[@]}"; do
+      ARR+=("$dir")
+    done
 
-		# split OLD-<name> to different array
-		OLD_ARR=()
-		for i in "${ARR[@]}"; do
-			if [[ $i == *"OLD-"* ]]; then
-				OLD_ARR+=("$i")
-			fi
-		done
-		ARR=("${ARR[@]/${OLD_ARR[@]}/}")             # remove OLD-<name> from ARR
-		ARR=($(printf '%s\n' "${ARR[@]}" | sort -u)) # sort arr and remove duplicates
-		ARR+=("${OLD_ARR[@]}")                       # add OLD-<name> to the end of ARR
+    # split OLD-<name> to different array
+    OLD_ARR=()
+    for i in "${ARR[@]}"; do
+      if [[ $i == *"OLD-"* ]]; then
+        OLD_ARR+=("$i")
+        # remove this entry from ARR
+        ARR=("${ARR[@]/$i/}")
+      fi
+    done
+    ARR=($(printf '%s\n' "${ARR[@]}" | sort -u))         # sort arr and remove duplicates
+    OLD_ARR=($(printf '%s\n' "${OLD_ARR[@]}" | sort -u)) # sort arr and remove duplicates
+    ARR+=("${OLD_ARR[@]}")                               # add OLD-<name> to the end of ARR
 
-		if [[ -z $TMUX ]] && [[ -z $tmux_running ]]; then
-			if [[ "$OSTYPE" == "darwin"* ]]; then
-				selected=$(printf '%s\n' "${ARR[@]}" | fzf --reverse --preview 'tree -C {} | head -200' --preview-window=right:50% --bind "ctrl-y:execute-silent(echo {} | tr -d '\n' | pbcopy)+abort" --no-sort)
-			else
-				selected=$(printf '%s\n' "${ARR[@]}" | fzf --reverse --preview 'tree -C {} | head -200' --preview-window=right:50% --bind "ctrl-y:execute-silent(echo {} | tr -d '\n' | xclip -selection clipboard)+abort" --no-sort)
-			fi
-		else
-			if [[ "$OSTYPE" == "darwin"* ]]; then
-				selected=$(printf '%s\n' "${ARR[@]}" | fzf-tmux -p 90% --reverse --preview 'tree -C {} | head -200' --preview-window=right:50% --bind "ctrl-y:execute-silent(echo {} | tr -d '\n' | pbcopy)+abort" --no-sort)
-			else
-				selected=$(printf '%s\n' "${ARR[@]}" | fzf-tmux -p 90% --reverse --preview 'tree -C {} | head -200' --preview-window=right:50% --bind "ctrl-y:execute-silent(echo {} | tr -d '\n' | xclip -selection clipboard)+abort" --no-sort)
-			fi
-		fi
-	fi
+    if [[ -z $TMUX ]] && [[ -z $tmux_running ]]; then
+      if [[ "$OSTYPE" == "darwin"* ]]; then
+        selected=$(printf '%s\n' "${ARR[@]}" | fzf --reverse --preview 'tree -C {} | head -200' --preview-window=right:50% --bind "ctrl-y:execute-silent(echo {} | tr -d '\n' | pbcopy)+abort" --no-sort)
+      else
+        selected=$(printf '%s\n' "${ARR[@]}" | fzf --reverse --preview 'tree -C {} | head -200' --preview-window=right:50% --bind "ctrl-y:execute-silent(echo {} | tr -d '\n' | xclip -selection clipboard)+abort" --no-sort)
+      fi
+    else
+      if [[ "$OSTYPE" == "darwin"* ]]; then
+        selected=$(printf '%s\n' "${ARR[@]}" | fzf-tmux -p 90% --reverse --preview 'tree -C {} | head -200' --preview-window=right:50% --bind "ctrl-y:execute-silent(echo {} | tr -d '\n' | pbcopy)+abort" --no-sort)
+      else
+        selected=$(printf '%s\n' "${ARR[@]}" | fzf-tmux -p 90% --reverse --preview 'tree -C {} | head -200' --preview-window=right:50% --bind "ctrl-y:execute-silent(echo {} | tr -d '\n' | xclip -selection clipboard)+abort" --no-sort)
+      fi
+    fi
+  fi
 
-	if [[ -z $selected ]]; then
-		exit 0
-	fi
+  if [[ -z $selected ]]; then
+    exit 0
+  fi
 
-	selected_name=$(basename "$selected" | tr . _)
+  selected_name=$(basename "$selected" | tr . _)
 
-	if [[ -z $TMUX ]] && [[ -z $tmux_running ]]; then
-		tmux new-session -s $selected_name -c $selected
-		exit 0
-	fi
+  if [[ -z $TMUX ]] && [[ -z $tmux_running ]]; then
+    tmux new-session -s "$selected_name" -c "$selected"
+    exit 0
+  fi
 
-	if ! tmux has-session -t=$selected_name 2>/dev/null; then
-		tmux new-session -ds $selected_name -c $selected
-	fi
+  if ! tmux has-session -t="$selected_name" 2>/dev/null; then
+    tmux new-session -ds "$selected_name" -c "$selected"
+  fi
 
-	tmux switch-client -t $selected_name
+  tmux switch-client -t "$selected_name"
 }
 
 tmux-sessionizer "$@"

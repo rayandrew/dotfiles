@@ -40,6 +40,10 @@ in {
 
       # Dev
       gh
+      subversion
+
+      # Tools
+      _1password
     ]
     ++ lib.optionals stdenv.isDarwin [
       # macOS-specific tools

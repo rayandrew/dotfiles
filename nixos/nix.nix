@@ -9,6 +9,7 @@
       allowBroken = true;
       allowUnsupportedSystem = true;
       allowUnfree = true;
+      # allowUnfreePredicate = _: true;
     };
     overlays = [
       flake.inputs.neovim-nightly-overlay.overlay
