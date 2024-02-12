@@ -20,6 +20,10 @@ source "$HOME/.config/zsh/aliases.zsh"
 source "$HOME/.config/zsh/personal.zsh"
 source "$HOME/.config/zsh/teaching.zsh"
 
+if [ -f "$HOME/.config/zsh/local.zsh" ]; then
+  source "$HOME/.config/zsh/local.zsh"
+fi
+
 ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
 [ ! -d $ZINIT_HOME ] && mkdir -p "$(dirname $ZINIT_HOME)"
 [ ! -d $ZINIT_HOME/.git ] && git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
@@ -78,20 +82,23 @@ zinit wait lucid for \
   atload"!_zsh_autosuggest_start" \
       zsh-users/zsh-autosuggestions
 
-if ! command -v zoxide &> /dev/null; then
+mkdir -p "$HOME/.config/zsh/generated"
+
+# check if ZINIT_INSTALL_BINARY is set or equal to 1
+if [[ -n $ZINIT_INSTALL_BINARY && $ZINIT_INSTALL_BINARY -eq 1 ]]; then
   zinit ice wait"1" as"command" from"gh-r" lucid \
     mv"zoxide*/zoxide -> zoxide" \
     atclone"./zoxide init zsh > init.zsh" \
     atpull"%atclone" src"init.zsh" nocompile'!'
   zinit light ajeetdsouza/zoxide
 else
-  if [ ! -f "$HOME/.config/zsh/zoxide.zsh" ]; then
-    zoxide init zsh > "$HOME/.config/zsh/zoxide.zsh"
+  if [ ! -f "$HOME/.config/zsh/generated/_zoxide.zsh" ]; then
+    zoxide init zsh > "$HOME/.config/zsh/generated/_zoxide.zsh"
   fi
-  source $HOME/.config/zsh/zoxide.zsh
+  source $HOME/.config/zsh/generated/_zoxide.zsh
 fi
 
-if ! command -v eza &> /dev/null; then
+if [[ -n $ZINIT_INSTALL_BINARY && $ZINIT_INSTALL_BINARY -eq 1 ]]; then
   zinit ice wait"0" lucid from"gh-r" as"program" depth=1 \
     atclone'chmod +x *eza \
         && git clone https://github.com/eza-community/eza.git eza-src \
@@ -100,12 +107,12 @@ if ! command -v eza &> /dev/null; then
   zinit light eza-community/eza
 fi
 
-if ! command -v rg &> /dev/null; then
+if [[ -n $ZINIT_INSTALL_BINARY && $ZINIT_INSTALL_BINARY -eq 1 ]]; then
   zinit ice wait"1" lucid as"command" from"gh-r" mv"ripgrep* -> rg" pick"rg/rg"
   zinit light BurntSushi/ripgrep
 fi
 
-if ! command -v fd &> /dev/null; then
+if [[ -n $ZINIT_INSTALL_BINARY && $ZINIT_INSTALL_BINARY -eq 1 ]]; then
   zinit ice wait"1" lucid from"gh-r" as"command" mv"fd* -> fd-src" depth=1 \
     atclone'chmod +x fd-src/fd \
       && cp fd-src/fd . \
@@ -114,7 +121,7 @@ if ! command -v fd &> /dev/null; then
   zinit light sharkdp/fd
 fi
 
-if ! command -v bat &> /dev/null; then
+if [[ -n $ZINIT_INSTALL_BINARY && $ZINIT_INSTALL_BINARY -eq 1 ]]; then
   zinit ice wait"1" lucid from"gh-r" as"command" mv"bat* -> bat-src" depth=1 \
     atclone'chmod +x bat-src/bat \
       && cp bat-src/bat . \
@@ -123,21 +130,24 @@ if ! command -v bat &> /dev/null; then
   zinit light sharkdp/bat
 fi
 
-if ! command -v fnm &> /dev/null; then
+if [[ -n $ZINIT_INSTALL_BINARY && $ZINIT_INSTALL_BINARY -eq 1 ]]; then
   zinit ice wait"1" lucid \
       from'gh-r' \
       as'command' \
-      atclone"./fnm completions --shell zsh > _fnm" \
-      atload'eval "$(fnm env --shell zsh --use-on-cd)"' \
+      atclone"./fnm completions --shell zsh > _fnm && ./fnm env --shell zsh --use-on-cd > env.zsh" \
+      atload'source env.zsh' \
       atpull'%atclone' \
       nocompile \
       sbin'fnm'
   zinit light Schniz/fnm
 else
-  eval "$(fnm env --shell zsh --use-on-cd)"
+  if [ ! -f "$HOME/.config/zsh/generated/_fnm.zsh" ]; then
+    fnm env --shell zsh --use-on-cd > "$HOME/.config/zsh/generated/_fnm.zsh"
+  fi
+  source $HOME/.config/zsh/generated/_fnm.zsh
 fi
 
-if ! command -v direnv &> /dev/null; then
+if [[ -n $ZINIT_INSTALL_BINARY && $ZINIT_INSTALL_BINARY -eq 1 ]]; then
   zinit ice wait"1" lucid \
       as"program" \
       atclone'./direnv hook zsh > zhook.zsh' \
@@ -146,9 +156,14 @@ if ! command -v direnv &> /dev/null; then
       mv"direnv* -> direnv" \
       src'zhook.zsh'
   zinit light direnv/direnv
+else
+  if [ ! -f "$HOME/.config/zsh/generated/_direnv.zsh" ]; then
+    direnv hook zsh > "$HOME/.config/zsh/generated/_direnv.zsh"
+  fi
+  source $HOME/.config/zsh/generated/_direnv.zsh
 fi
 
-if ! command -v delta &> /dev/null; then
+if [[ -n $ZINIT_INSTALL_BINARY && $ZINIT_INSTALL_BINARY -eq 1 ]]; then
   zinit ice wait"1" lucid \
       from'gh-r' \
       as'program' \
@@ -156,7 +171,7 @@ if ! command -v delta &> /dev/null; then
   zinit light dandavison/delta
 fi
 
-if ! command -v tokei &> /dev/null; then
+if [[ -n $ZINIT_INSTALL_BINARY && $ZINIT_INSTALL_BINARY -eq 1 ]]; then
   zinit ice wait"1" lucid \
       from'gh-r' \
       as'program' \
@@ -164,7 +179,7 @@ if ! command -v tokei &> /dev/null; then
   zinit light XAMPPRocky/tokei
 fi
 
-if ! command -v fx &> /dev/null; then
+if [[ -n $ZINIT_INSTALL_BINARY && $ZINIT_INSTALL_BINARY -eq 1 ]]; then
   zinit ice wait"1" lucid \
       from'gh-r'  \
       atclone'mv fx* fx && chmod +x fx' \

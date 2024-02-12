@@ -8,3 +8,4 @@ export PATH="$PATH:$HOME/.local/bin"
 export PATH="$PATH:$HOME/.cargo/bin"
 
 export EDITOR="nvim"
+export ZINIT_INSTALL_BINARY=0
