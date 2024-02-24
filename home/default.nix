@@ -25,6 +25,11 @@
         imports = [
           ./kitty.nix
           ./vscode.nix
+          ({pkgs, ...}: {
+            home.packages = with pkgs; [
+              discord
+            ];
+          })
         ];
       };
       common-linux = {

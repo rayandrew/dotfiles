@@ -27,6 +27,7 @@ in {
       wget
       jq
       just
+      xdg-utils
 
       # Useful for Nix development
       nil
@@ -35,6 +36,7 @@ in {
 
       # Publishing
       asciinema
+      ghostscript
       pandoc
       texlive.combined.scheme-full
 
@@ -44,6 +46,8 @@ in {
 
       # Tools
       _1password
+      poppler_utils
+      imagemagick
     ]
     ++ lib.optionals stdenv.isDarwin [
       # macOS-specific tools

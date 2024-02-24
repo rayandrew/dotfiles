@@ -28,13 +28,13 @@ bindkey -M viins '^x' fzf-cd-widget
 
 ### TMUX
 
-tmux() {
-  if [[ -n "$TMUX" ]]; then
-    command tmux "$@"
-  else
-    command tmux new-session -A -s main "$@"
-  fi
-}
+# tmux() {
+#   if [[ -n "$TMUX" ]]; then
+#     command tmux "$@"
+#   else
+#     command tmux new-session -A -s main "$@"
+#   fi
+# }
 
 ### Herd (PHP)
 

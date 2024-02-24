@@ -116,6 +116,13 @@ Host theta
   ControlMaster auto
   ControlPersist yes
   LogLevel FATAL
+Host polaris
+  ForwardX11Trusted yes
+  User rayandrew
+  HostName polaris.alcf.anl.gov
+  ControlMaster auto
+  ControlPersist yes
+  LogLevel FATAL
 Host ucare-07
   ForwardAgent yes
   ForwardX11 yes
@@ -170,5 +177,3 @@ Host *
   ControlMaster no
   ControlPath /Users/rayandrew/.ssh/.control_channels/%h:%p:%r
   ControlPersist no
-
-

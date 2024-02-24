@@ -1,60 +1,83 @@
 #!/usr/bin/env bash
 
-# https://github.com/joshmedeski/t-smart-tmux-session-manager/blob/main/bin/t
-# cSpell:words elif
+source "$HOME/.config/zsh/general.zsh"
 
-if [ "$1" = "-h" ] || [ "$1" == "--help" ]; then
-  printf "\n"
-  printf "\033[1m  t - the smart tmux session manager\033[0m\n"
-  printf "\033[37m  https://github.com/joshmedeski/t-smart-tmux-session-manager\n"
-  printf "\n"
-  printf "\033[32m  Run interactive mode\n"
-  printf "\033[34m      t\n"
-  printf "\n"
-  printf "\033[32m  Go to session\n"
-  printf "\033[34m      t {name}\n"
-  printf "\n"
-  printf "\033[32m  Open popup (while in tmux)\n"
-  printf "\033[34m      <prefix>+T\n"
-  printf "\n"
-  printf "\033[32m  Show help\n"
-  printf "\033[34m      t -h\n"
-  printf "\033[34m      t --help\n"
-  printf "\n"
-elif [ $# -eq 0 ]; then
-  FZF_BORDER_LABEL=" t - smart tmux session manager "
-  if [ "$TMUX" = "" ]; then
-    ZOXIDE_RESULT=$(zoxide query -l | fzf --reverse --border-label "$FZF_BORDER_LABEL")
+### tmux sessionizer
+### https://github.com/ThePrimeagen/.dotfiles/blob/master/bin/.local/scripts/tmux-sessionizer
+tmux-sessionizer() {
+  tmux_running=$(pgrep tmux)
+
+  if [[ $# -eq 1 ]]; then
+    selected=$1
   else
-    ZOXIDE_RESULT=$(zoxide query -l | fzf-tmux -p --reverse --border-label "$FZF_BORDER_LABEL")
+    # find .git in the specified directory and then go up one level
+    ARR=($(find "$HOME/Projects" "$HOME/Ucare" "$HOME/TA" "$HOME/Ucare/papers" -mindepth 1 -maxdepth 1 -type d -exec test -e "{}/.git" ';' -print -prune))
+    ARR+=($(find "$HOME/Personal" -mindepth 1 -maxdepth 1 -type d -not -path '*/\.*' -not -path '*/\.*/*'))
+    ARR+=("$HOME/Code")
+    ARR+=("$HOME/Code/dotfiles")
+    ARR+=("$HOME/Code/nvim")
+    ARR+=("$HOME/Code/website")
+    ARR+=("$HOME/Code/OLD-nix-config")
+    ARR+=("$HOME/Projects")
+    ARR+=("$HOME/Personal")
+    ARR+=("$HOME/Screenshots")
+
+    TA_DIRS=($(find "$HOME/TA" -mindepth 2 -maxdepth 2 -type d -not -path '*/\.*' -not -path '*/\.*/*'))
+    for dir in "${TA_DIRS[@]}"; do
+      ARR+=("$dir")
+    done
+
+    # split OLD-<name> to different array
+    OLD_ARR=()
+    for i in "${ARR[@]}"; do
+      if [[ $i == *"OLD-"* ]]; then
+        OLD_ARR+=("$i")
+        # remove this entry from ARR
+        ARR=("${ARR[@]/$i/}")
+      fi
+    done
+    ARR=($(printf '%s\n' "${ARR[@]}" | sort -u))         # sort arr and remove duplicates
+    OLD_ARR=($(printf '%s\n' "${OLD_ARR[@]}" | sort -u)) # sort arr and remove duplicates
+    ARR+=("${OLD_ARR[@]}")                               # add OLD-<name> to the end of ARR
+
+    FZF_DEFAULT_OPTS="--reverse --border=sharp --info=inline --layout=reverse --no-sort --preview-window=40%,sharp --preview 'tree -C {} | head -200' --padding=0,0,0,0 --color=label:bold --tabstop=1"
+
+    if [[ -z $TMUX ]] && [[ -z $tmux_running ]]; then
+      if [[ "$OSTYPE" == "darwin"* ]]; then
+        selected=$(printf '%s\n' "${ARR[@]}" | fzf --bind "ctrl-y:execute-silent(echo {} | tr -d '\n' | pbcopy)+abort")
+      else
+        selected=$(printf '%s\n' "${ARR[@]}" | fzf --bind "ctrl-y:execute-silent(echo {} | tr -d '\n' | xclip -selection clipboard)+abort")
+      fi
+    else
+      if [[ "$OSTYPE" == "darwin"* ]]; then
+        selected=$(printf '%s\n' "${ARR[@]}" | fzf-tmux -p 90% --bind "ctrl-y:execute-silent(echo {} | tr -d '\n' | pbcopy)+abort")
+      else
+        selected=$(printf '%s\n' "${ARR[@]}" | fzf-tmux -p 90% --bind "ctrl-y:execute-silent(echo {} | tr -d '\n' | xclip -selection clipboard)+abort")
+      fi
+    fi
   fi
-else
-  ZOXIDE_RESULT=$(zoxide query "$1")
-fi
 
-if [ "$ZOXIDE_RESULT" = "" ]; then
-  exit 0
-fi
-
-FOLDER=$(basename "$ZOXIDE_RESULT")
-SESSION_NAME=$(echo "$FOLDER" | tr ' ' '_' | tr '.' '_')
-
-SESSION=$(tmux list-sessions | grep -F "$SESSION_NAME" | awk '{print $1}') # find existing session
-SESSION=${SESSION//:/}                                                     # grab session name
-
-if [ "$TMUX" = "" ]; then               # if not currently in tmux
-  if [ "$SESSION" = "" ]; then          # session does not exist
-    cd "$ZOXIDE_RESULT" || exit 1       # jump to directory
-    tmux new-session -s "$SESSION_NAME" # create session and attach
-  else                                  # session exists
-    tmux attach -t "$SESSION"           # attach to session
+  if [[ -z $selected ]]; then
+    exit 0
   fi
-else                                       # currently in tmux
-  if [ "$SESSION" = "" ]; then             # session does not exist
-    cd "$ZOXIDE_RESULT" || exit 1          # jump to directory
-    tmux new-session -d -s "$SESSION_NAME" # create session
-    tmux switch-client -t "$SESSION_NAME"  # attach to session
-  else                                     # session exists
-    tmux switch-client -t "$SESSION"       # switch to session
+
+  selected_name=$(basename "$selected" | tr . _)
+
+  if [[ -z $TMUX ]] && [[ -z $tmux_running ]]; then
+    tmux new-session -s "$selected_name" -c "$selected"
+    exit 0
   fi
-fi
+
+  if ! tmux has-session -t="$selected_name" 2>/dev/null; then
+    tmux new-session -ds "$selected_name" -c "$selected"
+  fi
+
+  if [ -z "$TMUX" ]; then
+    tmux attach-session -t "$selected_name"
+    exit 0
+  fi
+
+  tmux switch-client -t "$selected_name"
+}
+
+tmux-sessionizer "$@"
