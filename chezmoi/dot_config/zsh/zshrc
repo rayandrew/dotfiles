@@ -36,6 +36,7 @@ zinit ice wait'!' lucid atload'source $HOME/.p10k.zsh; _p9k_precmd' nocd
 zinit light romkatv/powerlevel10k
 
 zinit ice \
+  lucid \
   wait"0a" \
   from"gh-r" \
   as"program" \
@@ -45,7 +46,6 @@ zinit ice \
   dl"https://raw.githubusercontent.com/junegunn/fzf/master/man/man1/fzf-tmux.1 -> $ZPFX/man/man1/fzf-tmux.1" \
   dl"https://raw.githubusercontent.com/junegunn/fzf/master/man/man1/fzf.1 -> $ZPFX/man/man1/fzf.1" \
   src"key-bindings.zsh"
-# zinit ice from"gh-r" as"program"
 zinit light junegunn/fzf
 zinit light unixorn/fzf-zsh-plugin
 
@@ -134,7 +134,7 @@ if [[ -n $ZINIT_INSTALL_BINARY && $ZINIT_INSTALL_BINARY -eq 1 ]]; then
   zinit ice wait"1" lucid \
       from'gh-r' \
       as'command' \
-      atclone"./fnm completions --shell zsh > _fnm && ./fnm env --shell zsh --use-on-cd > env.zsh" \
+      atclone"chmod +x ./fnm && ./fnm completions --shell zsh > _fnm && ./fnm env --shell zsh --use-on-cd > env.zsh" \
       atload'source env.zsh' \
       atpull'%atclone' \
       nocompile \
