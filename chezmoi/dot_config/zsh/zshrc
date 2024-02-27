@@ -87,7 +87,6 @@ mkdir -p "$HOME/.config/zsh/generated"
 # check if ZINIT_INSTALL_BINARY is set or equal to 1
 if [[ -n $ZINIT_INSTALL_BINARY && $ZINIT_INSTALL_BINARY -eq 1 ]]; then
   zinit ice wait"1" as"command" from"gh-r" lucid \
-    mv"zoxide*/zoxide -> zoxide" \
     atclone"./zoxide init zsh > init.zsh" \
     atpull"%atclone" src"init.zsh" nocompile'!'
   zinit light ajeetdsouza/zoxide
