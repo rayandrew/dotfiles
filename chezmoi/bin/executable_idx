@@ -423,10 +423,12 @@ def main(args):
     index["all notes"] = sorted(all_notes)
 
     # PDFs
-    index["pdfs"] = sorted(list(Path(DIRPAPERS).joinpath("pdfs").glob("**/*.pdf")))
+    index["pdfs"] = sorted(
+        list(Path(DIRPAPERS).resolve().joinpath("pdfs").glob("**/*.pdf"))
+    )
     # Summaries
     index["summaries"] = sorted(
-        list(Path(DIRPAPERS).joinpath("summaries").glob("**/*.txt"))
+        list(Path(DIRPAPERS).resolve().joinpath("summaries").glob("**/*.txt"))
     )
 
     # Bookmarks

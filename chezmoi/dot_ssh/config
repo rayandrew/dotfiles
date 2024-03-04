@@ -55,6 +55,16 @@ Host personal-box
   ControlPersist yes
   LogLevel FATAL
   RequestTTY yes
+Host clio-box
+  Port 23
+  ForwardAgent yes
+  ForwardX11 yes
+  User u369179-sub3
+  HostName box.rs.ht
+  ControlMaster auto
+  ControlPersist yes
+  LogLevel FATAL
+  RequestTTY yes
 Host cl-data
   ForwardAgent yes
   ForwardX11 yes
@@ -71,9 +81,19 @@ Host clperf-box
   ControlPersist yes
   LogLevel FATAL
   RequestTTY yes
+Host flashnet-box
+  Port 23
+  ForwardAgent yes
+  ForwardX11 yes
+  User u369179-sub4
+  HostName box.rs.ht
+  ControlMaster auto
+  ControlPersist yes
+  LogLevel FATAL
+  RequestTTY yes
 Host cs-uc
   User rayandrew
-  HostName linux6.cs.uchicago.edu
+  HostName linux.cs.uchicago.edu
   ControlMaster auto
   ControlPersist yes
   LogLevel FATAL

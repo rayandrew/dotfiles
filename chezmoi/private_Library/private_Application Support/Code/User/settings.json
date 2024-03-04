@@ -407,7 +407,7 @@
   
   },
   "[c]": {
-    "editor.defaultFormatter": "xaver.clang-format"
+    "editor.defaultFormatter": "xaver.clang-format",
   },
   "everforest.darkContrast": "hard",
   "everforest.darkWorkbench": "flat",
@@ -428,5 +428,10 @@
   //     }
   //   ]
   // }
-  "python.terminal.activateEnvironment": false
+  "python.terminal.activateEnvironment": false,
+  "[cpp]": {
+    "editor.defaultFormatter": "ms-vscode.cpptools",
+    "editor.formatOnSave": true,
+  },
+  // "cmake.configureOnOpen": true
 }

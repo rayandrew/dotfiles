@@ -28,6 +28,8 @@ in {
       jq
       just
       xdg-utils
+      nushell
+      fish
 
       # Useful for Nix development
       nil

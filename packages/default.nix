@@ -3,6 +3,8 @@
   system,
   ...
 }: final: prev: {
+  ##### personal packages #####
+
   nix-cleanup = prev.callPackage ./nix-cleanup {};
   nixos-cleanup = prev.callPackage ./nix-cleanup {isNixOS = true;};
   nix-whereis = prev.callPackage ./nix-whereis {};

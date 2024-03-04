@@ -24,8 +24,7 @@ in {
     };
 
     ignores = [".DS_Store" "*~" "*.swp"];
-    includes = [
-    ];
+    includes = [];
 
     aliases = {};
     signing = {
@@ -65,4 +64,8 @@ in {
   programs.lazygit = {
     enable = true;
   };
+
+  home.packages = with pkgs; [
+    git-filter-repo
+  ];
 }
