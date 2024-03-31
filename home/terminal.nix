@@ -45,6 +45,7 @@ in {
       # Dev
       gh
       subversion
+      deno
 
       # Tools
       _1password

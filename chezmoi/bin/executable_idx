@@ -387,6 +387,8 @@ def main(args):
     index: INDEX_TYPE = {
         "main": {
             "p-argonne": Path(DIRPAPERS).joinpath("html").joinpath("p-argonne.html"),
+            "p-argonne": Path(DIRPAPERS).joinpath("html").joinpath("p-ray.html"),
+            "p-argonne": Path(DIRPAPERS).joinpath("html").joinpath("p-clio.html"),
             "todo": Path("/tmp/todo/index.html"),
             "todo txt": Path(TODO_FILE),
         },
@@ -408,7 +410,7 @@ def main(args):
     )
 
     # All notes
-    all_notes = list(personal_dir.glob("**/*.txt"))
+    all_notes = list(personal_dir.glob("**/*.txt")) + list(personal_dir.glob("**/*.md"))
 
     # remove summaries from all notes
     def filter_all_notes(n: Path) -> bool:
@@ -454,7 +456,7 @@ def main(args):
 
     # call prc argonne and ray
     if shutil.which("prc") is not None:
-        os.system("prc argonne ray")
+        os.system("prc ray argonne cxl dataSciencePipe mlForSys clio")
 
 
 if __name__ == "__main__":

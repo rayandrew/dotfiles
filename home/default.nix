@@ -14,6 +14,7 @@
           ./chezmoi.nix
           ./terminal.nix
           ./neovim.nix
+          ./emacs.nix
           ./git.nix
           ./tmux.nix
           ./zsh.nix

@@ -19,7 +19,7 @@
     "**/node_modules/*/**": true
   },
   // vim
-  "vim.disableExtension": false,
+  "vim.disableExtension": true,
   "vim.easymotion": true,
   "vim.handleKeys": {
     "<C-a>": false,
@@ -391,13 +391,13 @@
   "workbench.editor.splitInGroupLayout": "horizontal",
   "workbench.editor.showTabs": "multiple",
   // programming language
-  // "[python]": {
-  //   "editor.codeActionsOnSave": {
-  //     "source.organizeImports": true
-  //   },
-  //   "editor.defaultFormatter": "ms-python.black-formatter",
-  //   "editor.formatOnSave": true
-  // },
+  "[python]": {
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": "explicit"
+    },
+    "editor.defaultFormatter": "ms-python.black-formatter",
+    "editor.formatOnSave": true
+  },
   "notebook.codeActionsOnSave": {
     "source.organizeImports": true
   },
@@ -433,5 +433,6 @@
     "editor.defaultFormatter": "ms-vscode.cpptools",
     "editor.formatOnSave": true,
   },
+  "workbench.colorTheme": "Default Dark+",
   // "cmake.configureOnOpen": true
 }
