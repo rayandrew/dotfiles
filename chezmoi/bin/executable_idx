@@ -454,9 +454,9 @@ def main(args):
     if shutil.which("todo") is not None:
         os.system("todo --html")
 
-    # call prc argonne and ray
+    # call prc
     if shutil.which("prc") is not None:
-        os.system("prc ray argonne cxl dataSciencePipe mlForSys clio")
+        os.system("prc ray argonne cxl dataSciencePipe mlForSys clio seagate")
 
 
 if __name__ == "__main__":
