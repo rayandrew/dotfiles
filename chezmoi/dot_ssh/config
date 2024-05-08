@@ -132,6 +132,36 @@ Host cs-uc
   ForwardAgent yes
   ForwardX11 yes
 
+Host cs-uc-06
+  User rayandrew
+  HostName linux6.cs.uchicago.edu
+  ControlMaster auto
+  ControlPersist yes
+  LogLevel FATAL
+  ForwardAgent yes
+  ForwardX11 yes
+
+Host cs-uc-07
+  User rayandrew
+  HostName linux7.cs.uchicago.edu
+  ControlMaster auto
+  ControlPersist yes
+  LogLevel FATAL
+  ForwardAgent yes
+  ForwardX11 yes
+
+Host ucare-gpu-1
+  ForwardAgent yes
+  ForwardX11 yes
+  ForwardX11Trusted yes
+  User rayandrew
+  HostName ucare-gpu-1.a.cs.uchicago.edu
+  ProxyJump cs-uc-07
+  # ControlMaster auto
+  # ControlPersist yes
+  LogLevel FATAL
+  RequestTTY yes
+
 Host ucare-07
   ForwardAgent yes
   ForwardX11 yes
@@ -149,18 +179,6 @@ Host ucare-10
   ProxyJump cs-uc
   ControlMaster auto
   ControlPersist yes
-  LogLevel FATAL
-  RequestTTY yes
-
-Host ucare-gpu-1
-  ForwardAgent yes
-  ForwardX11 yes
-  ForwardX11Trusted yes
-  User rayandrew
-  HostName ucare-gpu-1.a.cs.uchicago.edu
-  ProxyJump cs-uc
-  ControlMaster auto
-  # ControlPersist yes
   LogLevel FATAL
   RequestTTY yes
 
@@ -207,7 +225,7 @@ Host *
   ForwardAgent no
   AddKeysToAgent no
   Compression no
-  ServerAliveInterval 60
+  ServerAliveInterval 10
   ServerAliveCountMax 120
   HashKnownHosts no
   UserKnownHostsFile ~/.ssh/known_hosts
