@@ -62,6 +62,7 @@
             home.packages = with pkgs; [
               iterm2
               nix-cleanup
+              colima
             ];
 
             disabledModules = ["targets/darwin/linkapps.nix"];

@@ -51,6 +51,7 @@ in {
       _1password
       poppler_utils
       imagemagick
+      rclone
     ]
     ++ lib.optionals stdenv.isDarwin [
       # macOS-specific tools

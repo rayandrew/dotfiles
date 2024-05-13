@@ -126,8 +126,8 @@ Host flashnet-box
 Host cs-uc
   User rayandrew
   HostName linux.cs.uchicago.edu
-  ControlMaster auto
-  ControlPersist yes
+  # ControlMaster auto
+  # ControlPersist yes
   LogLevel FATAL
   ForwardAgent yes
   ForwardX11 yes
@@ -135,8 +135,8 @@ Host cs-uc
 Host cs-uc-06
   User rayandrew
   HostName linux6.cs.uchicago.edu
-  ControlMaster auto
-  ControlPersist yes
+  # ControlMaster auto
+  # ControlPersist yes
   LogLevel FATAL
   ForwardAgent yes
   ForwardX11 yes
@@ -144,8 +144,8 @@ Host cs-uc-06
 Host cs-uc-07
   User rayandrew
   HostName linux7.cs.uchicago.edu
-  ControlMaster auto
-  ControlPersist yes
+  # ControlMaster auto
+  # ControlPersist yes
   LogLevel FATAL
   ForwardAgent yes
   ForwardX11 yes
@@ -156,7 +156,7 @@ Host ucare-gpu-1
   ForwardX11Trusted yes
   User rayandrew
   HostName ucare-gpu-1.a.cs.uchicago.edu
-  ProxyJump cs-uc-07
+  ProxyJump cs-uc-06
   # ControlMaster auto
   # ControlPersist yes
   LogLevel FATAL
@@ -176,9 +176,11 @@ Host ucare-10
   User rayandrew
   HostName ucare-10.cs.uchicago.edu
   RequestTTY yes
+  # ProxyCommand ssh linux.cs.uchicago.edu -W ucare-10.cs.uchicago.edu:22
+  # ProxyCommand ssh -W %h:%p linux7.cs.uchicago.edu
   ProxyJump cs-uc
-  ControlMaster auto
-  ControlPersist yes
+  # ControlMaster auto
+  # ControlPersist yes
   LogLevel FATAL
   RequestTTY yes
 

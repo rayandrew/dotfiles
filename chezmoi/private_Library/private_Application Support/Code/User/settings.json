@@ -18,6 +18,10 @@
     "**/.git/subtree-cache/**": true,
     "**/node_modules/*/**": true
   },
+  "files.associations": {
+    "*.run": "shellscript",
+    "Runfile": "shellscript",
+  },
   // vim
   "vim.disableExtension": true,
   "vim.easymotion": true,
@@ -433,6 +437,5 @@
     "editor.defaultFormatter": "ms-vscode.cpptools",
     "editor.formatOnSave": true,
   },
-  "workbench.colorTheme": "Default Dark+",
   // "cmake.configureOnOpen": true
 }
