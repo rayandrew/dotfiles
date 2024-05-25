@@ -39,6 +39,7 @@ in {
       # Publishing
       asciinema
       ghostscript
+      ps2pdfcrop
       pandoc
       texlive.combined.scheme-full
 
@@ -52,6 +53,7 @@ in {
       poppler_utils
       imagemagick
       rclone
+      gnuplot
     ]
     ++ lib.optionals stdenv.isDarwin [
       # macOS-specific tools

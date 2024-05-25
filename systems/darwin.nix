@@ -53,6 +53,9 @@
       "com.apple.mail" = {
         AddressesIncludeNameOnPasteboard = false;
       };
+      "net.sourceforge.skim-app.skim" = {
+        SKPSConversionCommand = "${pkgs.ps2pdfcrop}/bin/ps2pdfcrop";
+      };
     };
     screencapture = {
       disable-shadow = true;

@@ -8,6 +8,7 @@
   nix-cleanup = prev.callPackage ./nix-cleanup {};
   nixos-cleanup = prev.callPackage ./nix-cleanup {isNixOS = true;};
   nix-whereis = prev.callPackage ./nix-whereis {};
+  ps2pdfcrop = prev.callPackage ./ps2pdfcrop {};
 
   # fonts
   sf-symbols = final.sf-symbols-minimal;

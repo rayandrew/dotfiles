@@ -1,3 +1,14 @@
+# DevPod Start master-thesis.devpod
+Host master-thesis.devpod
+  ForwardAgent yes
+  LogLevel error
+  StrictHostKeyChecking no
+  UserKnownHostsFile /dev/null
+  HostKeyAlgorithms rsa-sha2-256,rsa-sha2-512,ssh-rsa
+  ProxyCommand "/Applications/DevPod.app/Contents/MacOS/devpod-cli" ssh --stdio --context default --user vscode master-thesis
+  User vscode
+# DevPod End master-thesis.devpod
+
 # Argonne
 
 Host login-gce
@@ -150,6 +161,18 @@ Host cs-uc-07
   ForwardAgent yes
   ForwardX11 yes
 
+Host ucare-gpu-1.a.cs.uchicago.edu
+  ForwardAgent yes
+  ForwardX11 yes
+  ForwardX11Trusted yes
+  User rayandrew
+  HostName ucare-gpu-1.a.cs.uchicago.edu
+  ProxyJump cs-uc-06
+  # ControlMaster auto
+  # ControlPersist yes
+  LogLevel FATAL
+  RequestTTY yes
+
 Host ucare-gpu-1
   ForwardAgent yes
   ForwardX11 yes
@@ -212,16 +235,13 @@ Host ray-stor
   RequestTTY yes
   LogLevel FATAL
 
-Host ray-cxl
-  HostName 10.140.83.30
+Host ray-st
+  HostName 192.5.87.59
   User cc
   ForwardAgent yes
   ForwardX11 yes
   RequestTTY yes
   LogLevel FATAL
-  ProxyJump ray-stor
-  ControlMaster auto
-  # ControlPersist yes
 
 Host *
   ForwardAgent no

@@ -9,3 +9,5 @@ export PATH="$PATH:$HOME/.cargo/bin"
 
 export EDITOR="nvim"
 export ZINIT_INSTALL_BINARY=0
+
+{ eval `ssh-agent`; } &>/dev/null

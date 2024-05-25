@@ -304,7 +304,6 @@
   "vim.useCtrlKeys": true,
   "vim.useSystemClipboard": true,
   "window.commandCenter": false,
-  "workbench.editor.enablePreview": false,
   "workbench.startupEditor": "none",
   "extensions.experimental.affinity": {
     "ms-toolsai.jupyter": 1,
@@ -402,6 +401,10 @@
     "editor.defaultFormatter": "ms-python.black-formatter",
     "editor.formatOnSave": true
   },
+  "[rust]": {
+    "editor.defaultFormatter": "rust-lang.rust-analyzer",
+    "editor.formatOnSave": true
+  },
   "notebook.codeActionsOnSave": {
     "source.organizeImports": true
   },
@@ -437,5 +440,7 @@
     "editor.defaultFormatter": "ms-vscode.cpptools",
     "editor.formatOnSave": true,
   },
+  "terminal.integrated.showExitAlert": false,
+  "github.copilot.editor.enableAutoCompletions": true
   // "cmake.configureOnOpen": true
 }
