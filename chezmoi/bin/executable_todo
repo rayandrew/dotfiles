@@ -411,6 +411,9 @@ def read_todo_file(filename: str = TODO_FILE) -> dict[int, Node]:
         while line[level] == "\t":
             level += 1
 
+        while line[level:level+4] == "    ":
+            level += 1
+
         if section_id is not None:
             level += 1
 
