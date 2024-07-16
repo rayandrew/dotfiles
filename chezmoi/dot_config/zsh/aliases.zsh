@@ -56,6 +56,7 @@ alias nxr='nix run'
 alias nxs='nix search'
 alias tb='toggle-background'
 
+alias ls='ls --color=auto'
 alias l='lla'
 alias lla='ll -a'
 alias llt='ll --tree'
@@ -63,11 +64,15 @@ alias la='ls -a'
 alias ll='ls -l'
 alias lt='ls --tree'
 
-if command -v lsd &> /dev/null; then
-  alias ls='lsd'
-  alias tree='lsd --tree'
-elif command -v eza &> /dev/null; then
-  alias ls='eza'
-  alias ll='eza -l --time-style long-iso --icons'
-  alias tree='eza --tree'
-fi
+# if command -v eza &> /dev/null; then
+#   alias ls='eza'
+#   alias ll='eza -l --time-style long-iso --icons'
+#   alias tree='eza --tree'
+# fi
+# if command -v lsd &> /dev/null; then
+#  alias ls='lsd'
+#  alias tree='lsd --tree'
+# fi
+
+# alias e='nvim'
+alias e='emacs -nw'

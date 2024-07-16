@@ -403,7 +403,8 @@
   },
   "[rust]": {
     "editor.defaultFormatter": "rust-lang.rust-analyzer",
-    "editor.formatOnSave": true
+    "editor.formatOnSave": true,
+    "editor.inlayHints.enabled": "offUnlessPressed"
   },
   "notebook.codeActionsOnSave": {
     "source.organizeImports": true
@@ -437,10 +438,22 @@
   // }
   "python.terminal.activateEnvironment": false,
   "[cpp]": {
-    "editor.defaultFormatter": "ms-vscode.cpptools",
+    "editor.defaultFormatter": "xaver.clang-format",
     "editor.formatOnSave": true,
   },
   "terminal.integrated.showExitAlert": false,
-  "github.copilot.editor.enableAutoCompletions": true
+  "github.copilot.editor.enableAutoCompletions": true,
+  "workbench.colorTheme": "Visual Studio Dark - C++",
+  "remote.SSH.remotePlatform": {
+    "*.gitpod.io": "linux"
+  },
+  "github.copilot.advanced": {},
+  "cmake.options.statusBarVisibility": "compact",
+  "cmake.pinnedCommands": [
+    "workbench.action.tasks.configureTaskRunner",
+    "workbench.action.tasks.runTask"
+  ],
+  "cmake.showOptionsMovedNotification": false,
+  "clang-format.executable": "/soft/compilers/llvm/release-17.0.6/bin/clang-format"
   // "cmake.configureOnOpen": true
 }

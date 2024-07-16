@@ -30,6 +30,7 @@ in {
       xdg-utils
       nushell
       fish
+      cmake
 
       # Useful for Nix development
       nil
@@ -63,7 +64,6 @@ in {
     ];
 
   home.shellAliases = {
-    e = "nvim";
     g = "git";
     lg = "lazygit";
     drb = "darwin-rebuild build --flake ${homeDir}/Code/dotfiles";
@@ -88,6 +88,9 @@ in {
     yazi = {
       enable = true;
       enableZshIntegration = true;
+    };
+    micro = {
+      enable = true;
     };
   };
 }

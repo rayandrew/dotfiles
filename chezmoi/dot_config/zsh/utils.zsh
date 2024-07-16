@@ -9,7 +9,8 @@ fi
 function chpwd_cdls() {
   if [[ -o interactive ]]; then
     emulate -L zsh
-    eza -la --time-style long-iso --icons
+    ls -la
+    # eza -la --time-style long-iso --icons
   fi
 }
 

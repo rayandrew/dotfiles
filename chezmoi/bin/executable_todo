@@ -101,14 +101,21 @@ def parse_url(content: str) -> str:
 
 def parse_content(content: str) -> str:
     done = False
+    important = False
     if content[0] == "x":
         done = True
         content = content[1:].strip()
+    elif content[0:2] == "!!":
+        important = True
+        content = content[2:].strip()
 
     content = parse_url(content)
 
     if done:
         return f"<s>{content}</s>"
+    if important:
+        return f'<span style="color:red;">{content}</span>'
+
     return content
 
 

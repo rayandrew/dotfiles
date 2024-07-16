@@ -60,14 +60,10 @@ zinit ice depth=1
 zinit light jeffreytse/zsh-vi-mode
 zvm_after_init_commands+=(init_zvm)
 
-zinit ice wait"0c" lucid reset \
-  atclone"local P=${${(M)OSTYPE:#*darwin*}:+g}
-      \${P}sed -i \
-      '/DIR/c\DIR 38;5;63;1' LS_COLORS; \
-      \${P}dircolors -b LS_COLORS > c.zsh" \
-  atpull'%atclone' pick"c.zsh" nocompile'!' \
-  atload'zstyle ":completion:*" list-colors "${(s.:.)LS_COLORS}"'
-zinit light trapd00r/LS_COLORS
+# zinit ice atclone"dircolors -b LS_COLORS > clrs.zsh" \
+#     atpull'%atclone' pick"clrs.zsh" nocompile'!' \
+#     atload'zstyle ":completion:*" list-colors “${(s.:.)LS_COLORS}”'
+# zinit light trapd00r/LS_COLORS
 
 ZSH_AUTOSUGGEST_STRATEGY=(history completion)
 zinit light zsh-users/zsh-autosuggestions
@@ -212,8 +208,9 @@ fi
 zinit ice wait"0c" lucid reset depth=1 \
   atclone"" \
   atpull"%atclone" pick"zsh/fzf-zsh-completion.sh" nocompile'!' \
-  atload"bindkey '^I' fzf-completion"
+  atload"bindkey '^[[Z' fzf-completion"
 zinit light lincheney/fzf-tab-completion
+# atload"bindkey '^I' fzf-completion"
 
 # typeset -U path cdpath fpath manpath
 
