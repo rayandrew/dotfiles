@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+tomorrow=$(date -v+1d +%A-%B-%Y-%m-%d)
+
+arr=(${tomorrow//-/ })
+
+dayname=${arr[0]}
+monthname=${arr[1]}
+year=${arr[2]}
+month=${arr[3]}
+day=${arr[4]}
+when="$year-$month-$day"
+
+mkdir -p $BRAIN_DIR/plans/$year/$month
+$HOME/bin/brain plan \
+  --extra dayname="$dayname",monthname="$monthname",when="$when",year="$year",month="$month",day="$day" --dry-run
+

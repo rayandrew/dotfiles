@@ -19,6 +19,17 @@
         self.darwinModules_.home-manager
         self.darwinModules.my-home
         self.nixosModules.common
+        ./ollama.nix
+        ({
+          pkgs,
+          config,
+          lib,
+          ...
+        }: {
+          services.ollama = {
+            enable = true;
+          };
+        })
       ];
     };
   };

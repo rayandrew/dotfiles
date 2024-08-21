@@ -18,19 +18,18 @@
           ./git.nix
           ./tmux.nix
           ./zsh.nix
+          ./fish.nix
           ./direnv.nix
           ./fonts.nix
+          ./stow.nix
         ];
       };
       common-graphics = {
         imports = [
           ./kitty.nix
           ./vscode.nix
-          ({pkgs, ...}: {
-            home.packages = with pkgs; [
-              discord
-            ];
-          })
+          ./wezterm.nix
+          ./discord.nix
         ];
       };
       common-linux = {
@@ -63,6 +62,7 @@
               iterm2
               nix-cleanup
               colima
+              lima
             ];
 
             disabledModules = ["targets/darwin/linkapps.nix"];

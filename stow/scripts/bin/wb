@@ -1,0 +1,60 @@
+#!/usr/bin/env bash
+
+# PUT THIS FILE IN YOUR $HOME/bin/
+# MAKE SURE YOUR .cshrc or .bashrc add ~/bin/ to your $PATH
+
+thisFile=$HOME/bin/wb
+
+if [ $# != 1 ]; then
+	echo " HOW TO USE: wb <key>"
+	echo " EXAMPLES: wb cnn (or) wb gmail "
+	editor "$thisFile"
+	exit
+fi
+
+awk '{print $1}' "$thisFile" | grep "$1" | cat -n
+
+# reading read -r line every line is super slow
+# so we'll do a grep $1 first
+grep "$1" "$thisFile" >/tmp/.wb
+
+# this read everyline in /tmp/.wb
+while read -r line; do
+	key=$(echo "$line" | awk '{print $1;}')
+	url=$(echo "$line" | awk '{print $2;}')
+
+	if [ "$key" == "$1" ]; then
+		echo ""
+		echo "  found $1, pbcopy and opening: $url"
+		echo ""
+
+		# copy the link to the clipboard as well
+		# IF YOU WANT TO COPY THE LINK TO THE CLIPBOARD,
+		# ENABLE THESE TWO LINES:
+		#   echo "$url" > /tmp/a
+		#   pbcopy < /tmp/a
+
+		# YOU MUST HAVE ~/bin/browser pointing to your favorite
+		# browser (e.g. /Aplications/Firefox.app or /usr/sbin/firefox)
+		browser "$url"
+		exit
+	fi
+	# This script is reading this file
+	# done < $thisFile
+done </tmp/.wb
+
+rm -f /tmp/.wb
+
+echo ""
+echo "  $1 not found"
+echo "  Options are: "
+awk '{print $1}' "$thisFile" | grep "$1" | cat -n
+echo ""
+
+exit
+
+# this script reads itself, just add key and link below
+
+# KEYWORD  LINK
+
+cnn http://www.cnn.com

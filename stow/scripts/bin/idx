@@ -1,0 +1,467 @@
+#!/usr/bin/env python3
+
+import os
+import shutil
+import sys
+from argparse import ArgumentParser
+from dataclasses import dataclass
+from pathlib import Path
+from typing import List, Optional, Union
+
+DIRPAPERS = os.environ.get("DIRPAPERS", None)
+PERSONAL_DIR = os.environ.get("RS_PERSONAL_DIR", "~/Personal")
+TODO_FILE = os.environ.get("RS_TODO_FILE", PERSONAL_DIR + "/todo.txt")
+NOTES_DIRS = os.environ.get("RS_NOTES_DIRS", None)
+BOOKMARKS_FILE = os.environ.get("RS_BOOKMARKS_FILE", "~/Personal/bookmarks.txt")
+
+
+def error_message(message: str) -> None:
+    print("\033[91m", end="")
+    print("ERROR", end="")
+    print("\033[0m", end="")
+    print(": ", end="")
+    print(message)
+
+
+def info_message(message: str) -> None:
+    # print in blue
+    print("\033[94m", end="")
+    print("INFO", end="")
+    print("\033[0m", end="")
+    print(": ", end="")
+    print(message)
+
+
+def warning_message(message: str) -> None:
+    # print in yellow
+    print("\033[93m", end="")
+    print("WARNING", end="")
+    print("\033[0m", end="")
+    print(": ", end="")
+    print(message)
+
+
+if DIRPAPERS is None:
+    error_message("DIRPAPERS env is not set")
+    sys.exit(1)
+
+if TODO_FILE is None:
+    error_message("TODO_FILE env is not set")
+    sys.exit(1)
+
+
+# https://stackoverflow.com/a/49782093/2418586
+def rmdir(directory: Union[Path, str]):
+    directory = Path(directory)
+    for item in directory.iterdir():
+        if item.is_dir():
+            rmdir(item)
+        else:
+            item.unlink()
+    directory.rmdir()
+
+
+def generate_reset_css() -> str:
+    reset_css = """
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+body {
+	line-height: 1;
+}
+/*ol, ul {
+	list-style: none;
+}*/
+blockquote, q {
+	quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+/* Personal CSS */
+html {
+    font-family: Times New Roman;
+    font-size: 20px;
+}
+
+code {
+    font-family:
+       Menlo,
+       Monaco,
+       Lucida Console,
+       Liberation Mono,
+       DejaVu Sans Mono,
+       Bitstream Vera Sans Mono,
+       Courier New,
+       monospace;
+}
+
+h1 {
+    font-size: 2em;
+    font-weight: bold;
+}
+
+h2 {
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+h3 {
+    font-size: 1.25em;
+    font-weight: bold;
+}
+
+a {
+    color: #0078B4;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+"""
+    # minify
+    reset_css = reset_css.replace("\n", "").replace(" ", "")
+    return reset_css
+
+
+INDEX_TYPE = dict[str, Union[Path, List[Path], dict[str, Path]]]
+
+
+def parse_path(path: Path, name: str) -> str:
+    return f'<span><a href="{path}">{name.upper()}</a></span>\n'
+
+
+def parse_list(l: List[Path], name: str) -> str:
+    html = "<section>\n"
+    html += f"""<div class="category">{name.upper()}</div> """
+    for i, p in enumerate(l):
+        html += f'<span><a href="{p}">{p.stem.upper()}</a></span>\n'
+        if i != len(l) - 1:
+            html += """<sep> | </sep>\n"""
+    html += "</section>\n"
+    return html
+
+
+def parse_dict(d: dict[str, Path], name: str) -> str:
+    html = "<section>\n"
+    html += """<div class="category">%s</div> """ % name.upper()
+    for i, (k, v) in enumerate(d.items()):
+        html += f'<span><a href="{v}">{k.upper()}</a></span>\n'
+        # add separator if not last
+        if i != len(d) - 1:
+            html += """<sep> | </sep>\n"""
+    html += "</section>\n"
+    return html
+
+
+@dataclass
+class Bookmark:
+    url: str
+    original_description: str
+    description: str
+    tags: List[str]
+    section: Optional[str] = None
+
+
+def parse_bookmarks(filename: Union[str, Path]):
+    filename = Path(filename).expanduser()
+    bookmarks_by_section: dict[str, List[Bookmark]] = {}
+    bookmarks: List[Bookmark] = []
+    with open(filename, "r") as f:
+        section = None
+        url = None
+        description = ""
+        tags = []
+        for line in f:
+            stripped_line = line.strip()
+            if stripped_line.startswith("="):
+                line = line.strip()
+                # remove all = and spaces
+                line = line.replace("=", "")
+                section = line.strip()
+                bookmarks_by_section[section] = []
+                continue
+
+            # parse line
+            # if starts with url then it is a bookmark
+            # description and others start with a tab
+            if stripped_line.startswith("http"):
+                url = stripped_line.split(" ")[0]
+                continue
+
+            if line.startswith("\t"):
+                if stripped_line.startswith("tags:"):
+                    tags = line.split(":")[1].split(",")
+                    tags = [t.strip() for t in tags]
+                else:
+                    description += line
+                continue
+
+            if stripped_line == "":
+                if url is None:
+                    continue
+                original_description = description
+                if section is not None:
+                    description = description.replace(f"{section} -- ", "").strip()
+                bookmark = Bookmark(
+                    url=url,
+                    original_description=original_description,
+                    description=description,
+                    tags=tags,
+                    section=section,
+                )
+                bookmarks.append(bookmark)
+                if section is not None:
+                    bookmarks_by_section[section].append(bookmark)
+                url = None
+                description = ""
+                tags = []
+
+    bookmarks = sorted(bookmarks, key=lambda b: b.original_description)
+    for k, v in bookmarks_by_section.items():
+        bookmarks_by_section[k] = sorted(v, key=lambda b: b.original_description)
+
+    return bookmarks_by_section, bookmarks
+
+
+def generate_bookmarks_html(
+    bookmarks_by_section: dict[str, List[Bookmark]], bookmarks: List[Bookmark]
+) -> str:
+    html = "<section>\n"
+    html += """<div class="category bookmarks-header">BOOKMARKS</div>"""
+
+    for i, (k, v) in enumerate(bookmarks_by_section.items()):
+        html += "<br><subsection>\n"
+        html += """<div class="category">%s</div> """ % k
+        for j, b in enumerate(v):
+            html += f'<span><a href="{b.url}">{b.description}</a></span>\n'
+            if j != len(v) - 1:
+                html += """<sep> | </sep>\n"""
+        html += "</subsection>\n"
+
+    # ALL BOOKMARKS
+    html += "<br><subsection>\n"
+    html += """<div class="category">ALL</div> """
+    for i, b in enumerate(bookmarks):
+        html += f'<span><a href="{b.url}">{b.original_description}</a></span>\n'
+        if i != len(bookmarks) - 1:
+            html += """<sep> | </sep>\n"""
+    html += "</subsection>\n"
+
+    html += "</section>\n"
+
+    return html
+
+
+def generate_html(index: INDEX_TYPE, title: str = "Indexes") -> str:
+    html = f"""
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>{title}</title>
+<style type="text/css">{generate_reset_css()}</style>
+<style type="text/css">
+ol, ul {{
+    margin: 0;
+    list-style-position: inside;
+    padding-left: 20px;
+}}
+
+
+body {{
+    width: 100%;
+    max-width: calc(100% - 2rem);
+    margin: auto;
+    font-family: "Gill Sans", Helvetica, Arial, sans-serif;
+    /* font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; */
+    font-size: 14px;
+    line-height: 1.2;
+    padding: 20px;
+}}
+
+@media only screen and (min-width:1200px)  {{
+    body {{
+        font-size: 18px;
+    }}
+}}
+
+@media only screen and (min-width:1800px)  {{
+    body {{
+        font-size: 22px;
+    }}
+}}
+
+section {{
+    margin-bottom: 1rem;
+}}
+
+subsection {{
+}}
+
+.bookmarks-header {{
+    margin-bottom: 0.75rem;
+}}
+
+h1 {{
+    margin-bottom: 1rem;
+}}
+
+.category {{
+    display: inline-block;
+    font-weight: bold;
+    padding-right: 0.5rem;
+    /* background-color: #0078B4;
+    color: white;
+    padding: 0 0.5rem; */
+}}
+</style>
+</head>
+<body>
+"""
+
+    html += "<h1>Indexes</h1>\n"
+    html += "<main>\n"
+
+    for k, v in index.items():
+        if k == "bookmarks":
+            html += generate_bookmarks_html(v[0], v[1])  # type: ignore
+        else:
+            if type(v) is dict:
+                html += parse_dict(v, k)
+            elif type(v) is list:
+                html += parse_list(v, k)
+            elif type(v) is Path:
+                html += parse_path(v, k)
+
+    html += "</main>\n"
+    html += "</body>\n"
+    html += "</html>\n"
+
+    return html
+
+
+def save_html(index: INDEX_TYPE, filename: Union[str, Path]) -> None:
+    filename = Path(filename)
+    info_message(f"Saving html to {filename}")
+    with open(filename, "w") as f:
+        f.write(generate_html(index))
+    info_message("Saved html")
+
+
+UNKNOWN_PATH = Path("/tmp/unknown")
+
+
+def main(args):
+    personal_dir = Path(PERSONAL_DIR).expanduser()
+    index: INDEX_TYPE = {
+        "main": {
+            "p-argonne": Path(DIRPAPERS).joinpath("html").joinpath("p-argonne.html"),
+            "p-argonne": Path(DIRPAPERS).joinpath("html").joinpath("p-ray.html"),
+            "p-argonne": Path(DIRPAPERS).joinpath("html").joinpath("p-clio.html"),
+            "todo": Path("/tmp/todo/index.html"),
+            "todo txt": Path(TODO_FILE),
+        },
+    }
+
+    info_message("Generating todo index")
+
+    notes_dirs = NOTES_DIRS.split(" ") if NOTES_DIRS is not None else []
+    for notes_dir in notes_dirs:
+        notes_dir = Path(notes_dir)
+        key = notes_dir.stem
+        if key not in index:
+            index[key] = []
+        index[key] += sorted(list(notes_dir.glob("**/*.txt")))  # type: ignore
+
+    # Paper reviews
+    index["reviews"] = sorted(
+        list(personal_dir.joinpath("paper-reviews").glob("**/*.txt"))
+    )
+
+    # All notes
+    all_notes = list(personal_dir.glob("**/*.txt")) + list(personal_dir.glob("**/*.md"))
+
+    # remove summaries from all notes
+    def filter_all_notes(n: Path) -> bool:
+        is_recommendation_letter = "recommendation-letters" in str(n)
+        if is_recommendation_letter:
+            return "self" in str(n)
+        return "summaries" not in str(n) and "pre-phd" not in str(n)
+
+    all_notes = all_notes.copy()
+    all_notes = list(filter(filter_all_notes, all_notes))
+    # accept recommendation-letters/self but ignore others
+    index["all notes"] = sorted(all_notes)
+
+    # PDFs
+    index["pdfs"] = sorted(
+        list(Path(DIRPAPERS).resolve().joinpath("pdfs").glob("**/*.pdf"))
+    )
+    # Summaries
+    index["summaries"] = sorted(
+        list(Path(DIRPAPERS).resolve().joinpath("summaries").glob("**/*.txt"))
+    )
+
+    # Bookmarks
+    index["bookmarks"] = parse_bookmarks(BOOKMARKS_FILE)  # type: ignore
+    # print(bookmarks_by_section)
+
+    output_path = Path("/tmp").joinpath("indexes")
+    if output_path.exists():
+        rmdir(output_path)
+    output_path.mkdir(parents=True)
+
+    html_path = output_path / "index.html"
+
+    save_html(index, html_path)
+    if args.open:
+        if args.verbose:
+            info_message(f"Opening {html_path}")
+        os.system(f"open {html_path}")
+
+    # call todo as well
+    if shutil.which("todo") is not None:
+        os.system("todo --html")
+
+    # call prc
+    if shutil.which("prc") is not None:
+        os.system("prc ray argonne cxl dataSciencePipe mlForSys clio seagate")
+
+
+if __name__ == "__main__":
+    parser = ArgumentParser()
+    parser.add_argument("--open", action="store_true")
+    parser.add_argument("-v", "--verbose", action="store_true")
+    args = parser.parse_args()
+    main(args)

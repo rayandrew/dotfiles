@@ -1,0 +1,81 @@
+#!/usr/bin/env bash
+
+# check if RS_PROJECT_NOTES env variable exists
+if [ -z "$RS_BLOG_NOTES" ]; then
+	echo -e "\033[1;31mERROR\033[0m: RS_BLOG_NOTES env variable doesn't exist"
+	exit 1
+fi
+
+if [ ! -d "$RS_BLOG_NOTES" ]; then
+	echo -e "\033[1;31mERROR\033[0m: RS_BLOG_NOTES env variable doesn't point to a directory"
+	exit 1
+fi
+
+if [ -z "$RS_NOTES_EXTS" ]; then
+	RS_NOTES_EXTS="md txt"
+fi
+
+NOTE_PATH="$RS_BLOG_NOTES"
+EXTS=($RS_NOTES_EXTS)
+
+# check if first arg exists
+if [ -z "$1" ]; then
+	set -o noglob
+	if [[ "$OSTYPE" == "darwin"* ]]; then
+		find "$NOTE_PATH" -type f -name "*.${EXTS[0]}" -o -name "*.${EXTS[1]}" | fzf --bind "ctrl-y:execute-silent(echo {} | tr -d '\n' | pbcopy)+abort" --ansi --height 100% --reverse --border --inline-info --preview-window=right:70% --preview 'bat --color=always --style=numbers --line-range :500 {}' --bind "enter:execute(editor {})+abort"
+	else
+		# linux
+		find "$NOTE_PATH" -type f -name "*.${EXTS[0]}" -o -name "*.${EXTS[1]}" | fzf --bind "ctrl-y:execute-silent(echo {} | tr -d '\n' | xclip -selection clipboard)+abort" --ansi --height 100% --reverse --border --inline-info --preview-window=right:70% --preview 'bat --color=always --style=numbers --line-range :500 {}' --bind "enter:execute(editor {})+abort"
+	fi
+	set +o noglob
+else
+	# check if arg is a file inside NOTE_PATH
+	FOUND_FILE=""
+	for ext in "${EXTS[@]}"; do
+		if [ -f "$NOTE_PATH/$1.$ext" ]; then
+			FOUND_FILE="$NOTE_PATH/$1.$ext"
+			break
+		fi
+	done
+	if [ ! -z "$FOUND_FILE" ]; then
+		editor "$FOUND_FILE"
+		exit 0
+	fi
+
+	# create file if it doesn't exist
+	if [ ! -d "$NOTE_PATH" ]; then
+		mkdir -p "$NOTE_PATH"
+	fi
+
+	read -p "Create new note '$1'? [y/N] " -n 1 -r
+	echo
+	if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+		exit 1
+	fi
+	# ask for extension from user with choice of EXTS
+	echo "Please choose extension:"
+	select ext in "${EXTS[@]}"; do
+		if [ -z "$ext" ]; then
+			echo "Invalid choice"
+		else
+			break
+		fi
+	done
+
+	touch "$NOTE_PATH/$1.$ext"
+	editor "$NOTE_PATH/$1.$ext"
+
+	# if [ -f "$NOTE_PATH/$1.txt" ]; then
+	# 	editor "$NOTE_PATH/$1.txt"
+	# else
+	# 	# create file
+	# 	# ask for confirmation
+	# 	read -p "Create new note '$1'? [y/N] " -n 1 -r
+	# 	echo
+	# 	if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+	# 		exit 1
+	# 	fi
+	# 	touch "$NOTE_PATH/$1.txt"
+	# 	editor "$NOTE_PATH/$1.txt"
+	# fi
+fi

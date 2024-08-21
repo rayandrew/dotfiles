@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+if [ "$1" == "--silent" ]; then
+
+	rm -f *~
+	rm -f */*~
+	rm -f */*/*~
+	rm -f */*/*/*~
+	rm -f */*/*/*/*~
+
+	exit
+fi
+
+rm -vf *~
+rm -vf */*~
+rm -vf */*/*~
+rm -vf */*/*/*~
+rm -vf */*/*/*/*~

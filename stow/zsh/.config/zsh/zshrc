@@ -1,0 +1,232 @@
+# Use emacs keymap as the default.
+bindkey -e
+
+export PATH="/etc/profiles/per-user/$USER/bin:/run/current-system/sw/bin/:$PATH"
+export PATH="$HOME/.bin:$PATH"
+export PATH="$HOME/bin:$PATH"
+export PATH="$HOME/.local/bin:$PATH"
+export PATH="$HOME/opt/go/bin:$PATH"
+export PATH="$HOME/opt/parallel/bin:$PATH"
+export PATH="$PATH:$HOME/.local/bin"
+export PATH="$PATH:$HOME/.cargo/bin"
+
+source "$HOME/.config/zsh/general.zsh"
+
+source "$HOME/.config/zsh/conda.zsh"
+source "$HOME/.config/zsh/nix.zsh"
+source "$HOME/.config/zsh/utils.zsh"
+
+source "$HOME/.config/zsh/aliases.zsh"
+source "$HOME/.config/zsh/personal.zsh"
+source "$HOME/.config/zsh/teaching.zsh"
+
+if [ -f "$HOME/.config/zsh/local.zsh" ]; then
+  source "$HOME/.config/zsh/local.zsh"
+fi
+
+ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
+[ ! -d $ZINIT_HOME ] && mkdir -p "$(dirname $ZINIT_HOME)"
+[ ! -d $ZINIT_HOME/.git ] && git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
+source "${ZINIT_HOME}/zinit.zsh"
+
+zinit light zdharma-continuum/zinit-annex-patch-dl
+zinit light zdharma-continuum/zinit-annex-bin-gem-node
+
+zinit ice wait'!' lucid atload'source $HOME/.p10k.zsh; _p9k_precmd' nocd
+zinit light romkatv/powerlevel10k
+
+zinit ice \
+  lucid \
+  wait"0a" \
+  from"gh-r" \
+  as"program" \
+  dl"https://raw.githubusercontent.com/junegunn/fzf/master/bin/fzf-tmux" \
+  dl"https://raw.githubusercontent.com/junegunn/fzf/master/shell/completion.zsh -> _fzf_completion" \
+  dl"https://raw.githubusercontent.com/junegunn/fzf/master/shell/key-bindings.zsh -> key-bindings.zsh" \
+  dl"https://raw.githubusercontent.com/junegunn/fzf/master/man/man1/fzf-tmux.1 -> $ZPFX/man/man1/fzf-tmux.1" \
+  dl"https://raw.githubusercontent.com/junegunn/fzf/master/man/man1/fzf.1 -> $ZPFX/man/man1/fzf.1" \
+  src"key-bindings.zsh"
+zinit light junegunn/fzf
+zinit light unixorn/fzf-zsh-plugin
+
+function init_zvm() {
+}
+
+zvm_config() {
+  ZVM_LINE_INIT_MODE=$ZVM_MODE_INSERT
+  ZVM_CURSOR_STYLE_ENABLED=false
+}
+zinit ice depth=1
+zinit light jeffreytse/zsh-vi-mode
+zvm_after_init_commands+=(init_zvm)
+
+# zinit ice atclone"dircolors -b LS_COLORS > clrs.zsh" \
+#     atpull'%atclone' pick"clrs.zsh" nocompile'!' \
+#     atload'zstyle ":completion:*" list-colors “${(s.:.)LS_COLORS}”'
+# zinit light trapd00r/LS_COLORS
+
+ZSH_AUTOSUGGEST_STRATEGY=(history completion)
+zinit light zsh-users/zsh-autosuggestions
+zinit light zsh-users/zsh-history-substring-search
+
+# Autosuggestions & fast-syntax-highlighting
+zinit wait lucid for \
+  atinit"ZINIT[COMPINIT_OPTS]=-C; zicompinit; zicdreplay" \
+      zdharma-continuum/fast-syntax-highlighting \
+  blockf \
+      zsh-users/zsh-completions \
+  atload"!_zsh_autosuggest_start" \
+      zsh-users/zsh-autosuggestions
+
+mkdir -p "$HOME/.config/zsh/generated"
+
+# check if ZINIT_INSTALL_BINARY is set or equal to 1
+if [[ -n $ZINIT_INSTALL_BINARY && $ZINIT_INSTALL_BINARY -eq 1 ]]; then
+  zinit ice wait"1" as"command" from"gh-r" lucid \
+    atclone"./zoxide init zsh > init.zsh" \
+    atpull"%atclone" src"init.zsh" nocompile'!'
+  zinit light ajeetdsouza/zoxide
+else
+  if [ ! -f "$HOME/.config/zsh/generated/_zoxide.zsh" ]; then
+    zoxide init zsh > "$HOME/.config/zsh/generated/_zoxide.zsh"
+  fi
+  source $HOME/.config/zsh/generated/_zoxide.zsh
+fi
+
+if [[ -n $ZINIT_INSTALL_BINARY && $ZINIT_INSTALL_BINARY -eq 1 ]]; then
+  zinit ice wait"0" lucid from"gh-r" as"program" depth=1 \
+    atclone'chmod +x *eza \
+        && git clone https://github.com/eza-community/eza.git eza-src \
+        && cp eza-src/completions/zsh/_eza . \
+        && rm -rf eza-src'
+  zinit light eza-community/eza
+fi
+
+if [[ -n $ZINIT_INSTALL_BINARY && $ZINIT_INSTALL_BINARY -eq 1 ]]; then
+  zinit ice wait"1" lucid as"command" from"gh-r" mv"ripgrep* -> rg" pick"rg/rg"
+  zinit light BurntSushi/ripgrep
+fi
+
+if [[ -n $ZINIT_INSTALL_BINARY && $ZINIT_INSTALL_BINARY -eq 1 ]]; then
+  zinit ice wait"1" lucid from"gh-r" as"command" mv"fd* -> fd-src" depth=1 \
+    atclone'chmod +x fd-src/fd \
+      && cp fd-src/fd . \
+      && cp fd-src/autocomplete/_fd . \
+      && rm -rf fd-src'
+  zinit light sharkdp/fd
+fi
+
+if [[ -n $ZINIT_INSTALL_BINARY && $ZINIT_INSTALL_BINARY -eq 1 ]]; then
+  zinit ice wait"1" lucid from"gh-r" as"command" mv"bat* -> bat-src" depth=1 \
+    atclone'chmod +x bat-src/bat \
+      && cp bat-src/bat . \
+      && cp bat-src/autocomplete/bat.zsh _bat \
+      && rm -rf bat-src'
+  zinit light sharkdp/bat
+fi
+
+if [[ -n $ZINIT_INSTALL_BINARY && $ZINIT_INSTALL_BINARY -eq 1 ]]; then
+  zinit ice wait"1" lucid \
+      from'gh-r' \
+      as'command' \
+      atclone"chmod +x ./fnm && ./fnm completions --shell zsh > _fnm && ./fnm env --shell zsh --use-on-cd > env.zsh" \
+      atload'source env.zsh' \
+      atpull'%atclone' \
+      nocompile \
+      sbin'fnm'
+  zinit light Schniz/fnm
+else
+  if [ ! -f "$HOME/.config/zsh/generated/_fnm.zsh" ]; then
+    fnm env --shell zsh --use-on-cd > "$HOME/.config/zsh/generated/_fnm.zsh"
+  fi
+  source $HOME/.config/zsh/generated/_fnm.zsh
+fi
+
+if [[ -n $ZINIT_INSTALL_BINARY && $ZINIT_INSTALL_BINARY -eq 1 ]]; then
+  zinit ice wait"1" lucid \
+      as"program" \
+      atclone'./direnv hook zsh > zhook.zsh' \
+      from"gh-r" \
+      light-mode \
+      mv"direnv* -> direnv" \
+      src'zhook.zsh'
+  zinit light direnv/direnv
+else
+  if [ ! -f "$HOME/.config/zsh/generated/_direnv.zsh" ]; then
+    direnv hook zsh > "$HOME/.config/zsh/generated/_direnv.zsh"
+  fi
+  source $HOME/.config/zsh/generated/_direnv.zsh
+
+  # Copied from https://github.com/direnv/direnv/issues/68#issuecomment-1734782205
+  # - stolen from user "alexreg" above in this issue
+  # - https://github.com/direnv/direnv/issues/68#issuecomment-1003426550
+  copy_function() {
+    test -n "$(declare -f "$1")" || return
+    eval "${_/$1/$2}"
+  }
+  copy_function _direnv_hook _direnv_hook__old
+  _direnv_hook() {
+    # old line
+    #_direnv_hook__old "$@" 2> >(grep -E -v '^direnv: (export)')
+
+    # my new line
+    _direnv_hook__old "$@" 2> >(awk '{if (length >= 200) { sub("^direnv: export.*","direnv: export "NF" environment variables")}}1')
+
+    # as suggested by user "radekh" above
+    wait
+
+    # as suggested by user "Ic-guy" below if you're using bash > v4.4
+    # throws error for me on zsh
+    # wait $!
+  }
+fi
+
+if [[ -n $ZINIT_INSTALL_BINARY && $ZINIT_INSTALL_BINARY -eq 1 ]]; then
+  zinit ice wait"1" lucid \
+      from'gh-r' \
+      as'program' \
+      sbin'**/delta -> delta'
+  zinit light dandavison/delta
+fi
+
+if [[ -n $ZINIT_INSTALL_BINARY && $ZINIT_INSTALL_BINARY -eq 1 ]]; then
+  zinit ice wait"1" lucid \
+      from'gh-r' \
+      as'program' \
+      sbin'**/tokei -> tokei'
+  zinit light XAMPPRocky/tokei
+fi
+
+if [[ -n $ZINIT_INSTALL_BINARY && $ZINIT_INSTALL_BINARY -eq 1 ]]; then
+  zinit ice wait"1" lucid \
+      from'gh-r'  \
+      atclone'mv fx* fx && chmod +x fx' \
+      as'program'
+  zinit light antonmedv/fx
+fi
+
+zinit ice wait"0c" lucid reset depth=1 \
+  atclone"" \
+  atpull"%atclone" pick"zsh/fzf-zsh-completion.sh" nocompile'!' \
+  atload"bindkey '^[[Z' fzf-completion"
+zinit light lincheney/fzf-tab-completion
+# atload"bindkey '^I' fzf-completion"
+
+# typeset -U path cdpath fpath manpath
+
+HISTSIZE="10000"
+SAVEHIST="10000"
+
+HISTFILE="$HOME/.zsh_history"
+mkdir -p "$(dirname "$HISTFILE")"
+
+setopt HIST_FCNTL_LOCK
+setopt HIST_IGNORE_DUPS
+unsetopt HIST_IGNORE_ALL_DUPS
+setopt HIST_IGNORE_SPACE
+unsetopt HIST_EXPIRE_DUPS_FIRST
+setopt SHARE_HISTORY
+unsetopt EXTENDED_HISTORY
+
+# autoload -Uz compinit
+# compinit -u

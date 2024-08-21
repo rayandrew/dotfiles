@@ -1,0 +1,6 @@
+"$schema" = "https://yazi-rs.github.io/schemas/yazi.json"
+
+[preview]
+tab_size        = 100
+max_width       = 600
+max_height      = 900

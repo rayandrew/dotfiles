@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+
+if ! [ -x "$(command -v svn)" ]; then
+	echo "svn is not installed!"
+	exit
+fi
+
+if [ $# -lt 3 ]; then
+	echo "No arguments supplied!"
+	echo
+	echo "Usage:"
+	echo "  gdd repo branch path"
+	echo
+	echo "Example:"
+	echo "  gdd rayandrews/dotfiles main dot_config/tmux"
+	exit 1
+fi
+
+branch=${2,,}
+
+if [ "$branch" = "main" ] || [ "$branch" = "master" ]; then
+	branch="trunk"
+else
+	branch="branches/$branch"
+fi
+
+GITHUB_URL="https://github.com/$1/$branch/$3"
+
+echo "Downloading $GITHUB_URL"
+
+shift
+shift
+shift
+
+svn export "$GITHUB_URL" "$*"

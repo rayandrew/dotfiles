@@ -1,0 +1,620 @@
+#!/usr/bin/env python3
+
+import os
+import platform
+import re
+import shutil
+import subprocess
+import sys
+from argparse import ArgumentParser
+from collections import OrderedDict
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Optional, Union
+
+
+def error_message(message: str) -> None:
+    print("\033[91m", end="")
+    print("ERROR", end="")
+    print("\033[0m", end="")
+    print(": ", end="")
+    print(message)
+
+
+def info_message(message: str) -> None:
+    # print in blue
+    print("\033[94m", end="")
+    print("INFO", end="")
+    print("\033[0m", end="")
+    print(": ", end="")
+    print(message)
+
+
+def warning_message(message: str) -> None:
+    # print in yellow
+    print("\033[93m", end="")
+    print("WARNING", end="")
+    print("\033[0m", end="")
+    print(": ", end="")
+    print(message)
+
+
+# get from env
+ENV_NAME = "RS_TODO_FILE"
+TODO_FILE = os.environ.get(ENV_NAME, None)
+if TODO_FILE is None:
+    error_message("%s not set" % ENV_NAME)
+    sys.exit(1)
+
+
+@dataclass
+class Node:
+    id: int
+    content: str
+    level: int
+    line_number: int
+    children: list[int]
+    parent: Optional[int] = None
+    is_section: bool = False
+    section_name: Optional[str] = None
+
+
+NODE_CNT = 0
+
+
+def generate_unique_id() -> int:
+    global NODE_CNT
+    NODE_CNT += 1
+    return NODE_CNT
+
+
+URL_REGEX = re.compile(
+    r"(?P<url>https?://[^\s]+)|(?P<file>file://[^\s]+)|(?P<email>[^\s]+@[^\s]+)"
+)
+
+
+def parse_url(content: str) -> str:
+    def sanitize(url: str):
+        if url[-1] == ")":
+            url = url[:-1]
+        if url[-1] == "]":
+            url = url[:-1]
+        return url
+
+    for match in URL_REGEX.finditer(content):
+        if match.group("url") is not None:
+            url = match.group("url")
+            url = sanitize(url)
+            content = content.replace(url, f'<a href="{url}">{url}</a>')
+        elif match.group("file") is not None:
+            url = match.group("file")
+            url = sanitize(url)
+            stem = Path(url).with_suffix("").stem
+            content = content.replace(url, f'<a href="{url}">{stem}</a>')
+        elif match.group("email") is not None:
+            url = match.group("email")
+            url = sanitize(url)
+            content = content.replace(url, f'<a href="mailto:{url}">{url}</a>')
+
+    return content
+
+
+def parse_content(content: str) -> str:
+    done = False
+    important = False
+    if content[0] == "x":
+        done = True
+        content = content[1:].strip()
+    elif content[0:2] == "!!":
+        important = True
+        content = content[2:].strip()
+
+    content = parse_url(content)
+
+    if done:
+        return f"<s>{content}</s>"
+    if important:
+        return f'<span style="color:red;">{content}</span>'
+
+    return content
+
+
+def generate_reset_css() -> str:
+    reset_css = """
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+body {
+	line-height: 1;
+}
+/*ol, ul {
+	list-style: none;
+}*/
+blockquote, q {
+	quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+/* Personal CSS */
+html {
+    font-family: Times New Roman;
+    font-size: 20px;
+}
+
+code {
+    font-family:
+       Menlo,
+       Monaco,
+       Lucida Console,
+       Liberation Mono,
+       DejaVu Sans Mono,
+       Bitstream Vera Sans Mono,
+       Courier New,
+       monospace;
+}
+
+h1 {
+    font-size: 2em;
+    font-weight: bold;
+}
+
+h2 {
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+h3 {
+    font-size: 1.25em;
+    font-weight: bold;
+}
+
+a {
+    color: #0078B4;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+"""
+    # minify
+    reset_css = reset_css.replace("\n", "").replace(" ", "")
+    return reset_css
+
+
+def generate_html(nodes: dict[int, Node], title: str = "Todo List") -> str:
+    html = ""
+
+    # generate header, etc.
+    html += f"""
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>{title}</title>
+<style type="text/css">{generate_reset_css()}</style>
+<style type="text/css">
+ol, ul {{
+    margin: 0;
+    list-style-position: inside;
+    padding-left: 20px;
+}}
+
+body {{
+    width: 100%;
+    max-width: calc(100% - 2rem);
+    margin: auto;
+    font-family: "Gill Sans", Helvetica, Arial, sans-serif;
+    /* font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; */
+    font-size: 14px;
+    line-height: 1.2;
+    padding: 20px;
+}}
+
+@media only screen and (min-width:1200px)  {{
+    body {{
+        font-size: 18px;
+    }}
+}}
+
+@media only screen and (min-width:1800px)  {{
+    body {{
+        font-size: 22px;
+    }}
+}}
+
+main {{
+    width: 100%;
+    margin: 0 auto;
+    display: grid;
+    grid-gap: 10px;
+    padding: 10px 0;
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+}}
+
+@media only screen and (min-width:1200px)  {{
+    main {{
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }}
+}}
+
+
+@media only screen and (min-width:1800px)  {{
+    main {{
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }}
+}}
+
+
+section {{
+    border: 1px solid #000000;
+    padding: 10px;
+
+    word-wrap: break-word; /* Internet Explorer 5.5+ */
+}}
+
+@media only screen and (min-width:768px)  {{
+    section {{
+        margin: 4px;
+        padding: 12px 16px;
+    }}
+}}
+
+section > h2 {{
+    font-size: 1.5em;
+    font-weight: bold;
+    font-color: #000000;
+    margin-left: 8px;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #000000;
+}}
+
+s {{
+    color: #888888;
+}}
+</style>
+</head>
+<body>
+    """
+
+    html += "<h1>Todo List</h1>\n"
+    html += """<main>\n"""
+
+    prev_level = 0
+    for i, node_id in enumerate(nodes):
+        node = nodes[node_id]
+        # add indentation for each level and as list
+        if i == 0 and node.level == 0:
+            html += "<section>\n"
+        elif i > 0 and node.level == 0:
+            html += "</section>\n"
+            html += "<section>\n"
+
+        if node.level > prev_level:
+            for _ in range(node.level - prev_level):
+                html += "<ul>\n"
+            # html += "<ul>\n"
+        elif node.level < prev_level:
+            for _ in range(prev_level - node.level):
+                html += "</ul>\n"
+        # else:
+        #     if prev_level == 0:
+        #         html += "<section><ul>\n"
+        #     if node.level == 0:
+        #         # put inside section
+        #         html += "<section><ul>\n"
+        if node.is_section:
+            html += (
+                f"""<h2 class="section-title">{parse_content(node.content)}</h2>\n"""
+            )
+        else:
+            html += f"<li>{parse_content(node.content)}</li>\n"
+        prev_level = node.level
+
+    html += "</main>\n"
+
+    # generate footer, etc.
+    html += """
+</body>
+</html>
+    """
+
+    return html
+
+
+def save_html(
+    nodes: dict[int, Node], filename: Union[str, Path] = "/tmp/todo.html"
+) -> None:
+    filename = Path(filename)
+    info_message(f"Saving html to {filename}")
+    with open(filename, "w") as f:
+        f.write(generate_html(nodes))
+    info_message("Saved html")
+
+
+def read_todo_file(filename: str = TODO_FILE) -> dict[int, Node]:
+    lines: list[tuple[str, int]] = []
+    with open(filename, "r") as f:
+        # get lines and line numbers
+        for lineno, line in enumerate(f):
+            lines.append((line, lineno + 1))
+
+    # create tree structure (content, level, children)
+    # nodes: dict[str, Node] = {}
+    nodes: OrderedDict[int, Node] = OrderedDict()
+
+    parent_id = None
+    section_id = None
+    for line, lineno in lines:
+        stripped_line = line.strip()
+        if stripped_line == "":
+            continue
+        if stripped_line[0] == "#":
+            section = stripped_line[1:].strip()
+            unique_id = generate_unique_id()
+            nodes[unique_id] = Node(
+                id=unique_id,
+                line_number=lineno,
+                content=section,
+                level=0,
+                children=[],
+                parent=None,
+                is_section=True,
+            )
+            section_id = unique_id
+            parent_id = section_id
+            continue
+        if stripped_line[0] == "%":
+            continue
+        if "archive" in stripped_line.lower():
+            break
+        if "====" in stripped_line:
+            level = 0
+            section_id = None
+            parent_id = None
+            continue
+        if stripped_line[0] == "=":
+            continue
+        level = 0
+        # count tab characters
+        while line[level] == "\t":
+            level += 1
+
+        while line[level:level+4] == "    ":
+            level += 1
+
+        if section_id is not None:
+            level += 1
+
+        line = line.strip()
+        unique_id = generate_unique_id()
+        if parent_id is None:
+            nodes[unique_id] = Node(
+                id=unique_id,
+                line_number=lineno,
+                content=line,
+                level=level,
+                children=[],
+                parent=None,
+            )
+
+            parent_id = unique_id
+        else:
+            # print(line, level)
+            if level == nodes[parent_id].level + 1:
+                nodes[parent_id].children.append(unique_id)
+                nodes[unique_id] = Node(
+                    id=unique_id,
+                    line_number=lineno,
+                    content=line,
+                    level=level,
+                    children=[],
+                    parent=parent_id,
+                    section_name=nodes[section_id].content
+                    if section_id is not None
+                    else None,
+                )
+
+            elif level == nodes[parent_id].level:
+                nodes[unique_id] = Node(
+                    id=unique_id,
+                    line_number=lineno,
+                    content=line,
+                    level=level,
+                    children=[],
+                    parent=nodes[parent_id].parent,
+                    section_name=nodes[section_id].content
+                    if section_id is not None
+                    else None,
+                )
+            elif level < nodes[parent_id].level:
+                for _ in range(nodes[parent_id].level - level):
+                    parent_id = nodes[parent_id].parent  # type: ignore
+                nodes[parent_id].children.append(unique_id)  # type: ignore
+                nodes[unique_id] = Node(
+                    id=unique_id,
+                    line_number=lineno,
+                    content=line,
+                    level=level,
+                    children=[],
+                    parent=parent_id,
+                    section_name=nodes[section_id].content
+                    if section_id is not None
+                    else None,
+                )
+
+            parent_id = unique_id
+
+    return nodes
+
+
+# https://stackoverflow.com/a/49782093/2418586
+def rmdir(directory: Union[Path, str]):
+    directory = Path(directory)
+    for item in directory.iterdir():
+        if item.is_dir():
+            rmdir(item)
+        else:
+            item.unlink()
+    directory.rmdir()
+
+
+def main(args):
+    nodes_dict = read_todo_file(TODO_FILE)
+    output_path = Path("/tmp/todo")
+    if output_path.exists():
+        rmdir(output_path)
+    output_path.mkdir(parents=True, exist_ok=True)
+    html_path = output_path / "index.html"
+    if args.html:
+        # pprint.pprint(nodes_dict)
+        save_html(nodes_dict, filename=html_path)
+    else:
+        if not args.search:
+            info_message("Opening todo file")
+            proc = subprocess.Popen(["editor", TODO_FILE], close_fds=True)
+            if args.verbose:
+                info_message("Waiting for editor to close")
+            proc.wait()
+            if args.verbose:
+                info_message("Editor closed")
+            nodes_dict = read_todo_file(TODO_FILE)
+            save_html(nodes_dict, filename=html_path)
+            return
+
+        # call fzf
+        # check if fzf is installed
+        if shutil.which("fzf") is None:
+            if args.verbose:
+                warning_message("fzf not installed")
+            proc = subprocess.Popen(["editor", TODO_FILE], close_fds=True)
+            if args.verbose:
+                info_message("Waiting for editor to close")
+            proc.wait()
+            if args.verbose:
+                info_message("Editor closed")
+            nodes_dict = read_todo_file(TODO_FILE)
+            save_html(nodes_dict, filename=html_path)
+            return
+
+        # check if darwin, use pbcopy
+        if platform.system().lower() == "darwin":
+            proc = subprocess.Popen(
+                [
+                    "fzf",
+                    "--multi",
+                    "--reverse",
+                    "--height",
+                    "100%",
+                    "--bind",
+                    "ctrl-y:execute-silent(echo {} | tr -d '\n' | pbcopy)+abort",
+                ],
+                stdin=subprocess.PIPE,
+                stdout=subprocess.PIPE,
+            )
+        else:
+            proc = subprocess.Popen(
+                [
+                    "fzf",
+                    "--multi",
+                    "--reverse",
+                    "--height",
+                    "100%",
+                    "--bind",
+                    "ctrl-y:execute-silent(echo {} | tr -d '\n' | xclip -select clipboard)+abort",
+                ],
+                stdin=subprocess.PIPE,
+                stdout=subprocess.PIPE,
+            )
+        # proc.stdin.write("\n".join([f"{node.line_number} {node.level} {node.content}" for node_id, node in nodes_dict.items()]).encode())
+        fzf_choices = []
+        for _node_id, node in nodes_dict.items():
+            if node.is_section:
+                continue
+                # fzf_choices.append(f"{node.content}")
+            else:
+                if node.section_name is not None:
+                    fzf_choices.append(f"{node.content} [{node.section_name}]")
+                else:
+                    fzf_choices.append(f"{node.content}")
+                # fzf_choices.append(f"{node.content} ({node.line_number})")
+        fzf_choices_str = "\n".join(fzf_choices).encode()
+        proc.stdin.write(fzf_choices_str)  # type: ignore
+        # proc.stdin.write("\n".join([f"{node.content}" for _, node in nodes_dict.items() if not node.is_section]).encode()) # type: ignore
+        stdout, _ = proc.communicate()
+        selected_lines = stdout.decode().split("\n")
+        selected_lines = [line.strip() for line in selected_lines if line.strip() != ""]
+        # selected_lines = [line.split(" ", 2) for line in selected_lines]
+        # selected_lines = [(int(lineno), int(level), content) for lineno, level, content in selected_lines]
+        selected_lines.sort(key=lambda x: x[0])
+        if proc.stdin:
+            proc.stdin.close()
+        proc.wait()
+
+        if len(selected_lines) == 0:
+            info_message("No todo selected")
+            return
+
+        selected_line = selected_lines[0].strip()
+        # parse content
+        if "[" in selected_line:
+            selected_line = selected_line.split("[")[0].strip()
+
+        # search in nodes for line number
+        node = None
+        for _, node in nodes_dict.items():
+            if node.content == selected_line:
+                break
+
+        assert node is not None
+        # os.system(f"editor +{node.line_number} {TODO_FILE}")
+        proc = subprocess.Popen(
+            ["editor", f"+{node.line_number}", TODO_FILE], close_fds=True
+        )
+        if args.verbose:
+            info_message("Waiting for editor to close")
+        proc.wait()
+        if args.verbose:
+            info_message("Editor closed")
+        nodes_dict = read_todo_file(TODO_FILE)
+        save_html(nodes_dict, filename=html_path)
+
+
+if __name__ == "__main__":
+    parser = ArgumentParser()
+    parser.add_argument("--html", action="store_true")
+    parser.add_argument("-s", "--search", action="store_true")
+    parser.add_argument("-v", "--verbose", action="store_true")
+    args = parser.parse_args()
+    main(args)

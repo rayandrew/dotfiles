@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+# if [[ $OSTYPE == 'darwin'* ]]; then
+# 	open -a /Applications/Safari.app "$*"
+# else
+# 	w3m "$*"
+# fi
+open -a /Applications/Firefox.app $*

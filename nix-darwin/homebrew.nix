@@ -52,6 +52,7 @@
       # i need to install firefox from homebrew to make it works
       # with 1password. 1password requires app to be used inside
       # /Applications and Nix will install app in ~/Applications
+      # "chromium"
       "firefox"
       "inkscape"
     ];

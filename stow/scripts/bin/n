@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+
+# check if NOTES_DIRS env variable exists
+if [ -z "$RS_NOTES_DIRS" ]; then
+	echo -e "\033[1;31mERROR\033[0m: RS_NOTES_DIRS env variable doesn't exist"
+	exit 1
+fi
+
+if [ -z "$RS_NOTES_EXTS" ]; then
+	RS_NOTES_EXTS="md txt"
+fi
+
+# RS_NOTES_DIRS is string with directories separated by space
+# convert it to array
+NOTES_DIRS=($RS_NOTES_DIRS)
+
+# RS_NOTES_EXTS is string with extensions separated by space
+# convert it to array
+EXTS=($RS_NOTES_EXTS)
+EXT_QUERIES=""
+for EXT in "${EXTS[@]}"; do
+	if [ "x$EXT_QUERIES" == "x" ]; then
+		EXT_QUERIES="-iname *.${EXT}"
+	else
+		EXT_QUERIES+=" -o -iname *.${EXT}"
+	fi
+done
+
+FILES=()
+
+# iterate over NOTES_DIRS
+for DIR in "${NOTES_DIRS[@]}"; do
+	# check if directory exists
+	if [ ! -d "$DIR" ]; then
+		# warning, yellow
+		echo -e "\033[1;33mWARNING\033[0m: $DIR doesn't exist, skipping..."
+		continue
+	fi
+
+	# get files with arbitrary number of extensions
+
+	set -o noglob
+	FILES+=($(find -L "$DIR" ${EXT_QUERIES} -type f))
+	set +o noglob
+	# echo "Found ${#FILES[@]} files"
+done
+
+echo "Found ${#FILES[@]} files"
+
+if [[ "$OSTYPE" == "darwin"* ]]; then
+	printf '%s\n' "${FILES[@]}" | fzf --bind "ctrl-y:execute-silent(echo {} | tr -d '\n' | pbcopy)+abort" --ansi --height 100% --reverse --border --inline-info --preview-window=right:70% --preview 'bat --color=always --style=numbers --line-range :500 {}' --bind "enter:execute(editor {})+abort"
+else
+	# linux
+	printf '%s\n' "${FILES[@]}" | fzf --bind "ctrl-y:execute-silent(echo {} | tr -d '\n' | xclip -selection clipboard)+abort" --ansi --height 100% --reverse --border --inline-info --preview-window=right:70% --preview 'bat --color=always --style=numbers --line-range :500 {}' --bind "enter:execute(editor {})+abort"
+fi

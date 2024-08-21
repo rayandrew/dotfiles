@@ -1,0 +1,123 @@
+#!/usr/bin/env bash
+
+function quit() {
+  echo ""
+  echo "ERROR $1"
+  echo "findme-withpath -p <path> <...queries> ( -f | -d )"
+  echo ""
+  exit
+}
+
+SEARCH_PATH=""
+IS_FILE=0
+IS_DIR=0
+IS_ALL=1
+QUERIES=()
+OR=0
+
+if [ $# -gt 0 ]; then
+  while [ $# -gt 0 ]; do
+    case "$1" in
+    -p)
+      # change to absolute path
+      SEARCH_PATH=$(readlink -f "$2")
+      shift
+      shift
+      ;;
+    -f)
+      IS_FILE=1
+      IS_ALL=0
+      shift
+      ;;
+    -d)
+      IS_DIR=1
+      IS_ALL=0
+      shift
+      ;;
+    -o | --or)
+      OR=1
+      shift
+      ;;
+    *)
+      QUERIES+=("$1")
+      shift
+      ;;
+    esac
+  done
+fi
+
+if [ "$SEARCH_PATH" == "" ]; then
+  echo -e "\033[1;31mERROR\033[0m: no path specified"
+  quit 1
+fi
+
+if [ ! -e "$SEARCH_PATH" ]; then
+  echo -e "\033[1;31mERROR\033[0m: path $SEARCH_PATH doesn't exist"
+  quit 2
+fi
+
+if [ ${#QUERIES[@]} -eq 0 ]; then
+  echo -e "\033[1;31mERROR\033[0m: no queries specified"
+  quit 3
+fi
+
+if [ $OR -eq 0 ]; then
+  GREP_QUERIES=""
+  for query in "${QUERIES[@]}"; do
+    if [ "$GREP_QUERIES" == "" ]; then
+      GREP_QUERIES="$query"
+    else
+      GREP_QUERIES+=".*$query"
+    fi
+  done
+
+  FIND_QUERIES=""
+  for query in "${QUERIES[@]}"; do
+    if [ "$FIND_QUERIES" == "" ]; then
+      FIND_QUERIES="-iname *$query*"
+    else
+      FIND_QUERIES+=" -a -iname *$query* "
+    fi
+  done
+else
+  GREP_QUERIES=""
+  for query in "${QUERIES[@]}"; do
+    if [ "$GREP_QUERIES" == "" ]; then
+      GREP_QUERIES="$query"
+    else
+      GREP_QUERIES+="|$query"
+    fi
+  done
+
+  FIND_QUERIES=""
+  for query in "${QUERIES[@]}"; do
+    if [ "$FIND_QUERIES" == "" ]; then
+      FIND_QUERIES="-iname *$query*"
+    else
+      FIND_QUERIES+=" -o -iname *$query* "
+    fi
+  done
+fi
+
+if [ $IS_DIR -eq 1 ] && [ $IS_FILE -eq 1 ]; then
+  IS_ALL=1
+fi
+
+if [ $IS_ALL -eq 1 ]; then
+  find "$SEARCH_PATH" $FIND_QUERIES |
+    grep -v "\.svn" |
+    grep -i --color -E "${GREP_QUERIES}"
+  exit
+fi
+
+if [ $IS_FILE -eq 1 ]; then
+  find "$SEARCH_PATH" $FIND_QUERIES -type f |
+    grep -v "\.svn" |
+    grep -i --color -E "${GREP_QUERIES}"
+fi
+
+if [ $IS_DIR -eq 1 ]; then
+  find "$SEARCH_PATH" $FIND_QUERIES -type d |
+    grep -v "\.svn" |
+    grep -i --color -E "${GREP_QUERIES}*"
+fi

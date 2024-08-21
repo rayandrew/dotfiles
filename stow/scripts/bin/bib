@@ -1,0 +1,232 @@
+#!/usr/bin/env bash
+
+# Do MODIFY sh to /bin/bash !!! find another way to fix /bin/sh if
+# it doesn't work on your laptop.  In my machine /bin/bash does NOT work. Har
+
+if [ $# == 0 ]; then
+  echo ""
+  echo "  bibsearch <up to 5 keywords>"
+  echo "  bibsearch fast file system"
+  echo ""
+  exit
+fi
+
+if [ $# -gt 5 ]; then
+  echo ""
+  echo "  bibsearch CANNOT take more than 5 keywords "
+  echo ""
+  exit
+fi
+
+
+
+# first copy whatever local bib we have rigth now
+cat *.bib > /tmp/local.bib
+
+# for pposs
+if [ -e B/pi-gunawi.bib ]; then
+  cat B/pi-gunawi.bib >> /tmp/local.bib
+fi
+
+# change this to your own directory of bib
+# (e.g. ...../pmc/Bibs)
+cd ${DIRPAPERS}/bibs
+
+rm -f .tmp*
+
+if [ $# == 1 ]; then
+  srcstr="$1"
+else if [ $# == 2 ]; then
+  srcstr="$1.*$2"
+else if [ $# == 3 ]; then
+  srcstr="$1.*$2.*$3"
+else if [ $# == 4 ]; then
+  srcstr="$1.*$2.*$3.*$4"
+else if [ $# == 5 ]; then
+  srcstr="$1.*$2.*$3.*$4.*$5"
+fi
+fi
+fi
+fi
+fi
+
+# ------------------------------------------------
+# there are only two files to search for: all.bib or personal.bib
+# ------------------------------------------------
+function runAll {
+  echo ""
+  searchfile all.bib "$srcstr"
+  searchfile personal.bib "$srcstr"
+
+  if [ -e /tmp/local.bib ]; then
+    searchfile /tmp/local.bib "$srcstr"
+  fi
+
+#    searchfile all.bib      "title.*$srcstr"
+#    searchfile all.bib      "author.*$srcstr"
+#    searchfile all.bib      "howpublished.*$srcstr"
+#    searchfile personal.bib "title.*$srcstr"
+#    searchfile personal.bib "author.*$srcstr"
+#    searchfile personal.bib "howpublished.*$srcstr"
+echo ""
+}
+
+
+# ------------------------------------------------
+function cleanline {
+  line="$1"
+  echo $line | \
+    sed -e 's/.*title.*{//' | \
+    sed -e 's/.*author.*{//' | \
+    sed -e 's/.*author = "//' | \
+    sed -e 's/.*crossref.*{//g' | \
+    sed -e 's/.*crossref = "//g' | \
+    sed -e 's/@InProceedings{//g' | \
+    sed -e 's/@InCollection{//g' | \
+    sed -e 's/@PhdThesis{//g' | \
+    sed -e 's/@Misc{//g' | \
+    sed -e 's/@Article{//g' | \
+    sed -e 's/@Book{//g' | \
+    sed -e 's/}.*//g' | \
+    sed -e 's/"//g' | \
+    sed -e 's/,//g'
+  }
+
+
+# ------------------------------------------------
+# parse each line, if it's title, bibname, author
+# and put it in that
+# ------------------------------------------------
+function parseline {
+  line=$1
+
+  if [ "x$line" == "x" ]; then
+    return
+  fi
+
+
+
+  echo $line | grep "^title = " > /dev/null
+  if [ $? -eq 0 ]; then
+    title=`cleanline "$line"`
+  fi
+
+  echo $line | grep 'author = ' > /dev/null
+  if [ $? -eq 0 ]; then
+    author=`cleanline "$line"`
+  fi
+
+  echo $line | grep 'crossref = ' > /dev/null
+  if [ $? -eq 0 ]; then
+    confname=`cleanline "$line"`
+  fi
+
+  echo $line | grep 'journal = ' > /dev/null
+  if [ $? -eq 0 ]; then
+    confname=`cleanline "$line"`
+  fi
+
+  echo $line | grep '@InProceedings' > /dev/null
+  if [ $? -eq 0 ]; then
+    if [ "bibname" != "??" ]; then
+      bibname=`cleanline "$line"`
+    fi
+  fi
+
+  echo $line | grep '@InCollection' > /dev/null
+  if [ $? -eq 0 ]; then
+    bibname=`cleanline "$line"`
+  fi
+
+  echo $line | grep '@PhdThesis' > /dev/null
+  if [ $? -eq 0 ]; then
+    bibname=`cleanline "$line"`
+  fi
+
+  echo $line | grep '@Misc' > /dev/null
+  if [ $? -eq 0 ]; then
+    if [ "bibname" != "??" ]; then
+      bibname=`cleanline "$line"`
+    fi
+  fi
+
+  echo $line | grep '@Article' > /dev/null
+  if [ $? -eq 0 ]; then
+    bibname=`cleanline "$line"`
+  fi
+
+  echo $line | grep '@Book' > /dev/null
+  if [ $? -eq 0 ]; then
+    bibname=`cleanline "$line"`
+  fi
+
+
+}
+
+
+# ------------------------------------------------
+# given the $file and the $entrynumber,
+# get the global bibname, global author, and global title
+# ------------------------------------------------
+function searchentry {
+  file=$1
+  lnum=$2
+
+  bibname="??"
+  author=""
+  title=""
+  confname=""
+  # echo $line
+
+    # go back 5 lines, go forward 10 lines
+  end=$(($lnum + 3))
+  total=10
+  head -$end $file | tail -$total > .tmp-entry
+
+
+  for ((i=1; i<=$total; i++))
+  do
+    line=`head -$i .tmp-entry | tail -1 `
+    parseline "$line"
+
+  done
+
+    # bold cyan, purple
+    # echo -e "\033[1;35m$bibname\033[0m"
+    echo -e "\033[1;36m\\\\cite\033[0m{\033[0;35m$bibname\033[0m}"
+    echo "$title"
+    echo "$author"
+    echo "$confname"
+    echo ""
+
+
+    rm -f .tmp-entry
+    # go down three lines
+
+
+
+  }
+
+# ------------------------------------------------
+# given the $file and the $srcstr, try to get
+# the entries
+# ------------------------------------------------
+function searchfile {
+
+  local file="$1"
+  local srcstr="$2"
+
+    # search
+    lnums=`grep -n -i "$srcstr" $file | awk -F: '{print $1}'`
+
+    for line in $lnums
+    do
+      searchentry $file $line
+    done
+
+  }
+
+
+
+# ..
+runAll

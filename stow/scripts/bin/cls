@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+clear
+
+# check if inside tmux
+
+if [ ! -z "$TMUX" ]; then
+  tmux clear-history
+fi

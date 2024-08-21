@@ -31,6 +31,7 @@ in {
       nushell
       fish
       cmake
+      xz
 
       # Useful for Nix development
       nil
@@ -48,6 +49,7 @@ in {
       gh
       subversion
       deno
+      ollama
 
       # Tools
       _1password

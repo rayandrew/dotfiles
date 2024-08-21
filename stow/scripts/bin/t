@@ -1,0 +1,100 @@
+#!/usr/bin/env bash
+
+source "$HOME/.config/zsh/general.zsh"
+
+# find .git in the specified directory and then go up one level
+DIRS=($(find "$HOME/Projects" "$HOME/Ucare" "$HOME/TA" "$HOME/Ucare/papers" -mindepth 1 -maxdepth 1 -type d -exec test -e "{}/.git" ';' -print -prune))
+DIRS+=($(find "$HOME/Personal" -mindepth 1 -maxdepth 1 -type d -not -path '*/\.*' -not -path '*/\.*/*'))
+DIRS+=("$HOME/Code")
+DIRS+=("$HOME/Code/dotfiles")
+DIRS+=("$HOME/Code/nvim")
+DIRS+=("$HOME/Code/website")
+DIRS+=("$HOME/Code/OLD-nix-config")
+DIRS+=("$HOME/Projects")
+DIRS+=("$HOME/Personal")
+DIRS+=("$HOME/Screenshots")
+
+TA_DIRS=($(find "$HOME/TA" -mindepth 2 -maxdepth 2 -type d -not -path '*/\.*' -not -path '*/\.*/*'))
+for dir in "${TA_DIRS[@]}"; do
+  DIRS+=("$dir")
+done
+
+# split OLD-<name> to different array
+OLD_DIRS=()
+for i in "${DIRS[@]}"; do
+  if [[ $i == *"OLD-"* ]]; then
+    OLD_DIRS+=("$i")
+    # remove this entry from DIRS
+    DIRS=("${DIRS[@]/$i/}")
+  fi
+done
+DIRS=($(printf '%s\n' "${DIRS[@]}" | sort -u))         # sort arr and remove duplicates
+OLD_DIRS=($(printf '%s\n' "${OLD_DIRS[@]}" | sort -u)) # sort arr and remove duplicates
+DIRS+=("${OLD_DIRS[@]}")                               # add OLD-<name> to the end of DIRS
+
+FZF_DEFAULT_OPTS="--reverse --border=sharp --info=inline --layout=reverse --no-sort --preview-window=40%,sharp --preview 'tree -C {} | head -200' --padding=0,0,0,0 --color=label:bold --tabstop=1"
+
+### tmux sessionizer
+### https://github.com/ThePrimeagen/.dotfiles/blob/master/bin/.local/scripts/tmux-sessionizer
+tmux-sessionizer() {
+  tmux_running=$(pgrep tmux)
+
+  if [[ $# -eq 1 ]]; then
+    input=$1
+    # search within the DIRS array using grep and put into array
+    choices=$(printf '%s\n' "${DIRS[@]}" | grep -i "$input")
+    # check if the selected is empty
+    if [[ -z $choices ]]; then
+      echo "No directory found"
+      exit 0
+    fi
+    # if more than one directory is found, use fzf to select one
+    if [[ $(echo "$choices" | wc -l) -gt 1 ]]; then
+      if [[ -z $TMUX ]] && [[ -z $tmux_running ]]; then
+        selected=$(echo "$choices" | fzf --bind "ctrl-y:execute-silent(echo {} | tr -d '\n' | pbcopy)+abort")
+      else
+        selected=$(echo "$choices" | fzf-tmux -p 90% --bind "ctrl-y:execute-silent(echo {} | tr -d '\n' | pbcopy)+abort")
+      fi
+    else
+      selected=$choices
+    fi
+  else
+    if [[ -z $TMUX ]] && [[ -z $tmux_running ]]; then
+      if [[ "$OSTYPE" == "darwin"* ]]; then
+        selected=$(printf '%s\n' "${DIRS[@]}" | fzf --bind "ctrl-y:execute-silent(echo {} | tr -d '\n' | pbcopy)+abort")
+      else
+        selected=$(printf '%s\n' "${DIRS[@]}" | fzf --bind "ctrl-y:execute-silent(echo {} | tr -d '\n' | xclip -selection clipboard)+abort")
+      fi
+    else
+      if [[ "$OSTYPE" == "darwin"* ]]; then
+        selected=$(printf '%s\n' "${DIRS[@]}" | fzf-tmux -p 90% --bind "ctrl-y:execute-silent(echo {} | tr -d '\n' | pbcopy)+abort")
+      else
+        selected=$(printf '%s\n' "${DIRS[@]}" | fzf-tmux -p 90% --bind "ctrl-y:execute-silent(echo {} | tr -d '\n' | xclip -selection clipboard)+abort")
+      fi
+    fi
+  fi
+
+  if [[ -z $selected ]]; then
+    exit 0
+  fi
+
+  selected_name=$(basename "$selected" | tr . _)
+
+  if [[ -z $TMUX ]] && [[ -z $tmux_running ]]; then
+    tmux new-session -s "$selected_name" -c "$selected"
+    exit 0
+  fi
+
+  if ! tmux has-session -t="$selected_name" 2>/dev/null; then
+    tmux new-session -ds "$selected_name" -c "$selected"
+  fi
+
+  if [ -z "$TMUX" ]; then
+    tmux attach-session -t "$selected_name"
+    exit 0
+  fi
+
+  tmux switch-client -t "$selected_name"
+}
+
+tmux-sessionizer "$@"
