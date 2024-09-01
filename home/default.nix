@@ -22,6 +22,7 @@
           ./direnv.nix
           ./fonts.nix
           ./stow.nix
+          ./zellij.nix
         ];
       };
       common-graphics = {

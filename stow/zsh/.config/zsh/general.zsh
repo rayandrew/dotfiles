@@ -7,8 +7,8 @@ export PATH="$HOME/opt/parallel/bin:$PATH"
 export PATH="$PATH:$HOME/.local/bin"
 export PATH="$PATH:$HOME/.cargo/bin"
 
-# export EDITOR="nvim"
-export EDITOR="emacs -nw"
+export EDITOR="nvim"
+# export EDITOR="emacs -nw"
 export ZINIT_INSTALL_BINARY=0
 
 { eval `ssh-agent`; } &>/dev/null
