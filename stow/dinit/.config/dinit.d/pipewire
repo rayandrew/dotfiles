@@ -1,0 +1,7 @@
+type = process
+load-options = sub-vars
+logfile = $HOME/.local/share/dinit/pipewire.log
+command = pipewire 
+restart = true
+depends-on = dbus.user
+

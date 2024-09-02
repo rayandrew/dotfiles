@@ -1,0 +1,43 @@
+#!/bin/sh
+
+# credit https://faq.i3wm.org/question/239/how-do-i-suspendlockscreen-and-logout.1.html
+
+lock() {
+    if type "betterlockscreen" > /dev/null; then
+        betterlockscreen -l dim
+    else
+        i3lock
+    fi
+}
+
+safelock() {
+    # betterlockscreen -l dim
+    i3lock
+}
+
+case "$1" in
+    lock)
+        lock
+        ;;
+    logout)
+        # i3-msg exit
+	killall dinit
+        ;;
+    suspend)
+        safelock; loginctl suspend
+        ;;
+    hibernate)
+        safelock; loginctl hibernate
+        ;;
+    reboot)
+        loginctl reboot
+        ;;
+    shutdown)
+        loginctl poweroff
+        ;;
+    *)
+        echo "Usage: $0 {lock|logout|suspend|hibernate|reboot|shutdown}"
+        exit 2
+esac
+
+exit 0

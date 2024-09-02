@@ -1,0 +1,6 @@
+[gpg]
+	format = ssh
+[user]
+	signingkey = /home/rayandrew/.ssh/id_ed25519.pub
+	email = 4437323+rayandrew@users.noreply.github.com
+	name = Ray Andrew

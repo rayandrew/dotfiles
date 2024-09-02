@@ -1,0 +1,6 @@
+type = process
+load-options = sub-vars
+logfile = $HOME/.local/share/dinit/dbus.log
+command = $HOME/bin/dbus-session --print-address 4
+smooth-recovery = true
+ready-notification = pipefd:4

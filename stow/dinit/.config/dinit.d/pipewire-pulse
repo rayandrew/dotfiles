@@ -1,0 +1,6 @@
+type = process
+load-options = sub-vars
+logfile = $HOME/.local/share/dinit/pipewire-pulse.log
+command = pipewire-pulse
+restart = true
+after = wireplumber

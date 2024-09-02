@@ -1,0 +1,5 @@
+type = process
+load-options = sub-vars
+logfile = $HOME/.local/share/dinit/ulauncher.log
+command = ulauncher --daemon
+after = i3

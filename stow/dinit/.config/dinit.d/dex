@@ -1,0 +1,5 @@
+type = scripted
+load-options = sub-vars
+logfile = $HOME/.local/share/dinit/dex.log
+command = dex --autostart --environment i3
+after   = i3

@@ -1,0 +1,6 @@
+type = scripted
+load-options = sub-vars
+logfile = $HOME/.local/share/dinit/feh.log
+command = feh --bg-scale $HOME/Pictures/city.jpg
+restart = false
+after   = i3

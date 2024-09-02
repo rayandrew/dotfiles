@@ -1,0 +1,4 @@
+type = process
+load-options = sub-vars
+logfile = $HOME/.local/share/dinit/xsettingsd.log
+command = dump_xsettings > $HOME/.xsettingsd; xsettingsd

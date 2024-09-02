@@ -7,7 +7,7 @@ config.enable_csi_u_key_encoding = true
 
 -- font
 config.font = wezterm.font 'JetBrainsMono Nerd Font Mono'
-config.font_size = 16.0
+config.font_size = 12.0
 config.line_height = 1.1
 
 config.window_padding = {

@@ -1,0 +1,5 @@
+type = process
+load-options = sub-vars
+logfile = $home/.local/share/dinit/waybar.log
+command = waybar
+restart = true

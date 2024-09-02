@@ -1,0 +1,6 @@
+type = process
+load-options = sub-vars
+logfile = $HOME/.local/share/dinit/xss-lock.log
+command = xss-lock --transfer-sleep-lock -- betterlockscreen -w dim --nofork
+restart = true
+after   = i3
